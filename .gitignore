@@ -130,3 +130,4 @@ dmypy.json
 flask/venv
 serenade.js
 serenade.py
+.vscode
