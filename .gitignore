@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+flask/venv
+serenade.js
+serenade.py
