@@ -30,4 +30,9 @@ def index():
 
 @app.route("/vulnerabilities/login", methods=["POST"])
 def login():
-    return request.form['username']
+    my_database = db.get_db()
+    username = request.form["username"]
+    password = request.form["password"]
+    user_valid = my_database.execute(f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'").fetchone()
+    # my_database.execute("SELECT id FROM user WHERE username = (?,?)", (username, password)).fetchone()
+    return ("Success", 200) if user_valid else ("Failure", 401)
