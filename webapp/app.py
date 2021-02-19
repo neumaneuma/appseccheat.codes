@@ -34,5 +34,12 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
     user_valid = my_database.execute(f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'").fetchone()
-    # my_database.execute("SELECT id FROM user WHERE username = (?,?)", (username, password)).fetchone()
+    return ("Success", 200) if user_valid else ("Failure", 401)
+
+@app.route("/patches/login", methods=["POST"])
+def loginSecureLogin():
+    my_database = db.get_db()
+    username = request.form["username"]
+    password = request.form["password"]
+    user_valid = my_database.execute("SELECT id FROM user WHERE username = :username AND password = :password", {"username" :username, "password" :password}).fetchone()
     return ("Success", 200) if user_valid else ("Failure", 401)
