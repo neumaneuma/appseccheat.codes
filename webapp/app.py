@@ -2,7 +2,7 @@ from sqlite3.dbapi2 import Error
 from flask import Flask
 from flask import request
 import os
-from . import db
+from . import db as database
 # from .sqli1 import login
 # from vulnerabilities.sqli1 import sqli1
 
@@ -21,7 +21,7 @@ try:
 except OSError:
     pass
 
-db.init_app(app)
+database.init_app(app)
 
 
 @app.route("/")
@@ -31,27 +31,29 @@ def index():
 
 @app.route("/vulnerabilities/login", methods=["POST"])
 def login():
-    my_database = db.get_db()
+    db = database.get_db()
     username = request.form["username"]
     password = request.form["password"]
-    user_valid = my_database.execute(f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'").fetchone()
+    user_valid = db.execute(f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'").fetchone()
     return ("Success", 200) if user_valid else ("Failure", 401)
 
 @app.route("/patches/login", methods=["POST"])
 def loginSecureLogin():
-    my_database = db.get_db()
+    db = database.get_db()
     username = request.form["username"]
     password = request.form["password"]
-    user_valid = my_database.execute("SELECT id FROM user WHERE username = :username AND password = :password", {"username" :username, "password" :password}).fetchone()
+    user_valid = db.execute("SELECT id FROM user WHERE username = :username AND password = :password", {"username" :username, "password" :password}).fetchone()
     return ("Success", 200) if user_valid else ("Failure", 401)
+
 
 @app.route("/vulnerabilities/register", methods=["POST"])
 def register():
-    my_database = db.get_db()
+    db = database.get_db()
     username = request.form["username"]
     password = request.form["password"]
     try:
-        my_database.execute("INSERT INTO user (username, password) VALUES (?, ?)", (username, password))
+        db.execute("INSERT INTO user (username, password) VALUES (?, ?)", (username, password))
+        db.commit()
     except Error as e:
         # to do need to decide how to handle errors
         return (repr(e), 400)
