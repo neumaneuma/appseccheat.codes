@@ -10,4 +10,4 @@ CREATE TABLE user (
   password TEXT NOT NULL
 );
 
-insert into user(username,password)values("administrator","password123")
+INSERT INTO user(username,password)VALUES("administrator","password123")
