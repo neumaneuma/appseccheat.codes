@@ -3,11 +3,10 @@ from flask import Flask
 from flask import request
 import os
 from . import db as database
-# from .sqli1 import login
-# from vulnerabilities.sqli1 import sqli1
+from webapp import sqli1
 
 app = Flask(__name__)
-# app.register_blueprint(sqli1.bp)
+app.register_blueprint(sqli1.vulnerability_bp)
 app.config.from_mapping(
     # a default secret that should be overridden by instance config
     SECRET_KEY="dev",
@@ -29,13 +28,6 @@ def index():
     return app.send_static_file("index.html")
 
 
-@app.route("/vulnerabilities/login", methods=["POST"])
-def login():
-    db = database.get_db()
-    username = request.form["username"]
-    password = request.form["password"]
-    user_valid = db.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'").fetchone()
-    return ("Success", 200) if user_valid else ("Failure", 401)
 
 @app.route("/patches/login", methods=["POST"])
 def loginSecureLogin():
