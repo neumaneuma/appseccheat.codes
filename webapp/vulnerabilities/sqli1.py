@@ -3,7 +3,7 @@ from flask import (
     Blueprint, request
 )
 
-vulnerability_bp = Blueprint('sqli1', __name__, url_prefix='/vulnerabilities')
+vulnerability_bp = Blueprint('vulnerability_sqli1', __name__, url_prefix='/vulnerabilities')
 
 
 @vulnerability_bp.route("/login", methods=["POST"])
