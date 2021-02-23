@@ -11,5 +11,5 @@ def login():
     db = database.get_db()
     username = request.form["username"]
     password = request.form["password"]
-    user_valid = db.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'").fetchone()
+    user_valid = db.execute(f"SELECT * FROM users WHERE password = '{password}' AND username = '{username}'").fetchone()
     return ("Success", 200) if user_valid else ("Failure", 401)
