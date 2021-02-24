@@ -1,8 +1,8 @@
-from webapp import db as database
+import uuid
 from sqlite3.dbapi2 import Error
 from flask import Blueprint, request, session
-from . import VULNERABILITIES_PREFIX
-import uuid
+from webapp import db as database
+from webapp.vulnerabilities import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
     "vulnerabilities_sqli2", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli2"

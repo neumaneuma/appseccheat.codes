@@ -1,9 +1,8 @@
-from webapp import db as database
+import uuid
 from sqlite3.dbapi2 import Error
 from flask import Blueprint, request, session
-from . import PATCHES_PREFIX
-import uuid
-
+from webapp import db as database
+from webapp.patches import PATCHES_PREFIX
 
 bp = Blueprint("patches_sqli2", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli2")
 username_to_exploit = "username_to_exploit_for_sqli2"
