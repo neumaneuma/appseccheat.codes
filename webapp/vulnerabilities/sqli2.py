@@ -1,18 +1,31 @@
 from webapp import db as database
 from sqlite3.dbapi2 import Error
-from flask import Blueprint, request
+from flask import Blueprint, request, session
 from . import VULNERABILITIES_PREFIX
 import uuid
 
 bp = Blueprint(
     "sqli_second_order", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli2"
 )
+username_to_exploit = "username_to_exploit_for_sqli2"
+
 
 @bp.route("/get_username", methods=["GET"])
 def get_username_to_exploit():
     db = database.get_db()
     username = str(uuid.uuid4())
+    password = str(uuid.uuid4())
     username = username.replace("-", "")
+    try:
+        db.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)", (username, password)
+        )
+        db.commit()
+    except Error as e:
+        return (repr(e), 400)
+
+    session.pop(username_to_exploit, None)
+    session[username_to_exploit] = username
     return username
 
 
