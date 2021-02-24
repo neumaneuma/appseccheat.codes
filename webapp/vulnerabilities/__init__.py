@@ -1,0 +1,1 @@
+VULNERABILITIES_PREFIX = "/vulnerabilities"
