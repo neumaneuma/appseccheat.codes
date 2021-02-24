@@ -51,7 +51,7 @@ def register():
     ).fetchone()
     session.pop(user_id_for_registered_account, None)
     session[user_id_for_registered_account] = str(user_id[0])
-    return ("Success (1/3)", 200)
+    return ("Success (1/2)", 200)
 
 
 @bp.route("/change_password", methods=["POST"])
@@ -90,4 +90,4 @@ def change_password():
         {"original_username": original_username, "new_password": new_password},
     ).fetchone()
 
-    return ("Success (2/3)", 200) if change_password_successful else ("Failure", 400)
+    return ("Success (2/2)", 200) if change_password_successful else ("Failure", 400)
