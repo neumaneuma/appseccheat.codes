@@ -1,12 +1,11 @@
-from flask import request
+from flask import request, Blueprint
 from webapp import db as database
-from flask import Blueprint
+from webapp.patches import PATCHES_PREFIX
+
+bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
 
 
-patch_bp = Blueprint("patch_sqli1", __name__, url_prefix="/patches")
-
-
-@patch_bp.route("/login", methods=["POST"])
+@bp.route("/login", methods=["POST"])
 def login():
     db = database.get_db()
     username = request.form["username"]

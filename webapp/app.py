@@ -1,17 +1,16 @@
-from flask import Flask
-from flask import request
 import os
-from . import db as database
-from .vulnerabilities import sqli1 as a
-from .patches import sqli1 as b
-from .patches import sqli2 as d
-from .vulnerabilities import sqli2 as c
+from flask import Flask
+from webapp import db as database
+from webapp.vulnerabilities import sqli_login_bypass as vulnerabilities_sqli1
+from webapp.vulnerabilities import sqli_second_order as vulnerabilities_sqli2
+from webapp.patches import sqli_login_bypass as patches_sqli1
+from webapp.patches import sqli_second_order as patches_sqli2
 
 app = Flask(__name__)
-app.register_blueprint(a.vulnerability_bp)
-app.register_blueprint(b.patch_bp)
-app.register_blueprint(c.bp)
-app.register_blueprint(d.bp)
+app.register_blueprint(vulnerabilities_sqli1.bp)
+app.register_blueprint(vulnerabilities_sqli2.bp)
+app.register_blueprint(patches_sqli1.bp)
+app.register_blueprint(patches_sqli2.bp)
 app.config.from_mapping(
     # a default secret that should be overridden by instance config
     SECRET_KEY="dev",

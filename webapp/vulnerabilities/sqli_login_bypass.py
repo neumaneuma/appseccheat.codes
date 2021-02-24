@@ -1,12 +1,13 @@
 from webapp import db as database
 from flask import Blueprint, request
+from webapp.vulnerabilities import VULNERABILITIES_PREFIX
 
-vulnerability_bp = Blueprint(
-    "vulnerability_sqli1", __name__, url_prefix="/vulnerabilities"
+bp = Blueprint(
+    "vulnerabilities_sqli1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli1"
 )
 
 
-@vulnerability_bp.route("/login", methods=["POST"])
+@bp.route("/login", methods=["POST"])
 def login():
     db = database.get_db()
     username = request.form["username"]

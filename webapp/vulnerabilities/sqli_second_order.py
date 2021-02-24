@@ -2,9 +2,11 @@ import uuid
 from sqlite3.dbapi2 import Error
 from flask import Blueprint, request, session
 from webapp import db as database
-from webapp.patches import PATCHES_PREFIX
+from webapp.vulnerabilities import VULNERABILITIES_PREFIX
 
-bp = Blueprint("patches_sqli2", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli2")
+bp = Blueprint(
+    "vulnerabilities_sqli2", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli2"
+)
 username_to_exploit = "username_to_exploit_for_sqli2"
 user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
 
@@ -16,13 +18,10 @@ def get_username_to_exploit():
     password = str(uuid.uuid4())
     username = username.replace("-", "")
 
-    try:
-        db.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)", (username, password)
-        )
-        db.commit()
-    except Error as e:
-        return (repr(e), 400)
+    db.execute(
+        "INSERT INTO users (username, password) VALUES (?, ?)", (username, password)
+    )
+    db.commit()
 
     session.pop(username_to_exploit, None)
     session[username_to_exploit] = username
@@ -40,7 +39,6 @@ def register():
         )
         db.commit()
     except Error as e:
-        # to do need to decide how to handle errors
         return (repr(e), 400)
 
     user_id = db.execute(
@@ -73,8 +71,12 @@ def change_password():
 
     try:
         db.execute(
-            "UPDATE users SET password = :password1 WHERE username = (SELECT username FROM users WHERE id = :user_id) AND password = :password2",
-            {"password1": new_password, "user_id": user_id, "password2": old_password},
+            "UPDATE users SET password = :password1 WHERE username = '"
+            + db.execute(
+                "SELECT username FROM users WHERE id = (?)", (user_id,)
+            ).fetchone()[0]
+            + "' AND password = :password2",
+            {"password1": new_password, "password2": old_password},
         )
         db.commit()
     except Error as e:
