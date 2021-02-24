@@ -8,6 +8,7 @@ bp = Blueprint(
     "sqli_second_order", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli2"
 )
 username_to_exploit = "username_to_exploit_for_sqli2"
+user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
 
 
 @bp.route("/get_username", methods=["GET"])
@@ -16,6 +17,7 @@ def get_username_to_exploit():
     username = str(uuid.uuid4())
     password = str(uuid.uuid4())
     username = username.replace("-", "")
+
     try:
         db.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)", (username, password)
@@ -42,14 +44,29 @@ def register():
     except Error as e:
         # to do need to decide how to handle errors
         return (repr(e), 400)
-    return ("Success (1/2)", 200)
+
+    user_id = db.execute(
+        "SELECT id FROM users WHERE password = :password AND username = :username",
+        {"password": password, "username": username},
+    ).fetchone()
+    session.pop(user_id_for_registered_account, None)
+    session[user_id_for_registered_account] = str(user_id[0])
+    return ("Success (1/3)", 200)
 
 
 @bp.route("/change_password", methods=["POST"])
 def change_password():
     db = database.get_db()
-    original_username = "administrator"
-    user_id = "2"
+    if (
+        username_to_exploit not in session
+        or user_id_for_registered_account not in session
+    ):
+        return (
+            "Session cookies are not found or have been modified. Either include them in the request or restart challenge.",
+            400,
+        )
+    original_username = session[username_to_exploit]
+    user_id = session[user_id_for_registered_account]
     old_password = request.form["old_password"]
     new_password = request.form["new_password1"]
     if new_password != request.form["new_password2"]:
@@ -59,7 +76,7 @@ def change_password():
         db.execute(
             "UPDATE users SET password = :password1 WHERE username = '"
             + db.execute(
-                "SELECT username FROM users WHERE id = (?)", (user_id)
+                "SELECT username FROM users WHERE id = (?)", (user_id,)
             ).fetchone()[0]
             + "' AND password = :password2",
             {"password1": new_password, "password2": old_password},
@@ -73,4 +90,4 @@ def change_password():
         {"original_username": original_username, "new_password": new_password},
     ).fetchone()
 
-    return ("Success", 200) if change_password_successful else ("Failure", 400)
+    return ("Success (2/3)", 200) if change_password_successful else ("Failure", 400)
