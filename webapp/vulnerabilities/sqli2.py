@@ -2,10 +2,18 @@ from webapp import db as database
 from sqlite3.dbapi2 import Error
 from flask import Blueprint, request
 from . import VULNERABILITIES_PREFIX
+import uuid
 
 bp = Blueprint(
     "sqli_second_order", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli2"
 )
+
+@bp.route("/get_username", methods=["GET"])
+def get_username_to_exploit():
+    db = database.get_db()
+    username = str(uuid.uuid4())
+    username = username.replace("-", "")
+    return username
 
 
 @bp.route("/register", methods=["POST"])
