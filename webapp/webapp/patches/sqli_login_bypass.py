@@ -1,6 +1,6 @@
 from flask import request, Blueprint
-from webapp import db as database
-from webapp.patches import PATCHES_PREFIX
+from .. import db as database
+from . import PATCHES_PREFIX
 
 bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
 

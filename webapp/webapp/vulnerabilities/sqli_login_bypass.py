@@ -1,6 +1,6 @@
-from webapp import db as database
 from flask import Blueprint, request
-from webapp.vulnerabilities import VULNERABILITIES_PREFIX
+from .. import db as database
+from . import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
     "vulnerabilities_sqli1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli1"
