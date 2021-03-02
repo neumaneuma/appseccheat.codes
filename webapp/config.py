@@ -8,8 +8,8 @@ load_dotenv(path.join(basedir, '.env'))
 class Config:
     """Base config."""
     SECRET_KEY = environ.get('SECRET_KEY')
-    # STATIC_FOLDER = 'static'
-    # TEMPLATES_FOLDER = 'templates'
+    STATIC_FOLDER = 'static'
+    TEMPLATES_FOLDER = 'templates'
 
 
 class ProdConfig(Config):
