@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  web:
+    container_name: web
+    build: 
+      context: ./webapp
+    ports:
+      - "5000:5000"
+    env_file: ./webapp/.env
+    volumes:
+      - ./webapp/:/app
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"

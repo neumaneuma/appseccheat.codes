@@ -1,0 +1,11 @@
+instance/
+README.md
+serenade.*
+LICENSE
+
+webapp/instance/
+webapp/env/
+webapp/__pycache__
+webapp/webapp/__pycache__
+webapp/webapp/vulnerabilities/__pycache__
+webapp/webapp/patches/__pycache__
