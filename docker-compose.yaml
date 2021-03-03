@@ -5,8 +5,9 @@ services:
     container_name: web
     build: 
       context: ./webapp
-    ports:
-      - "5000:5000"
+    expose:
+      - "8000"
+    command: /usr/local/bin/gunicorn -w 3 -b :8000 wsgi
     env_file: ./webapp/.env
     volumes:
       - ./webapp/:/app
