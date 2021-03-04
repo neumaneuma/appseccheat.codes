@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   web:
+    restart: always
     container_name: web
     build: 
       context: ./webapp
@@ -11,11 +12,21 @@ services:
     env_file: ./webapp/.env
     volumes:
       - ./webapp/:/app
+    networks:
+      - frontend
+      - backend
 
   nginx:
+    restart: always
     container_name: nginx
     build:
       context: ./nginx
     ports:
       - "80:80"
       - "443:443"
+    networks:
+      - frontend
+
+networks:
+  frontend:
+  backend:
