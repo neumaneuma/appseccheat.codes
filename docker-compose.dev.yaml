@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  webdev:
+    container_name: webdev
+    build:
+      context: ./webapp
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV="development"
+      - FLASK_DEBUG="true"
+    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
+    env_file: ./webapp/.env
+    volumes:
+      - ./webapp/:/app
