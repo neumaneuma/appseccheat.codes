@@ -1,7 +1,7 @@
 import uuid
-from sqlite3.dbapi2 import Error
 from flask import Blueprint, request, session
-from .. import db as database
+import mysql.connector
+from .. import database
 from . import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
@@ -13,15 +13,16 @@ user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
 
 @bp.route("/get_username", methods=["GET"])
 def get_username_to_exploit():
-    db = database.get_db()
+    connection = database.get_connection()
+    cursor = connection.cursor()
     username = str(uuid.uuid4())
     password = str(uuid.uuid4())
     username = username.replace("-", "")
 
-    db.execute(
-        "INSERT INTO users (username, password) VALUES (?, ?)", (username, password)
+    cursor.execute(
+        "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)", (username, password)
     )
-    db.commit()
+    connection.commit()
 
     session.pop(username_to_exploit, None)
     session[username_to_exploit] = username
@@ -30,21 +31,23 @@ def get_username_to_exploit():
 
 @bp.route("/register", methods=["POST"])
 def register():
-    db = database.get_db()
+    connection = database.get_connection()
+    cursor = connection.cursor()
     username = request.form["username"]
     password = request.form["password"]
+
     try:
-        db.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)", (username, password)
+        cursor.execute(
+            "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)", (username, password)
         )
-        db.commit()
-    except Error as e:
+        connection.commit()
+    except mysql.connector.Error as e:
         return (repr(e), 400)
 
-    user_id = db.execute(
-        "SELECT id FROM users WHERE password = :password AND username = :username",
-        {"password": password, "username": username},
-    ).fetchone()
+    cursor.execute(
+        "SELECT id FROM sqli2_users WHERE password = %s AND username = %s", (password, username)
+    )
+    user_id = cursor.fetchone()
 
     session.pop(user_id_for_registered_account, None)
     session[user_id_for_registered_account] = str(user_id[0])
@@ -53,7 +56,8 @@ def register():
 
 @bp.route("/change_password", methods=["POST"])
 def change_password():
-    db = database.get_db()
+    connection = database.get_connection()
+    cursor = connection.cursor()
     if (
         username_to_exploit not in session
         or user_id_for_registered_account not in session
@@ -69,22 +73,20 @@ def change_password():
     if new_password != request.form["new_password2"]:
         return ("Passwords do not match", 400)
 
+    cursor.execute(
+        "SELECT username FROM sqli2_users WHERE id = %s", (user_id,)
+    )
+    username = cursor.fetchone()[0]
     try:
-        db.execute(
-            "UPDATE users SET password = :password1 WHERE username = '"
-            + db.execute(
-                "SELECT username FROM users WHERE id = (?)", (user_id,)
-            ).fetchone()[0]
-            + "' AND password = :password2",
-            {"password1": new_password, "password2": old_password},
-        )
-        db.commit()
-    except Error as e:
+        query = f"UPDATE sqli2_users SET password = %s WHERE username = '{username}' AND password = %s"
+        cursor.execute(query, (new_password, old_password))
+        connection.commit()
+    except mysql.connector.Error as e:
         return (repr(e), 400)
 
-    change_password_successful = db.execute(
-        "SELECT id FROM users WHERE username = :original_username AND password = :new_password",
-        {"original_username": original_username, "new_password": new_password},
-    ).fetchone()
+    cursor.execute(
+        "SELECT id FROM sqli2_users WHERE username = %s AND password = %s", (original_username, new_password)
+    )
+    change_password_successful = cursor.fetchone()
 
     return ("Success (2/2)", 200) if change_password_successful else ("Failure", 400)

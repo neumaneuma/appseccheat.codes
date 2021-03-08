@@ -131,3 +131,4 @@ flask/venv
 serenade.js
 serenade.py
 .vscode
+webapp/dbpwd.txt

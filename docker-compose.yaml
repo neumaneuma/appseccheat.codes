@@ -1,30 +1,48 @@
 version: "3.9"
 
 services:
+  db:
+    restart: always
+    image: mysql:8.0.23
+    secrets:
+      - db-password
+    environment:
+      - MYSQL_DATABASE=appsecdb
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+
   web:
     restart: always
-    container_name: web
     build: 
       context: ./webapp
     expose:
-      - "8000"
+      - 8000
     command: [ "/usr/local/bin/gunicorn", "-w", "3", "-b", ":8000", "wsgi" ]
     env_file: ./webapp/.env
+    secrets:
+      - db-password
     networks:
       - frontend
       - backend
 
   nginx:
     restart: always
-    container_name: nginx
     build:
       context: ./nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     networks:
       - frontend
 
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: ./webapp/dbpwd.txt
 networks:
   frontend:
   backend:

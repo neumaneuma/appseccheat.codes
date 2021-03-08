@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-from .. import db as database
+from .. import database
 from . import PATCHES_PREFIX
 
 bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
@@ -7,11 +7,11 @@ bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
 
 @bp.route("/login", methods=["POST"])
 def login():
-    db = database.get_db()
+    connection = database.get_connection()
+    cursor = connection.cursor()
     username = request.form["username"]
     password = request.form["password"]
-    user_valid = db.execute(
-        "SELECT id FROM users WHERE password = :password AND username = :username",
-        {"password": password, "username": username},
-    ).fetchone()
+    cursor.execute(f"SELECT * FROM sqli1_users WHERE password = %s AND username = %s", (username, password))
+    user_valid = cursor.fetchone()
+
     return ("Success", 200) if user_valid else ("Failure", 401)

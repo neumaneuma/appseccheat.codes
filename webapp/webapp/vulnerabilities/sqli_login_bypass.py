@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .. import db as database
+from .. import database
 from . import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
@@ -9,10 +9,11 @@ bp = Blueprint(
 
 @bp.route("/login", methods=["POST"])
 def login():
-    db = database.get_db()
+    connection = database.get_connection()
+    cursor = connection.cursor()
     username = request.form["username"]
     password = request.form["password"]
-    user_valid = db.execute(
-        f"SELECT * FROM users WHERE password = '{password}' AND username = '{username}'"
-    ).fetchone()
+    cursor.execute(f"SELECT * FROM sqli1_users WHERE password = '{password}' AND username = '{username}'")
+    user_valid = cursor.fetchone()
+
     return ("Success", 200) if user_valid else ("Failure", 401)

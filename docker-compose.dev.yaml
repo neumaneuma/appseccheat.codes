@@ -1,16 +1,33 @@
 version: "3.9"
 
 services:
-  webdev:
-    container_name: webdev
+  web:
     build:
       context: ./webapp
     ports:
-      - "5000:5000"
+      - 5000:5000
+    secrets:
+      - db-password
     environment:
-      - FLASK_ENV="development"
-      - FLASK_DEBUG="true"
+      - FLASK_ENV=development
+      - FLASK_DEBUG=true
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
     env_file: ./webapp/.env
     volumes:
       - ./webapp/:/app
+
+  db:
+    image: mysql:8.0.23
+    secrets:
+      - db-password
+    environment:
+      - MYSQL_DATABASE=appsecdb
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: ./webapp/dbpwd.txt

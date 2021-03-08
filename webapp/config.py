@@ -10,11 +10,3 @@ class Config:
     SECRET_KEY = environ.get('SECRET_KEY')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
-
-
-class ProdConfig(Config):
-    DATABASE_URI = environ.get('PROD_DATABASE_URI')
-
-
-class DevConfig(Config):
-    DATABASE_URI = environ.get('DEV_DATABASE_URI')
