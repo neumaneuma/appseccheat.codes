@@ -38,8 +38,7 @@ services:
     networks:
       - frontend
     volumes:
-      - /etc/letsencrypt/live/appseccheat.codes/:/etc/letsencrypt/live/appseccheat.codes/
-      - ./dh/:/etc/nginx/certs/
+      - ./keys/:/etc/nginx/certs/
 
 volumes:
   db-data:
