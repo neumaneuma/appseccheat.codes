@@ -9,10 +9,21 @@
   <link rel="stylesheet" href="/css/tailwind.css" />
 </head>
 
-<body class="bg-gray-500 ">
-  <div class="bg-gray-100 px-40 py-10 grid grid-cols-3 gap-20 justify-items-center">
+<body>
+  <nav class="bg-gray-700 text-gray-100 fixed w-full">
+    <div class="container mx-auto px-6 py-2 flex justify-between items-center">
+      <p class="font-bold text-2xl">AppSec Cheat Codes</p>
+      <div class="block">
+        <ul class="inline-flex">
+          <li><a class="px-4 font-bold" href="/">Home</a></li>
+          <li><a class="px-4 hover:text-blue-400" href="#">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="bg-gray-100 mx-auto px-40 py-20 grid grid-cols-3 gap-20 justify-items-center">
     <div class="w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
-      <div class="bg-indigo-500 h-60"></div>
+      <div class="bg-gradient-to-r from-red-400 via-indigo-500 to-blue-500 h-60"></div>
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">SQLi login bypass</div>
         <p class="text-gray-700 text-base">
