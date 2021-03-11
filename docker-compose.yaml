@@ -38,7 +38,7 @@ services:
     networks:
       - frontend
     volumes:
-      - /home/bradley/keys/:/etc/nginx/certs/
+      - /etc/keys/:/etc/keys/
 
 volumes:
   db-data:
