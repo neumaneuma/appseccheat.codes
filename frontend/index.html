@@ -12,22 +12,31 @@
 <body>
   <nav class="bg-gray-700 text-gray-100 fixed w-full">
     <div class="container mx-auto px-6 py-2 flex justify-between items-center">
-      <p class="font-bold text-2xl">AppSec Cheat Codes</p>
+      <a href="/" class="font-bold text-2xl">AppSec Cheat Codes <span
+          class="text-sm border-2 ml-2 uppercase rounded">beta</span></a>
       <div class="block">
         <ul class="inline-flex">
-          <li><a class="px-4 font-bold" href="/">Home</a></li>
+          <li><a class="px-4 hover:text-blue-400" href="#">FAQ</a></li>
           <li><a class="px-4 hover:text-blue-400" href="#">About</a></li>
+          <li><a class="px-4 hover:text-blue-400" href="https://github.com/neumaneuma/appseccheat.codes">GitHub</a></li>
         </ul>
       </div>
     </div>
   </nav>
-  <div class="bg-gray-100 mx-auto px-40 py-20 grid grid-cols-3 gap-20 justify-items-center md:grid-cols-2 sm:grid-cols-1">
+  <div class="bg-gray-100 pt-32 text-center font-bold text-xl">
+    <p>Learn how to avoid writing <span class="bg-red-200 text-red-700 p-1 font-mono">vulnerable code</span></p>
+    <p>Learn how to write <span class="bg-green-200 text-green-700 p-1 font-mono">exploit code</span></p>
+    <p>Learn how to write <span class="bg-blue-200 text-blue-700 p-1 font-mono">secure code</span></p>
+  </div>
+  <div
+    class="bg-gray-100 mx-auto px-40 py-20 grid grid-cols-3 gap-20 justify-items-center lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
     <div class="w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
       <div class="bg-indigo-700 h-60"></div>
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">SQLi login bypass</div>
         <p class="text-gray-700 text-base">
-          Can you login as <span class="bg-gray-200 p-1 font-mono">administrator</span> without knowing the password? </p>
+          Can you login as <span class="bg-gray-200 p-1 font-mono">administrator</span> without knowing the password?
+        </p>
       </div>
       <div class="px-6 pt-4 pb-2">
         <span
