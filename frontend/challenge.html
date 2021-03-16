@@ -152,6 +152,22 @@
                 </p>
                 <script src="https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js"></script>
             </div>
+            <div class="pt-4 space-y-4">
+                <h1 class="mt-6 text-2xl font-bold text-gray-900">
+                    Explanation
+                </h1>
+                <p>
+                    This defense makes use of what is known as a <a
+                        href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
+                        class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
+                    is that a parameterized query interprets user input as data instead of code.</p>
+                <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
+                    allow-list specifies what characters are allowed as input, and rejects everything else. However, for
+                    most situations involving SQL injection, it is impractical to implement an allow-list because all
+                    characters are valid. For example, restricting what characters a user can enter for a password is
+                    considered a poor user experience. Therefore a parameterized query is the primary line of defense.
+                </p>
+            </div>
             <div class="grid grid-cols-2 pt-48">
                 <div class="flex justify-start">
                     <a class="inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
