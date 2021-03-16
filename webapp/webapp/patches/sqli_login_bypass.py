@@ -9,8 +9,11 @@ bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
 def login():
     connection = database.get_connection()
     cursor = connection.cursor()
-    username = request.form["username"]
-    password = request.form["password"]
+    username = request.form.get("username")
+    password = request.form.get("password")
+    if not username or not password:
+        return ("Failure", 401)
+
     cursor.execute(f"SELECT * FROM sqli1_users WHERE password = %s AND username = %s", (username, password))
     user_valid = cursor.fetchone()
 

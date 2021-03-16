@@ -11,8 +11,11 @@ bp = Blueprint(
 def login():
     connection = database.get_connection()
     cursor = connection.cursor()
-    username = request.form["username"]
-    password = request.form["password"]
+    username = request.form.get("username")
+    password = request.form.get("password")
+    if not username or not password:
+        return ("Failure", 401)
+
     cursor.execute(f"SELECT * FROM sqli1_users WHERE password = '{password}' AND username = '{username}'")
     user_valid = cursor.fetchone()
 

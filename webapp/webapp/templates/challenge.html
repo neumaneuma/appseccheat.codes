@@ -71,7 +71,8 @@
             </p>
 
             <div class="w-full max-w-xs">
-                <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <form method="POST" action="{{ url_for('vulnerabilities_sqli1.login') }}"
+                    class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
                             Username
@@ -91,7 +92,7 @@
                     <div class="flex items-center justify-between">
                         <button
                             class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="button">
+                            type="submit">
                             Sign In
                         </button>
                     </div>
