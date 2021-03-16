@@ -11,8 +11,9 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=true
+      - FLASK_APP=wsgi.py
+      - SECRET_KEY=test
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
-    env_file: ./webapp/.env
     volumes:
       - ./webapp/:/app
 
