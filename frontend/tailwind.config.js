@@ -1,5 +1,5 @@
 module.exports = {
-  purge: [],
+  purge: ["../webapp/webapp/templates/*.html"],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
