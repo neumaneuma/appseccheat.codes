@@ -4,6 +4,13 @@
 </h1>
 {%- endmacro %}
 
+{% macro code(source_code, gist) -%}
+<p class="mt-4 text-xs">File truncated for brevity. <a href={{ source_code }}
+        class="text-blue-400 hover:underline">Click here</a> to view full file.
+</p>
+<script src={{ gist }}></script>
+{%- endmacro %}
+
 {% extends 'layout.html' %}
 {% block content %}
 
@@ -28,27 +35,15 @@
         </div>
         <div class="pt-4">
             {{ header(headers.vulnerability) }}
-            <p class="mt-4 text-xs">File truncated for brevity. <a
-                    href={{ links.vulnerability_source_code }}
-                    class="text-blue-400 hover:underline">Click here</a> to view full file.
-            </p>
-            <script src={{ links.vulnerability_gist }}></script>
+            {{ code(links.vulnerability_source_code, links.vulnerability_gist) }}
         </div>
         <div class="pt-4">
             {{ header(headers.exploit) }}
-            <p class="mt-4 text-xs">File truncated for brevity. <a
-                    href={{ links.exploit_source_code }}
-                    class="text-blue-400 hover:underline">Click here</a> to view full file.
-            </p>
-            <script src={{ links.exploit_gist }}></script>
+            {{ code(links.exploit_source_code, links.exploit_gist) }}
         </div>
         <div class="pt-4">
             {{ header(headers.patch) }}
-            <p class="mt-4 text-xs">File truncated for brevity. <a
-                    href={{ links.patch_source_code }}
-                    class="text-blue-400 hover:underline">Click here</a> to view full file.
-            </p>
-            <script src={{ links.patch_gist }}></script>
+            {{ code(links.patch_source_code, links.patch_gist) }}
         </div>
         <div class="pt-4 space-y-4">
             {{ header(headers.explanation) }}
