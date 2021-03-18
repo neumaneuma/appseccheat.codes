@@ -1,11 +1,15 @@
+{% macro header(title) -%}
+<h1 class="mt-6 text-2xl font-bold text-gray-900">
+    {{ title }}
+</h1>
+{%- endmacro %}
+
 {% extends 'layout.html' %}
 {% block content %}
 
 <div class="bg-gray-100">
     <div class="px-8 py-12 max-w-5xl mx-auto space-y-4 text-gray-600">
-        <h1 class="mt-6 text-2xl font-bold text-gray-900">
-            What is SQL injection?
-        </h1>
+        {{ header(headers.introduction) }}
         <p>
             SQL injection is when an attacker can trick the server into
             running attacker-supplied SQL code against its database. For
@@ -51,9 +55,7 @@
             <span class="text-black">');</span>
         </p>
         <div class="pt-4 space-y-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Heard about it in the news?
-            </h1>
+            {{ header(headers.news) }}
             <p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/"
                     class="text-blue-400 hover:underline">the social media platform Gab fell victim to a SQL
                     injection attack</a> that exposed users' private messages, posts, and passwords. SQL injection
@@ -61,9 +63,7 @@
                 early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>
         </div>
         <div class="pt-4 space-y-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Challenge
-            </h1>
+            {{ header(headers.challenge) }}
             <p>You know there is a user with the username <span
                     class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to figure out how to login as
                 <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their
@@ -100,18 +100,14 @@
             </div>
         </div>
         <div class="pt-4 space-y-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Code
-            </h1>
+            {{ header(headers.code) }}
             <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md"
                     class="text-blue-400 hover:underline">main README</a> to run the webapp locally</p>
             <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
                     class="text-blue-400 hover:underline">exploit README</a> to run the exploits locally</p>
         </div>
         <div class="pt-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Vulnerability
-            </h1>
+            {{ header(headers.vulnerability) }}
             <p class="mt-4 text-xs">File truncated for brevity. <a
                     href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_login_bypass.py"
                     class="text-blue-400 hover:underline">Click here</a> to view full file.
@@ -119,9 +115,7 @@
             <script src="https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js"></script>
         </div>
         <div class="pt-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Exploit
-            </h1>
+            {{ header(headers.exploit) }}
             <p class="mt-4 text-xs">File truncated for brevity. <a
                     href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py"
                     class="text-blue-400 hover:underline">Click here</a> to view full file.
@@ -129,9 +123,7 @@
             <script src="https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js"></script>
         </div>
         <div class="pt-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Patch
-            </h1>
+            {{ header(headers.patch) }}
             <p class="mt-4 text-xs">File truncated for brevity. <a
                     href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_login_bypass.py"
                     class="text-blue-400 hover:underline">Click here</a> to view full file.
@@ -139,9 +131,7 @@
             <script src="https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js"></script>
         </div>
         <div class="pt-4 space-y-4">
-            <h1 class="mt-6 text-2xl font-bold text-gray-900">
-                Explanation
-            </h1>
+            {{ header(headers.explanation) }}
             <p>
                 This defense makes use of what is known as a <a
                     href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from . import html_builder
 
 bp = Blueprint("routes", __name__)
 
@@ -17,6 +18,8 @@ def reset_database():
 def index():
     return render_template("index.html")
 
+
 @bp.route("/sqli1", methods=["GET"])
 def sqli1():
-    return render_template("challenge.html")
+    headers = html_builder.build_headers("What is SQL injection?")
+    return render_template("challenge.html", headers=headers)
