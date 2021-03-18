@@ -13,48 +13,11 @@
         {% block introduction %}{% endblock %}
         <div class="pt-4 space-y-4">
             {{ header(headers.news) }}
-            <p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/"
-                    class="text-blue-400 hover:underline">the social media platform Gab fell victim to a SQL
-                    injection attack</a> that exposed users' private messages, posts, and passwords. SQL injection
-                is probably the most well known web vulnerability out there. It has been in the spotlight since the
-                early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>
+            {% block news %}{% endblock %}
         </div>
         <div class="pt-4 space-y-4">
             {{ header(headers.challenge) }}
-            <p>You know there is a user with the username <span
-                    class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to figure out how to login as
-                <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their
-                password is!
-            </p>
-
-            <div class="w-full max-w-xs">
-                <form method="POST" action="{{ url_for('vulnerabilities_sqli1.login') }}"
-                    class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                            Username
-                        </label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="username" type="text" placeholder="Username">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                            Password
-                        </label>
-                        <input
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            id="password" type="password" placeholder="******************">
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <button
-                            class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit">
-                            Sign In
-                        </button>
-                    </div>
-                </form>
-            </div>
+            {% block challenge %}{% endblock %}
         </div>
         <div class="pt-4 space-y-4">
             {{ header(headers.code) }}
@@ -66,40 +29,30 @@
         <div class="pt-4">
             {{ header(headers.vulnerability) }}
             <p class="mt-4 text-xs">File truncated for brevity. <a
-                    href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_login_bypass.py"
+                    href={{ links.vulnerability_source_code }}
                     class="text-blue-400 hover:underline">Click here</a> to view full file.
             </p>
-            <script src="https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js"></script>
+            <script src={{ links.vulnerability_gist }}></script>
         </div>
         <div class="pt-4">
             {{ header(headers.exploit) }}
             <p class="mt-4 text-xs">File truncated for brevity. <a
-                    href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py"
+                    href={{ links.exploit_source_code }}
                     class="text-blue-400 hover:underline">Click here</a> to view full file.
             </p>
-            <script src="https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js"></script>
+            <script src={{ links.exploit_gist }}></script>
         </div>
         <div class="pt-4">
             {{ header(headers.patch) }}
             <p class="mt-4 text-xs">File truncated for brevity. <a
-                    href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_login_bypass.py"
+                    href={{ links.patch_source_code }}
                     class="text-blue-400 hover:underline">Click here</a> to view full file.
             </p>
-            <script src="https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js"></script>
+            <script src={{ links.patch_gist }}></script>
         </div>
         <div class="pt-4 space-y-4">
             {{ header(headers.explanation) }}
-            <p>
-                This defense makes use of what is known as a <a
-                    href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
-                    class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
-                is that a parameterized query interprets user input as data instead of code.</p>
-            <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
-                allow-list specifies what characters are allowed as input, and rejects everything else. However, for
-                most situations involving SQL injection, it is impractical to implement an allow-list because all
-                characters are valid. For example, restricting what characters a user can enter for a password is
-                considered a poor user experience. Therefore a parameterized query is the primary line of defense.
-            </p>
+            {% block explanation %}{% endblock %}
         </div>
         <div class="grid grid-cols-2 pt-48">
             <div class="flex justify-start">
