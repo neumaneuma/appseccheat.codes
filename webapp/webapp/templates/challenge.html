@@ -15,9 +15,11 @@
 {% block content %}
 
 <div class="bg-gray-100">
-    <div class="px-8 py-12 max-w-5xl mx-auto space-y-4 text-gray-600">
-        {{ header(headers.introduction) }}
-        {% block introduction %}{% endblock %}
+    <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
+        <div class="pt-4 space-y-4">
+            {{ header(headers.introduction) }}
+            {% block introduction %}{% endblock %}
+        </div>
         <div class="pt-4 space-y-4">
             {{ header(headers.news) }}
             {% block news %}{% endblock %}
