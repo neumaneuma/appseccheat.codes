@@ -17,6 +17,7 @@ def get_username_to_exploit():
     username = str(uuid.uuid4())
     password = str(uuid.uuid4())
     username = username.replace("-", "")
+    password = password.replace("-", "")
 
     cursor.execute(
         "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)", (username, password)
@@ -32,8 +33,10 @@ def get_username_to_exploit():
 def register():
     connection = database.get_connection()
     cursor = connection.cursor()
-    username = request.form["username"]
-    password = request.form["password"]
+    username = request.form.get("username")
+    password = request.form.get("password")
+    if not username or not password:
+        return ("Failure", 401)
 
     try:
         cursor.execute(
@@ -67,9 +70,11 @@ def change_password():
         )
     original_username = session[username_to_exploit]
     user_id = session[user_id_for_registered_account]
-    old_password = request.form["old_password"]
-    new_password = request.form["new_password1"]
-    if new_password != request.form["new_password2"]:
+    old_password = request.form.get("old_password")
+    new_password = request.form.get("new_password1")
+    if not old_password or not new_password:
+        return ("Failure", 401)
+    if new_password != request.form.get("new_password2"):
         return ("Passwords do not match", 400)
 
 
