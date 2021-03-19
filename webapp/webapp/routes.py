@@ -22,4 +22,14 @@ def index():
 @bp.route("/sqli1", methods=["GET"])
 def sqli1():
     headers = html_builder.build_headers("What is SQL injection?")
-    return render_template("sqli1.html", headers=headers, links=html_builder.SQLI1_LINKS)
+    return render_template(
+        "sqli1_challenge.html", headers=headers, links=html_builder.SQLI1_LINKS
+    )
+
+
+@bp.route("/sqli2", methods=["GET"])
+def sqli2():
+    headers = html_builder.build_headers("What is SQL injection?")
+    return render_template(
+        "sqli2_challenge.html", headers=headers, links=html_builder.SQLI2_LINKS
+    )
