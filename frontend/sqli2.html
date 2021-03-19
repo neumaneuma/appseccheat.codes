@@ -32,7 +32,9 @@
                 <h2 class="mt-6 text-4xl font-bold text-gray-900">
                     Challenge #2: SQLi second order
                 </h2>
+
                 <p>Should you trust your database? Not always as it turns out.</p>
+
             </div>
             <div class="pt-4 space-y-4">
                 <h2 class="mt-6 text-2xl font-bold text-gray-900">
@@ -102,21 +104,26 @@
                     Challenge
                 </h2>
 
-                <p>You are provided with another user's username. Try to change their password for them!</p>
+                <p>You are provided with another user's username. This is all you need to know in order to change their
+                    password for
+                    them!</p>
 
                 <div class="w-full max-w-xs">
-                    <form method="POST" action="/vulnerabilities/sqli1/login"
+                    <form method="GET" action="/vulnerabilities/sqli2/get_username"
                         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                                Username
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Get username of account to change password for
                             </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="username" type="text" placeholder="Username">
+                            <button
+                                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                Get username
+                            </button>
                         </div>
                     </form>
-                    <form method="POST" action="/vulnerabilities/sqli1/login"
+                    <p class="mb-4">Create an account so that you can access the change password flow.</p>
+                    <form method="POST" action="/vulnerabilities/sqli2/register"
                         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
@@ -124,7 +131,7 @@
                             </label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="username" type="text" placeholder="Username">
+                                name="username" id="username" type="text" placeholder="Username">
                         </div>
                         <div class="mb-6">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
@@ -132,13 +139,52 @@
                             </label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                id="password" type="password" placeholder="******************">
+                                name="password" id="password" type="password" placeholder="******************">
                         </div>
                         <div class="flex items-center justify-between">
                             <button
                                 class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 type="submit">
-                                Sign In
+                                Create user
+                            </button>
+                        </div>
+                    </form>
+                    <p class="mb-4">Now that you are logged in as the user you just created, try changing the original
+                        user's password!
+                    </p>
+                    <form method="POST" action="/vulnerabilities/sqli2/change_password"
+                        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="old_password">
+                                Old password
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                name="old_password" id="old_password" type="password" placeholder="******************">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password1">
+                                New password
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                name="new_password1" id="new_password1" type="password"
+                                placeholder="******************">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password2">
+                                Re-type password
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                name="new_password2" id="new_password2" type="password"
+                                placeholder="******************">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button
+                                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                Change password
                             </button>
                         </div>
                     </form>
@@ -159,30 +205,30 @@
                     Vulnerability
                 </h2>
                 <p class="mt-4 text-xs">File truncated for brevity. <a
-                        href=https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_second_order.py
+                        href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_second_order.py"
                         class="text-blue-400 hover:underline">Click here</a> to view full file.
                 </p>
-                <script src=https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js></script>
+                <script src="https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js"></script>
             </div>
             <div class="pt-4">
                 <h2 class="mt-6 text-2xl font-bold text-gray-900">
                     Exploit
                 </h2>
                 <p class="mt-4 text-xs">File truncated for brevity. <a
-                        href=https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py
+                        href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py"
                         class="text-blue-400 hover:underline">Click here</a> to view full file.
                 </p>
-                <script src=https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js></script>
+                <script src="https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js"></script>
             </div>
             <div class="pt-4">
                 <h2 class="mt-6 text-2xl font-bold text-gray-900">
                     Patch
                 </h2>
                 <p class="mt-4 text-xs">File truncated for brevity. <a
-                        href=https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_second_order.py
+                        href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_second_order.py"
                         class="text-blue-400 hover:underline">Click here</a> to view full file.
                 </p>
-                <script src=https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js></script>
+                <script src="https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js"></script>
             </div>
             <div class="pt-4 space-y-4">
                 <h2 class="mt-6 text-2xl font-bold text-gray-900">
@@ -194,10 +240,13 @@
                         href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
                         class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
                     is that a parameterized query interprets user input as data instead of code. A key difference
-                    between this challenge and the previous one is that it is predicated on the fact that developers
-                    often assume that anything in the database is safe because it is <span class="italic">their</span>
-                    database. However, if the database was populated using user input, then reading from the database is
-                    just as unsafe as handling user input through HTML form data. This doesn't mean that developers always need to assume that their database contains malicious input though. It is only when you can trace the origin of the data as coming directly from the user.</p>
+                    between this challenge
+                    and the previous one is that it is predicated on the fact that developers often assume that anything
+                    in the database
+                    is safe because it is <span class="italic">their</span> database. However, if the database was
+                    populated using user
+                    input, then reading from the database is just as unsafe as handling user input through HTML form
+                    data.</p>
                 <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
                     allow-list specifies what characters are allowed as input, and rejects everything else. However, for
                     most situations involving SQL injection, it is impractical to implement an allow-list because all
@@ -209,12 +258,12 @@
             <div class="grid grid-cols-2 pt-48">
                 <div class="flex justify-start">
                     <a class="inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-                        href="#">Previous Challenge
+                        href="/sqli1">Previous Challenge
                     </a>
                 </div>
-                <div class="flex justify-end">
-                    <a class="inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-                        href="#">Next Challenge
+                <div class="flex justify-end ">
+                    <a class="inline-block px-5 hidden py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
+                        href="">Next Challenge
                     </a>
                 </div>
             </div>
