@@ -17,6 +17,12 @@
 <div class="bg-gray-100">
     <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
         <div class="pt-4 space-y-4">
+            <h2 class="mt-6 text-4xl font-bold text-gray-900">
+                {{ headers.title }}
+            </h2>
+            {% block title %}{% endblock %}
+        </div>
+        <div class="pt-4 space-y-4">
             {{ header(headers.introduction) }}
             {% block introduction %}{% endblock %}
         </div>

@@ -1,5 +1,9 @@
 {% extends 'challenge.html' %}
 
+{% block title %}
+<p>Should you trust your database? Not always as it turns out.</p>
+{% endblock %}
+
 {% block introduction %}
 {% include 'sqli_introduction.html' %}
 {% endblock %}
@@ -58,7 +62,10 @@
     This defense makes use of what is known as a <a
         href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
         class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
-    is that a parameterized query interprets user input as data instead of code. A key difference between this challenge and the previous one is that it is predicated on the fact that developers often assume that anything in the database is safe because it is <span class="italic">their</span> database</p>
+    is that a parameterized query interprets user input as data instead of code. A key difference between this challenge
+    and the previous one is that it is predicated on the fact that developers often assume that anything in the database
+    is safe because it is <span class="italic">their</span> database. However, if the database was populated using user
+    input, then reading from the database is just as unsafe as handling user input through HTML form data.</p>
 <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
     allow-list specifies what characters are allowed as input, and rejects everything else. However, for
     most situations involving SQL injection, it is impractical to implement an allow-list because all

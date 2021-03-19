@@ -1,5 +1,10 @@
 {% extends 'challenge.html' %}
 
+{% block title %}
+<p>Never assume user input is safe. HTML form data can contain all sorts of things that you as a developer
+    don't expect!</p>
+{% endblock %}
+
 {% block introduction %}
 {% include 'sqli_introduction.html' %}
 {% endblock %}

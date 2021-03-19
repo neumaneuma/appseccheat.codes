@@ -16,8 +16,10 @@ SQLI2_LINKS = {
     "patch_gist": "https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js",
 }
 
-def build_headers(introduction):
+
+def build_headers(title, introduction):
     return {
+        "title": title,
         "introduction": introduction,
         "news": "Heard about it in the news?",
         "challenge": "Challenge",
