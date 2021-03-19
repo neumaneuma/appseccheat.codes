@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, url_for
 from . import html_builder
 
 bp = Blueprint("routes", __name__)
@@ -22,6 +22,7 @@ def index():
 @bp.route("/sqli1", methods=["GET"])
 def sqli1():
     headers = html_builder.build_headers("Challenge #1: SQLi login bypass", "What is SQL injection?")
+    challenges = {'prev': None, "next": url_for("routes.sqli2")}
     return render_template(
         "sqli1_challenge.html", headers=headers, links=html_builder.SQLI1_LINKS
     )
