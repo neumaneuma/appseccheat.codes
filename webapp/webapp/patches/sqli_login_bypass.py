@@ -12,9 +12,9 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
     if not username or not password:
-        return ("Failure", 401)
+        return ("Failure: fields can not be empty", 401)
 
-    cursor.execute(f"SELECT * FROM sqli1_users WHERE password = %s AND username = %s", (username, password))
+    cursor.execute(f"SELECT * FROM sqli1_users WHERE password = %s AND username = %s", (password, username))
     user_valid = cursor.fetchone()
 
     return ("Success", 200) if user_valid else ("Failure", 401)

@@ -15,13 +15,12 @@ user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
 def get_username_to_exploit():
     connection = database.get_connection()
     cursor = connection.cursor()
-    username = str(uuid.uuid4())
-    password = str(uuid.uuid4())
-    username = username.replace("-", "")
-    password = password.replace("-", "")
+    username = str(uuid.uuid4()).replace("-", "")
+    password = str(uuid.uuid4()).replace("-", "")
 
     cursor.execute(
-        "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)", (username, password)
+        "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)",
+        (username, password),
     )
     connection.commit()
 
@@ -41,14 +40,16 @@ def register():
 
     try:
         cursor.execute(
-            "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)", (username, password)
+            "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)",
+            (username, password),
         )
         connection.commit()
     except mysql.connector.Error as e:
         return (repr(e), 400)
 
     cursor.execute(
-        "SELECT id FROM sqli2_users WHERE password = %s AND username = %s", (password, username)
+        "SELECT id FROM sqli2_users WHERE username = %s AND password = %s",
+        (username, password),
     )
     user_id = cursor.fetchone()
 
@@ -73,15 +74,21 @@ def change_password():
     user_id = session[user_id_for_registered_account]
     old_password = request.form.get("old_password")
     new_password = request.form.get("new_password1")
-    if not old_password or not new_password:
-        return (f"old: {old_password}, new1: {new_password}", 401)
-    if new_password != request.form.get("new_password2"):
-        return ("Passwords do not match", 400)
 
     cursor.execute(
-        "SELECT username FROM sqli2_users WHERE id = %s", (user_id,)
+        "SELECT username, password FROM sqli2_users WHERE id = %s", (user_id,)
     )
-    username = cursor.fetchone()[0]
+    values = cursor.fetchone()
+    username = values[0]
+    password = values[1]
+
+    if not old_password or not new_password:
+        return ("Failure: fields can not be empty", 401)
+    if password != old_password:
+        return ("Failure: incorrect current password", 401)
+    if new_password != request.form.get("new_password2"):
+        return ("Failure: passwords do not match", 400)
+
     try:
         query = f"UPDATE sqli2_users SET password = %s WHERE username = '{username}' AND password = %s"
         cursor.execute(query, (new_password, old_password))
@@ -90,7 +97,8 @@ def change_password():
         return (repr(e), 400)
 
     cursor.execute(
-        "SELECT id FROM sqli2_users WHERE username = %s AND password = %s", (original_username, new_password)
+        "SELECT id FROM sqli2_users WHERE username = %s AND password = %s",
+        (original_username, new_password),
     )
     change_password_successful = cursor.fetchone()
 
