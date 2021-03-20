@@ -40,6 +40,27 @@
         </div>
         <div class="pt-4 space-y-4">
             {{ header(headers.challenge) }}
+            <div class="border border-yellow-900 rounded-md bg-yellow-100 p-2 space-y-2">
+                <h3 class="text-base font-bold text-gray-900">Hint:</h3>
+                <p>If you are unsure on how to proceed, then the following may help:</p>
+                <p>You can enter the input necessary to exploit this challenge manually through your browser, or you
+                    can use an automated tool such as <a class="text-blue-400 hover:underline"
+                        href="https://portswigger.net/burp">Burp Suite</a> or <a class="text-blue-400 hover:underline"
+                        href="https://www.zaproxy.org">OWASP ZAP</a>. However,
+                    since this CTF is focused specifically on the code side of application security, neither of
+                    those solutions will be presented here.</p>
+                <p>The exploit code and instructions on how to run it is presented further down on the page.
+                    However, you are encouraged to attempt to write the exploit code yourself before looking at the
+                    answer. In order to do this, you need to understand the anatomy of the HTTP request being sent
+                    to the server through the browser. You can use your <a class="text-blue-400 hover:underline"
+                        href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html">browser's
+                        developer tools</a> to do this or you can use a tool that can decrypt encrypted traffic on
+                    your computer. Burp Suite and OWASP ZAP both offer this feature in addition to their automated
+                    pentesting. I personally used <a class="text-blue-400 hover:underline"
+                        href="https://mitmproxy.org">mitmproxy</a> when writing the exploit scripts for this site
+                    because it has a lot fewer features than those other tools, and therefore is a lot simpler to
+                    use. There is no right answer though. Any of those options will suffice.</p>
+            </div>
             {% block challenge %}{% endblock %}
         </div>
         <div class="pt-4 space-y-4">

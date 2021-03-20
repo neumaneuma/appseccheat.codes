@@ -107,20 +107,40 @@
                 <p>You are provided with another user's username. This is all you need to know in order to change their
                     password for
                     them!</p>
+                <div class="border border-yellow-900 rounded-md bg-yellow-100 p-2 space-y-2">
+                    <h3 class="text-base font-bold text-gray-900">Hint:</h3>
+                    <p>If you are unsure on how to proceed, then the following may help:</p>
+                    <p>You can enter the input necessary to exploit this challenge manually through your browser, or you
+                        can use an automated tool such as <a class="text-blue-400 hover:underline"
+                            href="https://portswigger.net/burp">Burp Suite</a> or <a
+                            class="text-blue-400 hover:underline" href="https://www.zaproxy.org">OWASP ZAP</a>. However,
+                        since this CTF is focused specifically on the code side of application security, neither of
+                        those solutions will be presented here.</p>
+                    <p>The exploit code and instructions on how to run it is presented further down on the page.
+                        However, you are encouraged to attempt to write the exploit code yourself before looking at the
+                        answer. In order to do this, you need to understand the anatomy of the HTTP request being sent
+                        to the server through the browser. You can use your <a class="text-blue-400 hover:underline"
+                            href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html">browser's
+                            developer tools</a> to do this or you can use a tool that can decrypt encrypted traffic on
+                        your computer. Burp Suite and OWASP ZAP both offer this feature in addition to their automated
+                        pentesting. I personally used <a class="text-blue-400 hover:underline"
+                            href="https://mitmproxy.org">mitmproxy</a> when writing the exploit scripts for this site
+                        because it has a lot fewer features than those other tools, and therefore is a lot simpler to
+                        use. There is no right answer though. Any of those options will suffice.</p>
+                </div>
+
 
                 <div class="w-full max-w-xs">
                     <form method="GET" action="/vulnerabilities/sqli2/get_username"
                         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Get username of account to change password for
-                            </label>
-                            <button
-                                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                type="submit">
-                                Get username
-                            </button>
-                        </div>
+                        <label class="block text-gray-700 text-sm font-bold mb-4">
+                            Username:
+                        </label>
+                        <button
+                            class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit">
+                            Get username
+                        </button>
                     </form>
                     <p class="mb-4">Create an account so that you can access the change password flow.</p>
                     <form method="POST" action="/vulnerabilities/sqli2/register"
