@@ -13,7 +13,8 @@
 {% endblock %}
 
 {% block challenge %}
-<p>You are provided with another user's username. This is all you need to know in order to change their password for
+<p class="my-8">You are provided with another user's username. This is all you need to know in order to change their
+    password for
     them!</p>
 
 <div class="w-full max-w-xs">
@@ -30,7 +31,9 @@
             </button>
         </div>
     </form>
-    <p class="mb-4">Create an account so that you can access the change password flow.</p>
+</div>
+<p class="my-8">Create an account so that you can access the change password flow.</p>
+<div class="w-full max-w-xs">
     <form method="POST" action="{{ url_for('vulnerabilities_sqli2.register') }}"
         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="mb-4">
@@ -57,8 +60,10 @@
             </button>
         </div>
     </form>
-    <p class="mb-4">Now that you are logged in as the user you just created, try changing the original user's password!
-    </p>
+</div>
+<p class="my-8">Now that you are logged in as the user you just created, try changing the original user's password!
+</p>
+<div class="w-full max-w-xs">
     <form method="POST" action="{{ url_for('vulnerabilities_sqli2.change_password') }}"
         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="mb-4">
