@@ -1,4 +1,4 @@
-16c14
+19c17
 <     cursor.execute(f"SELECT * FROM sqli1_users WHERE password = '{password}' AND username = '{username}'")
 ---
->     cursor.execute(f"SELECT * FROM sqli1_users WHERE password = %s AND username = %s", (username, password))
+>     cursor.execute(f"SELECT * FROM sqli1_users WHERE password = %s AND username = %s", (password, username))
