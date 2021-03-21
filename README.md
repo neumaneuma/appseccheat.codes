@@ -8,3 +8,7 @@ A CTF web app designed to teach software developers application security by show
 
 ## Miscellaneous
 * Any changes made to the server code locally will be automatically reloaded in the docker container. Feel free to make changes and play around with the code to help you understand how it works better!
+* Run `docker exec -it appseccheatcodes_db_1 mysql -p appsecdb` to open a shell that accesses the database. The password will be `test` (more specifically, it will be whatever the contents of `dbpwd.txt` are).
+  * `docker exec -it` opens an interactive terminal for a container
+  * `appseccheatcodes_db_1` is the name of the database container
+  * `mysql -p appsecdb` is the command to run within the interactive terminal (`appsecdb` is the name of the database)
