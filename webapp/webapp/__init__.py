@@ -21,5 +21,6 @@ def init_app():
         app.register_blueprint(p_sqli1.bp)
         app.register_blueprint(p_sqli2.bp)
         app.register_blueprint(routes.bp)
+        app.register_blueprint(database.bp)
 
         return app
