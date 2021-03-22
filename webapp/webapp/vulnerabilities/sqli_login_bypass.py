@@ -9,13 +9,13 @@ bp = Blueprint(
 
 @bp.route("/login", methods=["POST"])
 def login():
-    engine = database.get_engine()
+    connection = database.get_connection()
     username = request.form.get("username")
     password = request.form.get("password")
     if not username or not password:
         return ("Failure: fields can not be empty", 401)
 
-    results = engine.execute(
+    results = connection.execute(
         f"SELECT * FROM sqli1_users WHERE password = '{password}' AND username = '{username}'"
     )
     user_valid = results.fetchone()

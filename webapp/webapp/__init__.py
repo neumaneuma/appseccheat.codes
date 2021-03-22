@@ -9,7 +9,6 @@ def init_app():
     with app.app_context():
         database.init_connection(app)
 
-
     with app.app_context():
         from .vulnerabilities import sqli_login_bypass as v_sqli1
         from .vulnerabilities import sqli_second_order as v_sqli2

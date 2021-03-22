@@ -1,11 +1,9 @@
 from flask import g
-import mysql.connector
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 
-def get_engine():
-    if "engine" not in g:
+def get_connection():
+    if "connection" not in g:
 
         with open("/run/secrets/db-password", "r") as password_file:
             database_type = "mysql"
@@ -15,26 +13,11 @@ def get_engine():
             host = "db"
             port = "3306"
             database_name = "appsecdb"
-            g.engine = create_engine(
+            engine = create_engine(
                 f"{database_type}+{connector}://{user}:{password}@{host}:{port}/{database_name}",
                 echo=True,
             )
-
-    # Create database session
-    # Session = sessionmaker(bind=db)
-    # session = Session()
-    return g.engine
-
-
-def get_connection():
-    if "cursor" not in g:
-        with open("/run/secrets/db-password", "r") as password_file:
-            g.connection = mysql.connector.connect(
-                user="root",
-                password=password_file.readline(),
-                host="db",
-                database="appsecdb",
-            )
+            g.connection = engine.connect()
 
     return g.connection
 

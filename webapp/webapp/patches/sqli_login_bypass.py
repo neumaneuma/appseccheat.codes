@@ -8,7 +8,7 @@ bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
 
 @bp.route("/login", methods=["POST"])
 def login():
-    engine = database.get_engine()
+    connection = database.get_connection()
     username = request.form.get("username")
     password = request.form.get("password")
     if not username or not password:
@@ -17,7 +17,7 @@ def login():
     query = text(
         f"SELECT * FROM sqli1_users WHERE password = :password AND username = :username"
     )
-    results = engine.execute(query, password=password, username=username)
+    results = connection.execute(query, password=password, username=username)
     user_valid = results.fetchone()
 
     return ("Success", 200) if user_valid else ("Failure", 401)

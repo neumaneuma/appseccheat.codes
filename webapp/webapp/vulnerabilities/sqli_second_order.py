@@ -1,6 +1,6 @@
 import uuid
 from flask import Blueprint, request, session
-import mysql.connector
+from sqlalchemy import text
 from .. import database
 from . import VULNERABILITIES_PREFIX
 
@@ -14,15 +14,19 @@ user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
 @bp.route("/get_username", methods=["GET"])
 def get_username_to_exploit():
     connection = database.get_connection()
-    cursor = connection.cursor()
+    transaction = connection.begin()
     username = str(uuid.uuid4()).replace("-", "")
     password = str(uuid.uuid4()).replace("-", "")
 
-    cursor.execute(
-        "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)",
-        (username, password),
-    )
-    connection.commit()
+    try:
+        query = text(
+            "INSERT INTO sqli2_users (username, password) VALUES (:username, :password)"
+        )
+        connection.execute(query, username=username, password=password)
+        transaction.commit()
+    except:
+        transaction.rollback()
+        return ("Failed to generate username", 400)
 
     session.pop(username_to_exploit, None)
     session[username_to_exploit] = username
@@ -32,26 +36,27 @@ def get_username_to_exploit():
 @bp.route("/register", methods=["POST"])
 def register():
     connection = database.get_connection()
-    cursor = connection.cursor()
+    transaction = connection.begin()
     username = request.form.get("username")
     password = request.form.get("password")
     if not username or not password:
         return ("Failure: fields can not be empty", 401)
 
     try:
-        cursor.execute(
-            "INSERT INTO sqli2_users (username, password) VALUES (%s, %s)",
-            (username, password),
+        query = text(
+            "INSERT INTO sqli2_users (username, password) VALUES (:username, :password)"
         )
-        connection.commit()
-    except mysql.connector.Error as e:
-        return (repr(e), 400)
+        connection.execute(query, username=username, password=password)
+        transaction.commit()
+    except:
+        transaction.rollback()
+        return ("Failed to create user", 400)
 
-    cursor.execute(
-        "SELECT id FROM sqli2_users WHERE username = %s AND password = %s",
-        (username, password),
+    query = text(
+        "SELECT id FROM sqli2_users WHERE username = :username AND password = :password"
     )
-    user_id = cursor.fetchone()
+    results = connection.execute(query, username=username, password=password)
+    user_id = results.fetchone()
 
     session.pop(user_id_for_registered_account, None)
     session[user_id_for_registered_account] = str(user_id[0])
@@ -61,7 +66,6 @@ def register():
 @bp.route("/change_password", methods=["POST"])
 def change_password():
     connection = database.get_connection()
-    cursor = connection.cursor()
     if (
         username_to_exploit not in session
         or user_id_for_registered_account not in session
@@ -75,31 +79,37 @@ def change_password():
     old_password = request.form.get("old_password")
     new_password = request.form.get("new_password1")
 
-    cursor.execute(
-        "SELECT username, password FROM sqli2_users WHERE id = %s", (user_id,)
-    )
-    values = cursor.fetchone()
-    username = values[0]
-    password = values[1]
+    query = text("SELECT username, password FROM sqli2_users WHERE id = :id")
+    results = connection.execute(query, id=user_id)
+    values = results.fetchone()
+    username_from_database = values[0]
+    password_from_database = values[1]
 
     if not old_password or not new_password:
         return ("Failure: fields can not be empty", 401)
-    if password != old_password:
+    if password_from_database != old_password:
         return ("Failure: incorrect current password", 401)
     if new_password != request.form.get("new_password2"):
         return ("Failure: passwords do not match", 400)
 
+    transaction = connection.begin()
     try:
-        query = f"UPDATE sqli2_users SET password = %s WHERE username = '{username}' AND password = %s"
-        cursor.execute(query, (new_password, old_password))
-        connection.commit()
-    except mysql.connector.Error as e:
-        return (repr(e), 400)
+        query = text(
+            f"UPDATE sqli2_users SET password = :new_password WHERE username = '{username_from_database}' AND password = :old_password"
+        )
 
-    cursor.execute(
-        "SELECT id FROM sqli2_users WHERE username = %s AND password = %s",
-        (original_username, new_password),
+        connection.execute(query, new_password=new_password, old_password=old_password)
+        transaction.commit()
+    except:
+        transaction.rollback()
+        return ("Failed to change password", 400)
+
+    query = text(
+        "SELECT id FROM sqli2_users WHERE username = :username AND password = :password"
     )
-    change_password_successful = cursor.fetchone()
+    results = connection.execute(
+        query, username=original_username, password=new_password
+    )
+    change_password_successful = results.fetchone()
 
     return ("Success (2/2)", 200) if change_password_successful else ("Failure", 400)
