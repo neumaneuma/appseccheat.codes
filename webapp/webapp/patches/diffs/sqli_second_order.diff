@@ -1,6 +1,9 @@
-86,87c86,87
-<         query = f"UPDATE sqli2_users SET password = %s WHERE username = '{username}' AND password = %s"
-<         cursor.execute(query, (new_password, old_password))
+101c99,104
+<         connection.execute(query, new_password=new_password, old_password=old_password)
 ---
->         query = "UPDATE sqli2_users SET password = %s WHERE username = %s AND password = %s"
->         cursor.execute(query, (new_password, username, old_password))
+>         connection.execute(
+>             query,
+>             new_password=new_password,
+>             username=username_from_database,
+>             old_password=old_password,
+>         )
