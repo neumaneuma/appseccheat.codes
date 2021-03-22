@@ -6,8 +6,6 @@ services:
       context: ./webapp
     ports:
       - 5000:5000
-    secrets:
-      - db-password
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=true
@@ -19,16 +17,11 @@ services:
 
   db:
     image: mysql:8.0.23
-    secrets:
-      - db-password
     environment:
       - MYSQL_DATABASE=appsecdb
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+      - MYSQL_ROOT_PASSWORD=test
     volumes:
       - db-data:/var/lib/mysql
 
 volumes:
   db-data:
-secrets:
-  db-password:
-    file: ./webapp/dbpwd.txt

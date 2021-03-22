@@ -1,27 +1,38 @@
-from flask import g
+from flask import g, Blueprint
+from pathlib import Path
 from sqlalchemy import create_engine
 
-from flask import Blueprint
 
 bp = Blueprint("db", __name__)
 
 
 def get_connection():
-    if "connection" not in g:
+    def create_connection(password):
+        engine = create_engine(
+            f"{database_type}+{connector}://{user}:{password}@{host}:{port}/{database_name}",
+            echo=True,
+        )
+        return engine.connect()
 
-        with open("/run/secrets/db-password", "r") as password_file:
-            database_type = "mysql"
-            connector = "mysqlconnector"
-            user = "root"
-            password = password_file.readline()
-            host = "db"
-            port = "3306"
-            database_name = "appsecdb"
-            engine = create_engine(
-                f"{database_type}+{connector}://{user}:{password}@{host}:{port}/{database_name}",
-                echo=True,
-            )
-            g.connection = engine.connect()
+    if "connection" not in g:
+        db_password = "/run/secrets/db-password"
+        database_type = "mysql"
+        connector = "mysqlconnector"
+        user = "root"
+        host = "db"
+        port = "3306"
+        database_name = "appsecdb"
+
+        # Hardcode password of database to string test if docker secret file is not found
+        # In truth, this is a very bad pattern, but it makes it easier for people to run the web server locally
+        # The database also doesn't store any sensitive information, so I judged it to be a trade off worth taking
+        if not Path(db_password).is_file():
+            password = "test"
+            g.connection = create_connection(password)
+        else:
+            with open(db_password, "r") as password_file:
+                password = password_file.readline()
+                g.connection = create_connection(password)
 
     return g.connection
 
