@@ -1,15 +1,22 @@
-<div class="w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
-    <div class="bg-indigo-700 h-60"></div>
-    <div class="px-6 py-4">
-        <div class="font-bold text-xl mb-2">SQLi login bypass</div>
-        <p class="text-gray-700 text-base">
-            Can you login as <span class="bg-gray-200 p-1 font-mono">administrator</span> without knowing the
-            password?
-        </p>
-    </div>
-    <div class="px-6 pt-4 pb-2">
-        <a href="{{ url_for('routes.sqli1') }}"
-            class="uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">Start
-            challenge #1</a>
-    </div>
+<div
+    class="relative group text-center w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
+    <a href="{{ url_for('routes.sqli1') }}">
+        <div class="bg-indigo-700 h-60">
+        </div>
+        <div class="h-48">
+            <div class="px-3 pt-4">
+                <div class="font-bold text-xl mb-2">SQLi login bypass</div>
+                <p class="text-gray-700 text-base">
+                    Can you login as <span class="bg-gray-200 p-1 font-mono">administrator</span> without knowing the
+                    password?
+                </p>
+            </div>
+            <div class="absolute bottom-4 inset-x-2">
+                <p
+                    class="group-hover:underline uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                    Start challenge #1
+                </p>
+            </div>
+        </div>
+    </a>
 </div>

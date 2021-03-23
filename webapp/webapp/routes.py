@@ -9,6 +9,11 @@ def index():
     return render_template("index.html")
 
 
+@bp.route("/faq", methods=["GET"])
+def faq():
+    return render_template("faq.html")
+
+
 @bp.route("/sqli1", methods=["GET"])
 def sqli1():
     headers = html_builder.build_headers(
