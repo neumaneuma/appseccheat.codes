@@ -31,7 +31,7 @@ def sqli1():
     challenge_links = {"prev": "", "next": url_for("routes.sqli2")}
 
     return render_template(
-        "sqli1_challenge.html",
+        "sqli/sqli1_challenge.html",
         headers=headers,
         gh_links=html_builder.SQLI1_LINKS,
         challenge_links=challenge_links,
@@ -50,7 +50,7 @@ def sqli2():
     )
     challenge_links = {"prev": url_for("routes.sqli1"), "next": ""}
     return render_template(
-        "sqli2_challenge.html",
+        "sqli/sqli2_challenge.html",
         headers=headers,
         gh_links=html_builder.SQLI2_LINKS,
         challenge_links=challenge_links,
