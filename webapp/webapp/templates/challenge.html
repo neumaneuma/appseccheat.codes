@@ -10,7 +10,12 @@
                 {{ headers.title }}
             </h2>
             {% block title %}{% endblock %}
+            {% if not should_show_introduction %}
+            <p><a class="hover:underline text-blue-400" href="{{ current_link }}">Click here</a> to view challenge
+                background again.</p>
+            {% endif %}
         </div>
+        {% if should_show_introduction %}
         <div class="pt-4 space-y-4">
             {{ cm.header(headers.introduction) }}
             {% block introduction %}{% endblock %}
@@ -19,6 +24,7 @@
             {{ cm.header(headers.news) }}
             {% block news %}{% endblock %}
         </div>
+        {% endif %}
         <div class="pt-4">
             {{ cm.header(headers.challenge) }}
             <div class="border border-yellow-900 rounded-md bg-yellow-100 p-2 space-y-2 my-4">
