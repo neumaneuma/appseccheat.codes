@@ -23,7 +23,7 @@ def build_headers(title, introduction):
         "introduction": introduction,
         "news": "Heard about it in the news?",
         "challenge": "Challenge",
-        "code": "Code",
+        "code": "Solution in code",
         "vulnerability": "Vulnerability",
         "exploit": "Exploit",
         "patch": "Patch",
