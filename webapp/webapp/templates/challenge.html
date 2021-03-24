@@ -1,23 +1,4 @@
-{% macro header(title) -%}
-<h2 class="mt-6 text-2xl font-bold text-gray-900">
-    {{ title }}
-</h2>
-{%- endmacro %}
-
-{% macro code(source_code, gist) -%}
-<p class="mt-4 text-xs">File truncated for brevity. <a href="{{ source_code }}"
-        class="text-blue-400 hover:underline">Click here</a> to view full file.
-</p>
-<script src="{{ gist }}"></script>
-{%- endmacro %}
-
-{% macro challenge_button(position, hidden, link, label) -%}
-<div class="flex {{ position }}">
-    <a class="{{ hidden }} inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-        href="{{ link }}">{{ label }}
-    </a>
-</div>
-{%- endmacro %}
+{% import 'challenge.j2' as cm -%}
 
 {% extends 'layout.html' %}
 {% block content %}
@@ -31,15 +12,15 @@
             {% block title %}{% endblock %}
         </div>
         <div class="pt-4 space-y-4">
-            {{ header(headers.introduction) }}
+            {{ cm.header(headers.introduction) }}
             {% block introduction %}{% endblock %}
         </div>
         <div class="pt-4 space-y-4">
-            {{ header(headers.news) }}
+            {{ cm.header(headers.news) }}
             {% block news %}{% endblock %}
         </div>
         <div class="pt-4">
-            {{ header(headers.challenge) }}
+            {{ cm.header(headers.challenge) }}
             <div class="border border-yellow-900 rounded-md bg-yellow-100 p-2 space-y-2 my-4">
                 <h3 class="text-base font-bold text-gray-900">Hint:</h3>
                 <p>If you are unsure on how to proceed, then the following may help:</p>
@@ -67,38 +48,38 @@
             {% block challenge %}{% endblock %}
         </div>
         <div class="pt-4 space-y-4">
-            {{ header(headers.code) }}
+            {{ cm.header(headers.code) }}
             <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md"
                     class="text-blue-400 hover:underline">main README</a> to run the webapp locally</p>
             <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
                     class="text-blue-400 hover:underline">exploit README</a> to run the exploits locally</p>
         </div>
         <div class="pt-4">
-            {{ header(headers.vulnerability) }}
-            {{ code(gh_links.vulnerability_source_code, gh_links.vulnerability_gist) }}
+            {{ cm.header(headers.vulnerability) }}
+            {{ cm.code(gh_links.vulnerability_source_code, gh_links.vulnerability_gist) }}
         </div>
         <div class="pt-4">
-            {{ header(headers.exploit) }}
-            {{ code(gh_links.exploit_source_code, gh_links.exploit_gist) }}
+            {{ cm.header(headers.exploit) }}
+            {{ cm.code(gh_links.exploit_source_code, gh_links.exploit_gist) }}
         </div>
         <div class="pt-4">
-            {{ header(headers.patch) }}
-            {{ code(gh_links.patch_source_code, gh_links.patch_gist) }}
+            {{ cm.header(headers.patch) }}
+            {{ cm.code(gh_links.patch_source_code, gh_links.patch_gist) }}
         </div>
         <div class="pt-4 space-y-4">
-            {{ header(headers.explanation) }}
+            {{ cm.header(headers.explanation) }}
             {% block explanation %}{% endblock %}
         </div>
         <div class="grid grid-cols-2 pt-48">
             {% if challenge_links.prev == "" %}
-            {{ challenge_button("justify-start", "hidden", challenge_links.prev, "Previous Challenge") }}
+            {{ cm.challenge_button("justify-start", "hidden", challenge_links.prev, "Previous Challenge") }}
             {% else %}
-            {{ challenge_button("justify-start", "", challenge_links.prev, "Previous Challenge") }}
+            {{ cm.challenge_button("justify-start", "", challenge_links.prev, "Previous Challenge") }}
             {% endif %}
             {% if challenge_links.next == "" %}
-            {{ challenge_button("justify-end", "hidden", challenge_links.next, "Next Challenge") }}
+            {{ cm.challenge_button("justify-end", "hidden", challenge_links.next, "Next Challenge") }}
             {% else %}
-            {{ challenge_button("justify-end", "", challenge_links.next, "Next Challenge") }}
+            {{ cm.challenge_button("justify-end", "", challenge_links.next, "Next Challenge") }}
             {% endif %}
         </div>
     </div>

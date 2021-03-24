@@ -1,0 +1,20 @@
+{% macro header(title) -%}
+<h2 class="mt-6 text-2xl font-bold text-gray-900">
+    {{ title }}
+</h2>
+{%- endmacro %}
+
+{% macro code(source_code, gist) -%}
+<p class="mt-4 text-xs">File truncated for brevity. <a href="{{ source_code }}"
+        class="text-blue-400 hover:underline">Click here</a> to view full file.
+</p>
+<script src="{{ gist }}"></script>
+{%- endmacro %}
+
+{% macro challenge_button(position, hidden, link, label) -%}
+<div class="flex {{ position }}">
+    <a class="{{ hidden }} inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
+        href="{{ link }}">{{ label }}
+    </a>
+</div>
+{%- endmacro %}
