@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
-    <link rel="stylesheet" href="/static/tailwind.css" />
+    <!-- <link rel="stylesheet" href="/static/tailwind.css" /> -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         /* For some reason including the tailwind classes inside of the div class makes this not work */
         .collapsible-content {
@@ -19,12 +20,14 @@
 
 <body>
 
-    <div class="border border-yellow-900 rounded-md bg-yellow-100 p-2 space-y-2 my-4 collapsible">
-        <h3 class="text-base font-bold text-gray-900">
-            Hint:
-        </h3>
-        <div class="collapsible-content">
-            <p>If you are unsure on how to proceed, then the following may help:</p>
+    <div class="border border-yellow-900 rounded-md bg-yellow-100 my-4 collapsible cursor-pointer">
+        <div class="bg-yellow-300 rounded-md w-full">
+            <h3 class="text-base font-bold text-gray-900 ml-2">
+                Hint #1: <span class="text-gray-500">Generic Hint</span>
+            </h3>
+        </div>
+        <div class="collapsible-content px-2 space-y-2">
+            <p class="mt-2">If you are unsure on how to proceed, then the following may help:</p>
             <p>You can enter the input necessary to exploit this challenge manually through your browser, or you
                 can use an automated tool such as <a class="text-blue-400 hover:underline"
                     href="https://portswigger.net/burp">Burp Suite</a> or <a class="text-blue-400 hover:underline"
@@ -54,6 +57,7 @@
         for (var i = 0; i < collapsible.length; i++) {
             collapsible[i].addEventListener("click", event => {
                 var content = event.currentTarget.getElementsByClassName("collapsible-content")[0];
+                content.classList.toggle("pb-2");
 
                 // Toggle setting max height between nothing and the height of the sibling element in pixels
                 if (content.style.maxHeight) {
