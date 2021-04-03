@@ -29,7 +29,8 @@
             </div>
 
             <div class="flex justify-end">
-                <span class="text-gray-900 mr-2">+</span>
+                <span class="plus text-gray-900 mr-2">+</span>
+                <span class="minus hidden text-gray-900 mr-2">-</span>
             </div>
         </div>
         <div class="collapsible-content px-2 space-y-2 group-hover:bg-yellow-100">
@@ -62,7 +63,12 @@
 
         for (var i = 0; i < collapsible.length; i++) {
             collapsible[i].addEventListener("click", event => {
+                var plus = event.currentTarget.getElementsByClassName("plus")[0];
+                var minus = event.currentTarget.getElementsByClassName("minus")[0];
                 var content = event.currentTarget.getElementsByClassName("collapsible-content")[0];
+
+                plus.classList.toggle("hidden")
+                minus.classList.toggle("hidden")
                 content.classList.toggle("pb-2");
 
                 // Toggle setting max height between nothing and the height of the sibling element in pixels
