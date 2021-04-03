@@ -7,6 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
     <link rel="stylesheet" href="/static/tailwind.css" />
+    <style>
+        /* For some reason including the tailwind classes inside of the div class makes this not work */
+        .collapsible-content {
+            max-height: 0px;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,7 +23,7 @@
         <h3 class="text-base font-bold text-gray-900">
             Hint:
         </h3>
-        <div class="hidden collapsible-hide transition-all">
+        <div class="collapsible-content">
             <p>If you are unsure on how to proceed, then the following may help:</p>
             <p>You can enter the input necessary to exploit this challenge manually through your browser, or you
                 can use an automated tool such as <a class="text-blue-400 hover:underline"
@@ -41,16 +49,20 @@
         </div>
     </div>
     <script>
-        var element = document.getElementsByClassName("collapsible")[0];
-        element.addEventListener('click', event => {
-            var classList = event.currentTarget.getElementsByClassName("collapsible-hide")[0].classList;
-            // debugger;
-            if (classList.contains("hidden")) {
-                classList.remove("hidden");
-            } else {
-                classList.add("hidden")
-            }
-        });
+        var collapsible = document.getElementsByClassName("collapsible");
+
+        for (var i = 0; i < collapsible.length; i++) {
+            collapsible[i].addEventListener("click", event => {
+                var content = event.currentTarget.getElementsByClassName("collapsible-content")[0];
+
+                // Toggle setting max height between nothing and the height of the sibling element in pixels
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = `${content.scrollHeight}px`;
+                }
+            });
+        }
     </script>
 
 </body>
