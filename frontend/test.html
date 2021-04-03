@@ -20,13 +20,19 @@
 
 <body>
 
-    <div class="border border-yellow-900 rounded-md bg-yellow-100 my-4 collapsible cursor-pointer">
-        <div class="bg-yellow-300 rounded-md w-full">
-            <h3 class="text-base font-bold text-gray-900 ml-2">
-                Hint #1: <span class="text-gray-500">Generic Hint</span>
-            </h3>
+    <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 collapsible cursor-pointer group">
+        <div class="grid grid-cols-2 bg-yellow-200 rounded-md group-hover:bg-yellow-300">
+            <div class="flex justify-start">
+                <h3 class="text-base font-bold text-gray-900 ml-2">
+                    Hint #1: <span class="text-gray-500">Generic Hint</span>
+                </h3>
+            </div>
+
+            <div class="flex justify-end">
+                <span class="text-gray-900 mr-2">+</span>
+            </div>
         </div>
-        <div class="collapsible-content px-2 space-y-2">
+        <div class="collapsible-content px-2 space-y-2 group-hover:bg-yellow-100">
             <p class="mt-2">If you are unsure on how to proceed, then the following may help:</p>
             <p>You can enter the input necessary to exploit this challenge manually through your browser, or you
                 can use an automated tool such as <a class="text-blue-400 hover:underline"
