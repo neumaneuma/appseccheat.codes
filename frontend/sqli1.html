@@ -116,13 +116,21 @@
                 <h2 class="mt-6 text-2xl font-bold text-gray-900">
                     Challenge
                 </h2>
-                <div class="border border-yellow-900 rounded-md bg-yellow-100 my-4 collapsible cursor-pointer">
-                    <div class="bg-yellow-300 rounded-md w-full">
-                        <h3 class="text-base font-bold text-gray-900 ml-2">
-                            Hint #1: <span class="text-gray-500">Generic Hint</span>
-                        </h3>
+
+                <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 collapsible cursor-pointer group">
+                    <div class="grid grid-cols-2 bg-yellow-200 rounded-md group-hover:bg-yellow-300">
+                        <div class="flex justify-start">
+                            <h3 class="text-base font-bold text-gray-900 ml-2">
+                                Hint #1: <span class="group-hover:text-yellow-700 text-yellow-600">Generic Hint</span>
+                            </h3>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <span class="plus text-gray-900 mr-2">+</span>
+                            <span class="minus hidden text-gray-900 mr-2">-</span>
+                        </div>
                     </div>
-                    <div class="collapsible-content px-2 space-y-2">
+                    <div class="collapsible-content px-2 space-y-2 group-hover:bg-yellow-100">
                         <p class="mt-2">If you are unsure on how to proceed, then the following may help:</p>
                         <p>You can enter the input necessary to exploit this challenge manually through your browser, or
                             you
@@ -156,7 +164,49 @@
                             use. There is no right answer though. Any of those options will suffice.</p>
                     </div>
                 </div>
+                <div class="border border-red-900 rounded-md bg-red-50 my-4 collapsible cursor-pointer group">
+                    <div class="grid grid-cols-3 bg-red-200 rounded-md group-hover:bg-red-300">
+                        <div class="flex justify-start col-span-2">
+                            <h3 class="text-base font-bold text-gray-900 ml-2">
+                                Hint #2: <span class="group-hover:text-red-600 text-red-500">Reverse engineer the
+                                    exploit using the server-side vulnerability</span>
+                            </h3>
+                        </div>
 
+                        <div class="flex justify-end">
+                            <span class="plus text-gray-900 mr-2">+</span>
+                            <span class="minus hidden text-gray-900 mr-2">-</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content group-hover:bg-red-100">
+                        <p class="ml-2 mt-4 text-xs">File truncated for brevity. <a
+                                href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_login_bypass.py"
+                                class="text-blue-400 hover:underline">Click here</a> to view full file.
+                        </p>
+                        <script src="https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js"></script>
+                    </div>
+                </div>
+                <div class="border border-green-900 rounded-md bg-green-50 my-4 collapsible cursor-pointer group">
+                    <div class="grid grid-cols-3 bg-green-200 rounded-md group-hover:bg-green-300">
+                        <div class="flex justify-start col-span-2">
+                            <h3 class="text-base font-bold text-gray-900 ml-2">
+                                Hint #3: <span class="group-hover:text-green-700 text-green-600">Couldn't figure out the answer? Here is the exploit</span>
+                            </h3>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <span class="plus text-gray-900 mr-2">+</span>
+                            <span class="minus hidden text-gray-900 mr-2">-</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content group-hover:bg-green-100">
+                        <p class="ml-2 mt-4 text-xs">File truncated for brevity. <a
+                                href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py"
+                                class="text-blue-400 hover:underline">Click here</a> to view full file.
+                        </p>
+                        <script src="https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js"></script>
+                    </div>
+                </div>
                 <p class="my-8">You know there is a user with the username <span
                         class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to
                     figure out how to login as
@@ -275,7 +325,12 @@
 
         for (var i = 0; i < collapsible.length; i++) {
             collapsible[i].addEventListener("click", event => {
+                var plus = event.currentTarget.getElementsByClassName("plus")[0];
+                var minus = event.currentTarget.getElementsByClassName("minus")[0];
                 var content = event.currentTarget.getElementsByClassName("collapsible-content")[0];
+
+                plus.classList.toggle("hidden")
+                minus.classList.toggle("hidden")
                 content.classList.toggle("pb-2");
 
                 // Toggle setting max height between nothing and the height of the sibling element in pixels
