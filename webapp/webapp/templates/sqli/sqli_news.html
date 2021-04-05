@@ -1,5 +1,7 @@
-<p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/"
-        class="text-blue-400 hover:underline">the social media platform Gab fell victim to a SQL
-        injection attack</a> that exposed users' private messages, posts, and passwords. SQL injection
+{% import 'link.j2' as lm -%}
+
+<p>In early 2021, {{ lm.link_new_tab("https://www.wired.com/story/gab-hack-data-breach-ddosecrets/", "the social media
+    platform Gab fell victim to a SQL injection attack") }}
+    that exposed users' private messages, posts, and passwords. SQL injection
     is probably the most well known web vulnerability out there. It has been in the spotlight since the
     early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>

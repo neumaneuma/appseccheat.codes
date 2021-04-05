@@ -1,3 +1,5 @@
+{% import 'link.j2' as lm -%}
+
 {% macro header(title) -%}
 <h2 class="mt-6 text-2xl font-bold text-gray-900">
     {{ title }}
@@ -5,8 +7,7 @@
 {%- endmacro %}
 
 {% macro code(source_code, gist) -%}
-<p class="mt-4 text-xs">File truncated for brevity. <a href="{{ source_code }}"
-        class="text-blue-400 hover:underline">Click here</a> to view full file.
+<p class="mt-4 text-xs">File truncated for brevity. {{ lm.link_new_tab(source_code, "Click here") }} to view full file.
 </p>
 <script src="{{ gist }}"></script>
 {%- endmacro %}

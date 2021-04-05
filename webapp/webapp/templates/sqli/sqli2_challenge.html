@@ -1,3 +1,4 @@
+{% import 'link.j2' as lm -%}
 {% extends 'challenge.html' %}
 
 {% block title %}
@@ -104,9 +105,9 @@
 
 {% block explanation %}
 <p>
-    This defense makes use of what is known as a <a
-        href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
-        class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
+    This defense makes use of what is known as a {{
+    lm.link_new_tab("https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples",
+    "parameterized query") }}. A succinct way of explaining it
     is that a parameterized query interprets user input as data instead of code. A key difference between this challenge
     and the previous one is that it is predicated on the fact that developers often assume that anything in the database
     is safe because it is <span class="italic">their</span> database. However, if the database was populated using user

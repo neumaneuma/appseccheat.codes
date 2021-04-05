@@ -1,3 +1,4 @@
+{% import 'link.j2' as lm -%}
 {% extends 'challenge.html' %}
 
 {% block title %}
@@ -14,7 +15,8 @@
 {% endblock %}
 
 {% block challenge %}
-<p class="my-8">You know there is a user with the username <span class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to
+<p class="my-8">You know there is a user with the username <span
+        class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to
     figure out how to login as
     <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their
     password is!
@@ -53,9 +55,9 @@
 
 {% block explanation %}
 <p>
-    This defense makes use of what is known as a <a
-        href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
-        class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
+    This defense makes use of what is known as a {{
+    lm.link_new_tab("https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples",
+    "parameterized query") }}. A succinct way of explaining it
     is that a parameterized query interprets user input as data instead of code.</p>
 <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
     allow-list specifies what characters are allowed as input, and rejects everything else. However, for

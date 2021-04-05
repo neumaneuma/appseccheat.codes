@@ -1,9 +1,10 @@
+{% import 'link.j2' as lm -%}
+
 <p>
     SQL injection is when an attacker can trick the server into
     running attacker-supplied SQL code against its database. For
-    example, suppose you are an
-    <a href="https://xkcd.com/327/" class="text-blue-400 hover:underline">elite hacker mom</a>. You name
-    your son
+    example, suppose you are an {{ lm.link_new_tab("https://xkcd.com/327/", "elite hacker mom") }}
+    . You name your son
     <span class="bg-gray-200 p-1 font-mono">Robert'); DROP TABLE Students;--
     </span>
     and send him off to school.
