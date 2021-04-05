@@ -7,12 +7,12 @@ bp = Blueprint("routes", __name__)
 
 @bp.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    return render_template("index.html", collapsible_is_present=False)
 
 
 @bp.route("/faq", methods=["GET"])
 def faq():
-    return render_template("faq.html")
+    return render_template("faq.html", collapsible_is_present=False)
 
 
 def should_show_introduction(routes):
@@ -37,7 +37,8 @@ def sqli1():
         challenge_links=challenge_links,
         should_show_introduction=should_show_introduction(
             routes_to_not_show_introduction_for),
-        current_link=url_for("routes.sqli1")
+        current_link=url_for("routes.sqli1"),
+        collapsible_is_present=True
     )
 
 
@@ -56,5 +57,6 @@ def sqli2():
         challenge_links=challenge_links,
         should_show_introduction=should_show_introduction(
             routes_to_not_show_introduction_for),
-        current_link=url_for("routes.sqli2")
+        current_link=url_for("routes.sqli2"),
+        collapsible_is_present=True
     )
