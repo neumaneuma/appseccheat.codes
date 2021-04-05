@@ -6,84 +6,88 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
-    <link rel="stylesheet" href="/static/tailwind.css" />
+
+    <!-- <link rel="stylesheet" href="/static/tailwind.css" /> -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
 </head>
 
 <body>
     <nav class="bg-gray-700 text-gray-100 fixed w-full">
-    <div class="container mx-auto px-6 py-2 flex justify-between items-center">
-        <a href="/" class="font-bold text-2xl">AppSec Cheat Codes <span
-                class="text-sm border-2 ml-2 uppercase rounded">beta</span></a>
-        <div class="block">
-            <ul class="inline-flex">
-                <li><a class="px-4 hover:text-blue-400" href="/faq">FAQ</a></li>
-                <li><a class="px-4 hover:text-blue-400"
-                        href="https://github.com/neumaneuma/appseccheat.codes">GitHub</a></li>
-            </ul>
+        <div class="container mx-auto px-6 py-2 flex justify-between items-center">
+            <a href="/" class="font-bold text-2xl">AppSec Cheat Codes <span
+                    class="text-sm border-2 ml-2 uppercase rounded">beta</span></a>
+            <div class="block">
+                <ul class="inline-flex">
+                    <li><a class="px-4 hover:text-blue-400" href="/faq">FAQ</a></li>
+                    <li><a class="px-4 hover:text-blue-400" target="_blank"
+                            href="https://github.com/neumaneuma/appseccheat.codes">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="bg-gray-100 pt-32 text-center font-bold text-xl">
+        <p>
+            Learn how to avoid writing
+            <span class="bg-red-200 text-red-700 p-1 font-mono">vulnerable code</span>
+        </p>
+        <p>
+            Learn how to write
+            <span class="bg-green-200 text-green-700 p-1 font-mono">exploit code</span>
+        </p>
+        <p>
+            Learn how to write
+            <span class="bg-blue-200 text-blue-700 p-1 font-mono">secure code</span>
+        </p>
+    </div>
+    <div
+        class="bg-gray-100 mx-auto px-40 py-20 grid grid-cols-3 gap-20 justify-items-center lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+        <div
+            class="relative group text-center w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
+            <a href="/sqli1">
+                <div class="bg-indigo-700 h-60">
+                </div>
+                <div class="h-48">
+                    <div class="px-3 pt-4">
+                        <div class="font-bold text-xl mb-2">SQLi login bypass</div>
+                        <p class="text-gray-700 text-base">
+                            Can you login as <span class="bg-gray-200 p-1 font-mono">administrator</span> without
+                            knowing the
+                            password?
+                        </p>
+                    </div>
+                    <div class="absolute bottom-4 inset-x-2">
+                        <p
+                            class="group-hover:underline uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                            Start challenge #1
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div
+            class="relative group text-center w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
+            <a href="/sqli2">
+                <div class="bg-indigo-700 h-60">
+                </div>
+                <div class="h-48">
+                    <div class="px-3 pt-4">
+                        <div class="font-bold text-xl mb-2">SQLi second order</div>
+                        <p class="text-gray-700 text-base">
+                            It's time to change <span class="line-through">your</span> someone else's password.
+                        </p>
+                    </div>
+                    <div class="absolute bottom-4 inset-x-2">
+                        <p
+                            class="group-hover:underline uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                            Start challenge #2
+                        </p>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
-</nav>
-    
-<div class="bg-gray-100 pt-32 text-center font-bold text-xl">
-  <p>
-    Learn how to avoid writing
-    <span class="bg-red-200 text-red-700 p-1 font-mono">vulnerable code</span>
-  </p>
-  <p>
-    Learn how to write
-    <span class="bg-green-200 text-green-700 p-1 font-mono">exploit code</span>
-  </p>
-  <p>
-    Learn how to write
-    <span class="bg-blue-200 text-blue-700 p-1 font-mono">secure code</span>
-  </p>
-</div>
-<div
-  class="bg-gray-100 mx-auto px-40 py-20 grid grid-cols-3 gap-20 justify-items-center lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-  <div
-    class="relative group text-center w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
-    <a href="/sqli1">
-        <div class="bg-indigo-700 h-60">
-        </div>
-        <div class="h-48">
-            <div class="px-3 pt-4">
-                <div class="font-bold text-xl mb-2">SQLi login bypass</div>
-                <p class="text-gray-700 text-base">
-                    Can you login as <span class="bg-gray-200 p-1 font-mono">administrator</span> without knowing the
-                    password?
-                </p>
-            </div>
-            <div class="absolute bottom-4 inset-x-2">
-                <p
-                    class="group-hover:underline uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                    Start challenge #1
-                </p>
-            </div>
-        </div>
-    </a>
-</div>
-  <div
-    class="relative group text-center w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
-    <a href="/sqli2">
-        <div class="bg-indigo-700 h-60">
-        </div>
-        <div class="h-48">
-            <div class="px-3 pt-4">
-                <div class="font-bold text-xl mb-2">SQLi second order</div>
-                <p class="text-gray-700 text-base">
-                    It's time to change <span class="line-through">your</span> someone else's password.
-                </p>
-            </div>
-            <div class="absolute bottom-4 inset-x-2">
-                <p
-                    class="group-hover:underline uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                    Start challenge #2
-                </p>
-            </div>
-        </div>
-    </a>
-</div>
-</div>
 
 </body>
 

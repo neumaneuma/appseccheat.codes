@@ -7,6 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='tailwind.css') }}" />
+
+    {% if collapsible_is_present %}
+    <style>
+        /* For some reason including the tailwind classes inside of the div class makes this not work */
+        .collapsible-content {
+            max-height: 0px;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
+    </style>
+    {% endif %}
 </head>
 
 <body>

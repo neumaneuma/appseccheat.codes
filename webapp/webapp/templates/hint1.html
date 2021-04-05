@@ -1,0 +1,29 @@
+{% import 'challenge.j2' as cm -%}
+
+<div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 ">
+    <div class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-12 collapsible cursor-pointer">
+        <div class="flex justify-start items-center">
+            <h3 class="text-base font-bold text-gray-900 ml-4">
+                Hint #1: <span class="group-hover:text-yellow-800 text-yellow-700">Generic Hint</span>
+            </h3>
+        </div>
+        {{ cm.plus_and_minus_header_style() }}
+    </div>
+    <div class="collapsible-content px-4 space-y-4">
+        <p class="mt-4">If you are unsure on how to proceed, then the following may help:</p>
+        <p>You can enter the input necessary to exploit this challenge manually through your browser, or you can use an
+            automated tool such as {{ lm.link_new_tab("https://portswigger.net/burp", "Burp Suite") }} or {{
+            lm.link_new_tab("https://www.zaproxy.org", "OWASP ZAP") }}. However, since this CTF is focused specifically
+            on the code side of application security, neither of those solutions will be presented here.</p>
+        <p>The exploit code and instructions on how to run it is presented in the third hint. However, you are
+            encouraged to attempt to write the exploit code yourself before looking at the answer. In order to do this,
+            you need to understand what fields are being set in the HTTP request being sent to the server from the
+            browser. This is so that you can craft your own HTTP request from the script you write. You can use your {{
+            lm.link_new_tab("https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html",
+            "browser's developer tools") }} to figure out this information or you can use a tool that can decrypt
+            encrypted traffic on your computer. Burp Suite and OWASP ZAP both offer this feature in addition to their
+            automated pentesting. I personally used {{ lm.link_new_tab("https://mitmproxy.org", "mitmproxy") }} when
+            writing the exploit scripts for this site because it has a lot fewer features than those other tools, and
+            therefore is a lot simpler to use. There is no right answer though. Any of those options will suffice.</p>
+    </div>
+</div>
