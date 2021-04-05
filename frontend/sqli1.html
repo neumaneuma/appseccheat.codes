@@ -55,8 +55,8 @@
                             <span class="minus hidden text-gray-900 mr-4">-</span>
                         </div>
                     </div>
-                    <div class="collapsible-content px-4 space-y-2">
-                        <p class="mt-2">This is a <a href="https://dev.to/atan/what-is-ctf-and-how-to-get-started-3f04"
+                    <div class="collapsible-content px-4 space-y-4">
+                        <p class="mt-4">This is a <a href="https://dev.to/atan/what-is-ctf-and-how-to-get-started-3f04"
                                 class="text-blue-400 hover:underline">capture the flag (CTF)</a> webapp designed to
                             teach software developers the fundamentals of <a
                                 href="https://en.wikipedia.org/wiki/Application_security"
@@ -181,17 +181,17 @@
                             <span class="minus hidden text-gray-900 mr-4">-</span>
                         </div>
                     </div>
-                    <div class="collapsible-content px-4 space-y-2">
-                        <p class="mt-2">If you are unsure on how to proceed, then the following may help:</p>
+                    <div class="collapsible-content px-4 space-y-4">
+                        <p class="mt-4">If you are unsure on how to proceed, then the following may help:</p>
                         <p>You can enter the input necessary to exploit this challenge manually through your browser, or
                             you
                             can use an automated tool such as <a class="text-blue-400 hover:underline"
                                 href="https://portswigger.net/burp">Burp Suite</a> or <a
                                 class="text-blue-400 hover:underline" href="https://www.zaproxy.org">OWASP ZAP</a>.
                             However,
-                            since this CTF is focused specifically on the code side of application security, neither of
+                            since this CTF is focused specifically on the code side of AppSec, neither of
                             those solutions will be presented here.</p>
-                        <p>The exploit code and instructions on how to run it is presented further down on the page.
+                        <p>The exploit code and instructions on how to run it is presented in the third hint.
                             However, you are encouraged to attempt to write the exploit code yourself before looking at
                             the
                             answer. In order to do this, you need to understand what fields are being set in the HTTP
@@ -299,7 +299,7 @@
                         </form>
                     </div>
 
-                    <div class="pt-8">
+                    <div class="pt-8 mb-6">
                         <form method="POST" action="/vulnerabilities/sqli1/login">
                             <label class="block text-gray-700 text-sm font-bold mb-4" for="password">
                                 Solve challenge by entering the passphrase:
@@ -314,59 +314,6 @@
                         </form>
                     </div>
                 </div>
-            </div>
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    Solution in code
-                </h2>
-                <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md"
-                        class="text-blue-400 hover:underline">main README</a> to run the webapp locally.</p>
-                <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
-                        class="text-blue-400 hover:underline">exploit README</a> to run the exploits locally.</p>
-            </div>
-            <div class="pt-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    Patch
-                </h2>
-                <p class="mt-4 text-xs">File truncated for brevity. <a
-                        href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_login_bypass.py"
-                        class="text-blue-400 hover:underline">Click here</a> to view full file.
-                </p>
-                <script src="https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js"></script>
-            </div>
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    Explanation
-                </h2>
-
-                <p>
-                    This defense makes use of what is known as a <a
-                        href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
-                        class="text-blue-400 hover:underline">parameterized query</a>. A succinct way of explaining it
-                    is that a parameterized query interprets user input as data instead of code.</p>
-                <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
-                    allow-list specifies what characters are allowed as input, and rejects everything else. However, for
-                    most situations involving SQL injection, it is impractical to implement an allow-list because all
-                    characters are valid. For example, restricting what characters a user can enter for a password is
-                    considered a poor user experience. Therefore a parameterized query is the primary line of defense.
-                </p>
-
-            </div>
-            <div class="grid grid-cols-2 pt-48">
-
-                <div class="flex justify-start">
-                    <a class="hidden px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-                        href="">Previous Challenge
-                    </a>
-                </div>
-
-
-                <div class="flex justify-end">
-                    <a class="px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-                        href="/sqli2">Next Challenge
-                    </a>
-                </div>
-
             </div>
         </div>
     </div>
