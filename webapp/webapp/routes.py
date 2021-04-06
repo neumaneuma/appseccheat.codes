@@ -17,6 +17,8 @@ def faq():
 
 def should_show_introduction(routes):
     refer = request.headers.get("referer")
+    if not refer:
+        return True
     refer_path = urlparse(refer).path
     return refer_path not in routes
 
