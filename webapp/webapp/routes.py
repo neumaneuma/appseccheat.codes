@@ -58,7 +58,8 @@ def sqli1():
         collapsible_is_present=False
     )
 
-@bp.route("/sqli2", methods=["GET"])
+
+@bp.route("/sqli2", methods=["GET", "POST"])
 def sqli2():
     routes_to_not_show_introduction_for = {url_for("routes.sqli1")}
 
@@ -66,13 +67,29 @@ def sqli2():
         "Challenge #2: SQLi second order", "What is SQL injection?", "Congratulations on solving the second challenge!"
     )
     challenge_links = {"prev": url_for("routes.sqli1"), "next": ""}
+
+    if request.method == "GET":
+        return render_template(
+            "sqli/sqli2_challenge.html",
+            headers=headers,
+            gh_links=html_builder.SQLI2_LINKS,
+            challenge_links=challenge_links,
+            should_show_introduction=should_show_introduction(
+                routes_to_not_show_introduction_for),
+            current_link=url_for("routes.sqli2"),
+            collapsible_is_present=True
+        )
+
+    # TODO store hashed password in database
+    passphrase = request.form.get("passphrase")
+    if passphrase != "test":
+        flash("Passphrase incorrect", "passphrase")
+        return redirect(f"{request.url}#passphrase_form")
+
     return render_template(
-        "sqli/sqli2_challenge.html",
+        "sqli/sqli2_answer.html",
         headers=headers,
         gh_links=html_builder.SQLI2_LINKS,
         challenge_links=challenge_links,
-        should_show_introduction=should_show_introduction(
-            routes_to_not_show_introduction_for),
-        current_link=url_for("routes.sqli2"),
-        collapsible_is_present=True
+        collapsible_is_present=False
     )
