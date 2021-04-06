@@ -32,3 +32,27 @@
     <span class="minus hidden text-gray-900 mr-4">-</span>
 </div>
 {%- endmacro %}
+
+
+{% macro passphrase_form(route) -%}
+<div class="pt-8 mb-6">
+    <a id="passphrase_form"></a>
+    <form method="POST" action="{{ route }}">
+        <label class="block text-gray-700 text-sm font-bold mb-4" for="passphrase">
+            Solve challenge by entering the passphrase:
+        </label>
+        {% with message = get_flashed_messages(category_filter=["passphrase"]) %}
+        {% if message %}
+        <p class="text-red-400 text-sm">{{ message[0] }}</p>
+        {% endif %}
+        {% endwith %}
+        <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline max-w-md"
+            name="passphrase" id="passphrase" type="password" placeholder="******************">
+        <button
+            class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
+            type="submit">Submit
+        </button>
+    </form>
+</div>
+{%- endmacro %}
