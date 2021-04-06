@@ -1,3 +1,5 @@
+{% import 'challenge.j2' as cm -%}
+
 <div class="border border-gray-900 rounded-md bg-white my-4 shadow">
     <div class="grid grid-cols-3 bg-gray-200 rounded-md hover:bg-gray-300 h-12 collapsible cursor-pointer">
         <div class="flex justify-start col-span-2 items-center">
@@ -5,10 +7,7 @@
                 How should I approach this?
             </h3>
         </div>
-        <div class="flex justify-end items-center">
-            <span class="plus text-gray-900 mr-4">+</span>
-            <span class="minus hidden text-gray-900 mr-4">-</span>
-        </div>
+        {{ cm.plus_and_minus_header_style() }}
     </div>
     <div class="collapsible-content px-4 space-y-4">
         <p class="mt-4">This is a {{ lm.link_new_tab("https://dev.to/atan/what-is-ctf-and-how-to-get-started-3f04",

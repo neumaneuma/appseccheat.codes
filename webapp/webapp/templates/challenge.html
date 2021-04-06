@@ -38,11 +38,7 @@
                                 exploit using the server-side vulnerability</span>
                         </h3>
                     </div>
-
-                    <div class="flex justify-end items-center">
-                        <span class="plus text-gray-900 mr-4">+</span>
-                        <span class="minus hidden text-gray-900 mr-4">-</span>
-                    </div>
+                    {{ cm.plus_and_minus_header_style() }}
                 </div>
                 <div class="collapsible-content mx-4">
                     {{ cm.code(gh_links.vulnerability_source_code, gh_links.vulnerability_gist) }}
@@ -57,17 +53,12 @@
                                 answer? Here is the exploit</span>
                         </h3>
                     </div>
-
-                    <div class="flex justify-end items-center">
-                        <span class="plus text-gray-900 mr-4">+</span>
-                        <span class="minus hidden text-gray-900 mr-4">-</span>
-                    </div>
+                    {{ cm.plus_and_minus_header_style() }}
                 </div>
                 <div class="collapsible-content mx-4">
                     <p class="mt-4">View the {{
                         lm.link_new_tab("https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md",
-                        "exploit README") }} to run the exploits locally.
-                    </p>
+                        "exploit README") }} to run the exploits locally. </p>
                     {{ cm.code(gh_links.exploit_source_code, gh_links.exploit_gist) }}
                 </div>
             </div>

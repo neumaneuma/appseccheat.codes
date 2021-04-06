@@ -1,3 +1,5 @@
+{% import 'challenge.j2' as cm -%}
+
 <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 ">
     <div class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-12 collapsible cursor-pointer">
         <div class="flex justify-start items-center">
@@ -5,11 +7,7 @@
                 Hint #1: <span class="group-hover:text-yellow-800 text-yellow-700">Generic Hint</span>
             </h3>
         </div>
-
-        <div class="flex justify-end items-center">
-            <span class="plus text-gray-900 mr-4">+</span>
-            <span class="minus hidden text-gray-900 mr-4">-</span>
-        </div>
+        {{ cm.plus_and_minus_header_style() }}
     </div>
     <div class="collapsible-content px-4 space-y-4">
         <p class="mt-4">If you are unsure on how to proceed, then the following may help:</p>
