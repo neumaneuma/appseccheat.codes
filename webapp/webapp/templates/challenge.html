@@ -118,6 +118,47 @@
                         use. There is no right answer though. Any of those options will suffice.</p>
                 </div>
             </div>
+            <div class="border border-red-900 rounded-md bg-red-50 my-4 shadow">
+                <div class="grid grid-cols-3 bg-red-200 rounded-md hover:bg-red-300 h-12 collapsible cursor-pointer">
+                    <div class="flex justify-start col-span-2 items-center">
+                        <h3 class="text-base font-bold text-gray-900 ml-4">
+                            Hint #2: <span class="hover:text-red-800 text-red-700">Reverse engineer the
+                                exploit using the server-side vulnerability</span>
+                        </h3>
+                    </div>
+
+                    <div class="flex justify-end items-center">
+                        <span class="plus text-gray-900 mr-4">+</span>
+                        <span class="minus hidden text-gray-900 mr-4">-</span>
+                    </div>
+                </div>
+                <div class="collapsible-content mx-4">
+                    {{ cm.code(gh_links.vulnerability_source_code, gh_links.vulnerability_gist) }}
+                </div>
+            </div>
+            <div class="border border-green-900 rounded-md bg-green-50 my-4 shadow">
+                <div
+                    class="grid grid-cols-3 bg-green-200 rounded-md hover:bg-green-300 h-12 collapsible cursor-pointer">
+                    <div class="flex justify-start col-span-2 items-center">
+                        <h3 class="text-base font-bold text-gray-900 ml-4">
+                            Hint #3: <span class="group-hover:text-green-800 text-green-700">Couldn't figure out the
+                                answer? Here is the exploit</span>
+                        </h3>
+                    </div>
+
+                    <div class="flex justify-end items-center">
+                        <span class="plus text-gray-900 mr-4">+</span>
+                        <span class="minus hidden text-gray-900 mr-4">-</span>
+                    </div>
+                </div>
+                <div class="collapsible-content mx-4">
+                    <p class="mt-4">View the {{
+                        lm.link_new_tab("https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md",
+                        "exploit README") }} to run the exploits locally.
+                    </p>
+                    {{ cm.code(gh_links.exploit_source_code, gh_links.exploit_gist) }}
+                </div>
+            </div>
             {% block challenge %}{% endblock %}
             <div class="pt-4 space-y-4">
                 {{ cm.header(headers.code) }}
