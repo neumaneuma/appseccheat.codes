@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request
+from flask import Blueprint, render_template, url_for, request, flash, redirect
 from urllib.parse import urlparse
 from . import html_builder
 
@@ -21,7 +21,7 @@ def should_show_introduction(routes):
     return refer_path not in routes
 
 
-@bp.route("/sqli1", methods=["GET"])
+@bp.route("/sqli1", methods=["GET", "POST"])
 def sqli1():
     routes_to_not_show_introduction_for = {url_for("routes.sqli2")}
 
@@ -30,28 +30,23 @@ def sqli1():
     )
     challenge_links = {"prev": "", "next": url_for("routes.sqli2")}
 
-    return render_template(
-        "sqli/sqli1_challenge.html",
-        headers=headers,
-        gh_links=html_builder.SQLI1_LINKS,
-        challenge_links=challenge_links,
-        should_show_introduction=should_show_introduction(
-            routes_to_not_show_introduction_for),
-        current_link=url_for("routes.sqli1"),
-        collapsible_is_present=True
-    )
+    if request.method == "GET":
+        return render_template(
+            "sqli/sqli1_challenge.html",
+            headers=headers,
+            gh_links=html_builder.SQLI1_LINKS,
+            challenge_links=challenge_links,
+            should_show_introduction=should_show_introduction(
+                routes_to_not_show_introduction_for),
+            current_link=url_for("routes.sqli1"),
+            collapsible_is_present=True
+        )
 
-@bp.route("/sqli1_answer", methods=["POST"])
-def sqli1_answer():
     # TODO store hashed password in database
     passphrase = request.form.get("passphrase")
     if passphrase != "test":
-        return "failure", 400
-
-    headers = html_builder.build_headers(
-        "Challenge #1: SQLi login bypass", "What is SQL injection?", "Congratulations on solving the first challenge!"
-    )
-    challenge_links = {"prev": "", "next": url_for("routes.sqli2")}
+        flash("Passphrase incorrect", "passphrase")
+        return redirect(f"{request.url}#passphrase_form")
 
     return render_template(
         "sqli/sqli1_answer.html",
@@ -60,7 +55,6 @@ def sqli1_answer():
         challenge_links=challenge_links,
         collapsible_is_present=False
     )
-
 
 @bp.route("/sqli2", methods=["GET"])
 def sqli2():
