@@ -63,41 +63,6 @@
                 </div>
             </div>
             {% block challenge %}{% endblock %}
-            <div class="pt-4 space-y-4">
-                {{ cm.header(headers.code) }}
-                <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md"
-                        class="text-blue-400 hover:underline">main README</a> to run the webapp locally.</p>
-                <p>View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
-                        class="text-blue-400 hover:underline">exploit README</a> to run the exploits locally.</p>
-            </div>
-            <div class="pt-4">
-                {{ cm.header(headers.vulnerability) }}
-                {{ cm.code(gh_links.vulnerability_source_code, gh_links.vulnerability_gist) }}
-            </div>
-            <div class="pt-4">
-                {{ cm.header(headers.exploit) }}
-                {{ cm.code(gh_links.exploit_source_code, gh_links.exploit_gist) }}
-            </div>
-            <div class="pt-4">
-                {{ cm.header(headers.patch) }}
-                {{ cm.code(gh_links.patch_source_code, gh_links.patch_gist) }}
-            </div>
-            <div class="pt-4 space-y-4">
-                {{ cm.header(headers.explanation) }}
-                {% block explanation %}{% endblock %}
-            </div>
-            <div class="grid grid-cols-2 pt-48">
-                {% if challenge_links.prev == "" %}
-                {{ cm.challenge_button("justify-start", "hidden", challenge_links.prev, "Previous Challenge") }}
-                {% else %}
-                {{ cm.challenge_button("justify-start", "", challenge_links.prev, "Previous Challenge") }}
-                {% endif %}
-                {% if challenge_links.next == "" %}
-                {{ cm.challenge_button("justify-end", "hidden", challenge_links.next, "Next Challenge") }}
-                {% else %}
-                {{ cm.challenge_button("justify-end", "", challenge_links.next, "Next Challenge") }}
-                {% endif %}
-            </div>
         </div>
     </div>
     {% include 'collapsible.html' %}

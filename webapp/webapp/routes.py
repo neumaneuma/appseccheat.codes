@@ -26,7 +26,7 @@ def sqli1():
     routes_to_not_show_introduction_for = {url_for("routes.sqli2")}
 
     headers = html_builder.build_headers(
-        "Challenge #1: SQLi login bypass", "What is SQL injection?"
+        "Challenge #1: SQLi login bypass", "What is SQL injection?", "Congratulations on solving the first challenge!"
     )
     challenge_links = {"prev": "", "next": url_for("routes.sqli2")}
 
@@ -47,7 +47,7 @@ def sqli2():
     routes_to_not_show_introduction_for = {url_for("routes.sqli1")}
 
     headers = html_builder.build_headers(
-        "Challenge #2: SQLi second order", "What is SQL injection?"
+        "Challenge #2: SQLi second order", "What is SQL injection?", "Congratulations on solving the second challenge!"
     )
     challenge_links = {"prev": url_for("routes.sqli1"), "next": ""}
     return render_template(

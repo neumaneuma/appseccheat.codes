@@ -12,6 +12,12 @@
 <script src="{{ gist }}"></script>
 {%- endmacro %}
 
+{% macro code_patch(source_code, gist) -%}
+<p class="mt-4 text-xs">{{ lm.link_new_tab(source_code, "Click here") }} to view the entire file, and not just the diff.
+</p>
+<script src="{{ gist }}"></script>
+{%- endmacro %}
+
 {% macro challenge_button(position, hidden, link, label) -%}
 <div class="flex {{ position }}">
     <a class="{{ hidden }} inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
@@ -19,7 +25,6 @@
     </a>
 </div>
 {%- endmacro %}
-
 
 {% macro plus_and_minus_header_style() -%}
 <div class="flex justify-end items-center">
