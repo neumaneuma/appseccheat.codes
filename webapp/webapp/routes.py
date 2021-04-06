@@ -41,6 +41,26 @@ def sqli1():
         collapsible_is_present=True
     )
 
+@bp.route("/sqli1_answer", methods=["POST"])
+def sqli1_answer():
+    # TODO store hashed password in database
+    passphrase = request.form.get("passphrase")
+    if passphrase != "test":
+        return "failure", 400
+
+    headers = html_builder.build_headers(
+        "Challenge #1: SQLi login bypass", "What is SQL injection?", "Congratulations on solving the first challenge!"
+    )
+    challenge_links = {"prev": "", "next": url_for("routes.sqli2")}
+
+    return render_template(
+        "sqli/sqli1_answer.html",
+        headers=headers,
+        gh_links=html_builder.SQLI1_LINKS,
+        challenge_links=challenge_links,
+        collapsible_is_present=False
+    )
+
 
 @bp.route("/sqli2", methods=["GET"])
 def sqli2():

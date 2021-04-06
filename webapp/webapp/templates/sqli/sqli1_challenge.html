@@ -18,7 +18,7 @@
 
 <div class="divide-y divide-gray-500 divide-solid pt-6">
     <div class="w-full max-w-xs mb-10">
-        <form method="POST" action="/vulnerabilities/sqli1/login"
+        <form method="POST" action="{{ url_for('vulnerabilities_sqli1.login') }}"
             class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
@@ -47,13 +47,13 @@
     </div>
 
     <div class="pt-8 mb-6">
-        <form method="POST" action="/vulnerabilities/sqli1/login">
-            <label class="block text-gray-700 text-sm font-bold mb-4" for="password">
+        <form method="POST" action="{{ url_for('routes.sqli1_answer') }}">
+            <label class="block text-gray-700 text-sm font-bold mb-4" for="passphrase">
                 Solve challenge by entering the passphrase:
             </label>
             <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline max-w-md"
-                name="password" id="password" type="password" placeholder="******************">
+                name="passphrase" id="passphrase" type="password" placeholder="******************">
             <button
                 class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
                 type="submit">Submit
@@ -61,19 +61,4 @@
         </form>
     </div>
 </div>
-{% endblock %}
-
-
-{% block explanation %}
-<p>
-    This defense makes use of what is known as a {{
-    lm.link_new_tab("https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples",
-    "parameterized query") }}. A succinct way of explaining it
-    is that a parameterized query interprets user input as data instead of code.</p>
-<p>Another technique that can supplement a parameterized query is to implement an allow-list. An
-    allow-list specifies what characters are allowed as input, and rejects everything else. However, for
-    most situations involving SQL injection, it is impractical to implement an allow-list because all
-    characters are valid. For example, restricting what characters a user can enter for a password is
-    considered a poor user experience. Therefore a parameterized query is the primary line of defense.
-</p>
 {% endblock %}
