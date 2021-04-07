@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
+
     <!-- <link rel="stylesheet" href="/static/tailwind.css" /> -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
     <style>
         /* For some reason including the tailwind classes inside of the div class makes this not work */
         .collapsible-content {
@@ -16,17 +18,18 @@
             transition: max-height 0.2s ease-out;
         }
     </style>
+
 </head>
 
 <body>
-    <nav class="bg-gray-700 text-red-100 fixed w-full">
+    <nav class="bg-gray-700 text-gray-100 fixed w-full">
         <div class="container mx-auto px-6 py-2 flex justify-between items-center">
             <a href="/" class="font-bold text-2xl">AppSec Cheat Codes <span
                     class="text-sm border-2 ml-2 uppercase rounded">beta</span></a>
             <div class="block">
                 <ul class="inline-flex">
                     <li><a class="px-4 hover:text-blue-400" href="/faq">FAQ</a></li>
-                    <li><a class="px-4 hover:text-blue-400"
+                    <li><a class="px-4 hover:text-blue-400" target="_blank"
                             href="https://github.com/neumaneuma/appseccheat.codes">GitHub</a></li>
                 </ul>
             </div>
@@ -40,7 +43,6 @@
                 <h2 class="mt-6 text-4xl font-bold text-gray-900">
                     Challenge #1: SQLi login bypass
                 </h2>
-
                 <div class="border border-gray-900 rounded-md bg-white my-4 shadow">
                     <div
                         class="grid grid-cols-3 bg-gray-200 rounded-md hover:bg-gray-300 h-12 collapsible cursor-pointer">
@@ -49,7 +51,6 @@
                                 How should I approach this?
                             </h3>
                         </div>
-
                         <div class="flex justify-end items-center">
                             <span class="plus text-gray-900 mr-4">+</span>
                             <span class="minus hidden text-gray-900 mr-4">-</span>
@@ -57,40 +58,49 @@
                     </div>
                     <div class="collapsible-content px-4 space-y-4">
                         <p class="mt-4">This is a <a href="https://dev.to/atan/what-is-ctf-and-how-to-get-started-3f04"
-                                class="text-blue-400 hover:underline">capture the flag (CTF)</a> webapp designed to
-                            teach software developers the fundamentals of <a
+                                class="text-blue-400 hover:underline" target="_blank">capture the flag (CTF)</a> webapp
+                            designed to teach software developers the fundamentals of <a
                                 href="https://en.wikipedia.org/wiki/Application_security"
-                                class="text-blue-400 hover:underline">application security (AppSec)</a>. Software
-                            developers learn best when reading and writing code. Most CTFs are catered towards <a
-                                href="https://en.wikipedia.org/wiki/Penetration_test"
+                                class="text-blue-400 hover:underline" target="_blank">application security (AppSec)</a>.
+                            Software developers learn best when reading and writing code. Most CTFs are catered towards
+                            <a href="https://en.wikipedia.org/wiki/Penetration_test"
                                 class="text-blue-400 hover:underline" target="_blank">pentesters</a> who predominantly
-                            use a variety of tools for CTFs and in their day jobs. While certainly a more efficient
-                            approach, this does not, however, translate well for a software developer trying to learn
-                            AppSec.</p>
+                            use a
+                            variety of tools for CTFs and in their day jobs. While certainly a more efficient approach,
+                            this does not,
+                            however, translate well for a software developer trying to learn AppSec.</p>
                         <p>How is a software developer supposed to learn how to write secure code if all they learn how
-                            to do from a CTF is click a few buttons and enter some input into a text field? That is why
-                            the purpose of this CTF is to reframe the concept of AppSec in terms of code.</p>
-                        <p>There are 3
-                            hints for every challenge. One hint will show you <span class="italic">the exact code of the
+                            to do from a CTF
+                            is click a few buttons and enter some input into a text field? That is why the purpose of
+                            this CTF is to
+                            reframe the concept of AppSec in terms of code.</p>
+                        <p>There are 3 hints for every challenge. One hint will show you <span class="italic">the exact
+                                code of the
                                 server-side vulnerability that you are trying to exploit</span>. It is one thing to read
-                            a description of a vulnerability, and a whole another thing to actually see a working
-                            example of the code. Another hint will show you <span class="italic">the exact code of the
-                                exploit and how to run it</span>. Technically this is less of a hint and more just the
-                            answer to how to
-                            solve the challenge, but let's not get too hung up on semantics.</p>
+                            a description
+                            of a vulnerability, and a whole another thing to actually see a working example of the code.
+                            Another hint
+                            will show you <span class="italic">the exact code of the exploit and how to run it</span>.
+                            Technically this
+                            is less of a hint and more just the answer to how to solve the challenge, but let's not get
+                            too hung up on
+                            semantics.</p>
                         <p>The next logical step is to provide the diff between what the vulnerable code looks like and
-                            what the secure code looks like. This is accessible to anyone who solves the challenge,
-                            which considering the exploit is provided if you cannot figure out how to write it on your
-                            own, is literally anyone.</p>
+                            what the secure
+                            code looks like. This is accessible to anyone who solves the challenge, which considering
+                            the exploit is
+                            provided if you cannot figure out how to write it on your own, is literally anyone.</p>
                         <p>And finally, as if this wall of text wasn't long enough, there is even more to it. If you
-                            want to run the webapp locally just follow the instructions on this <a
+                            want to run the
+                            webapp locally just follow the instructions on this <a
                                 href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md"
-                                class="text-blue-400 hover:underline">README</a>. Make any
-                            modifications you want. Add code, remove code, break things, figure out how to fix them.
-                            This is what I believe to be the most effective way for a developer to learn a concept: through code.</p>
+                                class="text-blue-400 hover:underline" target="_blank">README</a>. Make
+                            any modifications you want. Add code, remove code, break things, figure out how to fix them.
+                            This is what I
+                            believe to be the most effective way for a developer to learn a concept: through code.</p>
                     </div>
-
                 </div>
+
                 <p>Never assume user input is safe. HTML form data can contain all sorts of things that you as a
                     developer
                     don't expect!</p>
@@ -106,9 +116,9 @@
                 <p>
                     SQL injection is when an attacker can trick the server into
                     running attacker-supplied SQL code against its database. For
-                    example, suppose you are an
-                    <a href="https://xkcd.com/327/" class="text-blue-400 hover:underline">elite hacker mom</a>. You name
-                    your son
+                    example, suppose you are an <a href="https://xkcd.com/327/" class="text-blue-400 hover:underline"
+                        target="_blank">elite hacker mom</a>
+                    . You name your son
                     <span class="bg-gray-200 p-1 font-mono">Robert'); DROP TABLE Students;--
                     </span>
                     and send him off to school.
@@ -155,8 +165,9 @@
                 </h2>
 
                 <p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/"
-                        class="text-blue-400 hover:underline">the social media platform Gab fell victim to a SQL
-                        injection attack</a> that exposed users' private messages, posts, and passwords. SQL injection
+                        class="text-blue-400 hover:underline" target="_blank">the social media
+                        platform Gab fell victim to a SQL injection attack</a>
+                    that exposed users' private messages, posts, and passwords. SQL injection
                     is probably the most well known web vulnerability out there. It has been in the spotlight since the
                     early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>
 
@@ -166,7 +177,6 @@
                 <h2 class="mt-6 text-2xl font-bold text-gray-900">
                     Challenge
                 </h2>
-
                 <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 ">
                     <div
                         class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-12 collapsible cursor-pointer">
@@ -175,7 +185,6 @@
                                 Hint #1: <span class="group-hover:text-yellow-800 text-yellow-700">Generic Hint</span>
                             </h3>
                         </div>
-
                         <div class="flex justify-end items-center">
                             <span class="plus text-gray-900 mr-4">+</span>
                             <span class="minus hidden text-gray-900 mr-4">-</span>
@@ -184,33 +193,32 @@
                     <div class="collapsible-content px-4 space-y-4">
                         <p class="mt-4">If you are unsure on how to proceed, then the following may help:</p>
                         <p>You can enter the input necessary to exploit this challenge manually through your browser, or
-                            you
-                            can use an automated tool such as <a class="text-blue-400 hover:underline"
-                                href="https://portswigger.net/burp">Burp Suite</a> or <a
-                                class="text-blue-400 hover:underline" href="https://www.zaproxy.org">OWASP ZAP</a>.
-                            However,
-                            since this CTF is focused specifically on the code side of AppSec, neither of
-                            those solutions will be presented here.</p>
-                        <p>The exploit code and instructions on how to run it is presented in the third hint.
-                            However, you are encouraged to attempt to write the exploit code yourself before looking at
-                            the
-                            answer. In order to do this, you need to understand what fields are being set in the HTTP
-                            request being sent
-                            to the server from the browser. This is so that you can craft your own HTTP request from the
-                            script
-                            you write. You can use your <a class="text-blue-400 hover:underline"
-                                href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html">browser's
-                                developer tools</a> to figure out this information or you can use a tool that can
-                            decrypt
-                            encrypted traffic on
-                            your computer. Burp Suite and OWASP ZAP both offer this feature in addition to their
-                            automated
-                            pentesting. I personally used <a class="text-blue-400 hover:underline"
-                                href="https://mitmproxy.org">mitmproxy</a> when writing the exploit scripts for this
-                            site
-                            because it has a lot fewer features than those other tools, and therefore is a lot simpler
-                            to
-                            use. There is no right answer though. Any of those options will suffice.</p>
+                            you can use an
+                            automated tool such as <a href="https://portswigger.net/burp"
+                                class="text-blue-400 hover:underline" target="_blank">Burp Suite</a> or <a
+                                href="https://www.zaproxy.org" class="text-blue-400 hover:underline"
+                                target="_blank">OWASP ZAP</a>. However, since this CTF is focused specifically
+                            on the code side of application security, neither of those solutions will be presented here.
+                        </p>
+                        <p>The exploit code and instructions on how to run it is presented in the third hint. However,
+                            you are
+                            encouraged to attempt to write the exploit code yourself before looking at the answer. In
+                            order to do this,
+                            you need to understand what fields are being set in the HTTP request being sent to the
+                            server from the
+                            browser. This is so that you can craft your own HTTP request from the script you write. You
+                            can use your <a
+                                href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html"
+                                class="text-blue-400 hover:underline" target="_blank">browser's developer tools</a> to
+                            figure out this information or you can use a tool that can decrypt
+                            encrypted traffic on your computer. Burp Suite and OWASP ZAP both offer this feature in
+                            addition to their
+                            automated pentesting. I personally used <a href="https://mitmproxy.org"
+                                class="text-blue-400 hover:underline" target="_blank">mitmproxy</a> when
+                            writing the exploit scripts for this site because it has a lot fewer features than those
+                            other tools, and
+                            therefore is a lot simpler to use. There is no right answer though. Any of those options
+                            will suffice.</p>
                     </div>
                 </div>
                 <div class="border border-red-900 rounded-md bg-red-50 my-4 shadow">
@@ -222,7 +230,6 @@
                                     exploit using the server-side vulnerability</span>
                             </h3>
                         </div>
-
                         <div class="flex justify-end items-center">
                             <span class="plus text-gray-900 mr-4">+</span>
                             <span class="minus hidden text-gray-900 mr-4">-</span>
@@ -231,7 +238,7 @@
                     <div class="collapsible-content mx-4">
                         <p class="mt-4 text-xs">File truncated for brevity. <a
                                 href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_login_bypass.py"
-                                class="text-blue-400 hover:underline">Click here</a> to view full file.
+                                class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
                         </p>
                         <script src="https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js"></script>
                     </div>
@@ -245,7 +252,6 @@
                                     answer? Here is the exploit</span>
                             </h3>
                         </div>
-
                         <div class="flex justify-end items-center">
                             <span class="plus text-gray-900 mr-4">+</span>
                             <span class="minus hidden text-gray-900 mr-4">-</span>
@@ -254,22 +260,18 @@
                     <div class="collapsible-content mx-4">
                         <p class="mt-4">View the <a
                                 href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
-                                class="text-blue-400 hover:underline">exploit README</a> to run the exploits locally.
-                        </p>
-                        <p class=" mt-4 text-xs">File truncated for brevity. <a
+                                class="text-blue-400 hover:underline" target="_blank">exploit README</a> to run the
+                            exploits locally. </p>
+                        <p class="mt-4 text-xs">File truncated for brevity. <a
                                 href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py"
-                                class="text-blue-400 hover:underline">Click here</a> to view full file.
+                                class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
                         </p>
                         <script src="https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js"></script>
                     </div>
                 </div>
-                <p class="my-8">You know there is a user with the username <span
-                        class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to
-                    figure out how to login as
-                    <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their
-                    password is!
-                </p>
-                <div class="divide-y divide-gray-500 divide-solid">
+
+
+                <div class="divide-y divide-gray-500 pt-6">
                     <div class="w-full max-w-xs mb-10">
                         <form method="POST" action="/vulnerabilities/sqli1/login"
                             class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -298,15 +300,18 @@
                             </div>
                         </form>
                     </div>
-
                     <div class="pt-8 mb-6">
-                        <form method="POST" action="/vulnerabilities/sqli1/login">
-                            <label class="block text-gray-700 text-sm font-bold mb-4" for="password">
+                        <a id="passphrase_form"></a>
+                        <form method="POST" action="/sqli1">
+                            <label class="block text-gray-700 text-sm font-bold mb-4" for="passphrase">
                                 Solve challenge by entering the passphrase:
                             </label>
+
+
+
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline max-w-md"
-                                name="password" id="password" type="password" placeholder="******************">
+                                name="passphrase" id="passphrase" type="password" placeholder="******************">
                             <button
                                 class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
                                 type="submit">Submit
@@ -314,10 +319,10 @@
                         </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-
     <script>
         var collapsible = document.getElementsByClassName("collapsible");
 
@@ -329,7 +334,7 @@
 
                 plus.classList.toggle("hidden")
                 minus.classList.toggle("hidden")
-                content.classList.toggle("pb-2");
+                content.classList.toggle("pb-4");
 
                 var currentElement = event.currentTarget.classList;
                 if (currentElement.contains("rounded-md")) {
@@ -349,6 +354,7 @@
             });
         }
     </script>
+
 </body>
 
 </html>
