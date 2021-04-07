@@ -24,9 +24,5 @@ def build_headers(title, introduction, congratulations_message):
         "congratulations_message": congratulations_message,
         "news": "Heard about it in the news?",
         "challenge": "Challenge",
-        "code": "Solution in code",
-        "vulnerability": "Vulnerability",
-        "exploit": "Exploit",
-        "patch": "Patch",
         "explanation": "Explanation",
     }
