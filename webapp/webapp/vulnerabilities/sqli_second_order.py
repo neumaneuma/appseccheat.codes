@@ -2,6 +2,7 @@ import uuid
 from flask import Blueprint, request, session
 from sqlalchemy import text
 from .. import database
+from .. import secrets
 from . import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
@@ -112,4 +113,4 @@ def change_password():
     )
     change_password_successful = results.fetchone()
 
-    return ("Success (2/2)", 200) if change_password_successful else ("Failure", 400)
+    return (f"Success (2/2) - passphrase: {secrets.PASSPHRASE['sqli2']}", 200) if change_password_successful else ("Failure", 400)

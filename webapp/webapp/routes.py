@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, flash, redirect
 from urllib.parse import urlparse
 from . import html_builder
+from . import secrets
 
 bp = Blueprint("routes", __name__)
 
@@ -44,9 +45,8 @@ def sqli1():
             collapsible_is_present=True
         )
 
-    # TODO store hashed password in database
     passphrase = request.form.get("passphrase")
-    if passphrase != "test":
+    if passphrase != secrets.PASSPHRASE["sqli1"]:
         flash("Passphrase incorrect", "passphrase")
         return redirect(f"{request.url}#passphrase_form")
 
@@ -80,9 +80,8 @@ def sqli2():
             collapsible_is_present=True
         )
 
-    # TODO store hashed password in database
     passphrase = request.form.get("passphrase")
-    if passphrase != "test":
+    if passphrase != secrets.PASSPHRASE["sqli2"]:
         flash("Passphrase incorrect", "passphrase")
         return redirect(f"{request.url}#passphrase_form")
 

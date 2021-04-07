@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from .. import database
+from .. import secrets
 from . import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
@@ -19,4 +20,4 @@ def login():
     results = connection.execute(query)
     user_valid = results.fetchone()
 
-    return ("Success", 200) if user_valid else ("Failure", 401)
+    return (f"Success - passphrase: {secrets.PASSPHRASE['sqli1']}", 200) if user_valid else ("Failure", 401)
