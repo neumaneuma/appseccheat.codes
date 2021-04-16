@@ -15,7 +15,12 @@
 {% endblock %}
 
 {% block challenge %}
-
+<p class="my-8">You know there is a user with the username <span
+       class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to
+   figure out how to login as
+   <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their
+   password is!
+</p>
 <div class="divide-y divide-gray-500 pt-6">
     <div class="w-full max-w-xs mb-10">
         <form method="POST" action="{{ url_for('vulnerabilities_sqli1.login') }}"
