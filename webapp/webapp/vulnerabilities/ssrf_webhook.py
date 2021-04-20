@@ -13,8 +13,24 @@ def submit_webhook():
     custom_url = request.form.get("custom_url")
     if not custom_url:
         return ("Failure: fields can not be empty", 401)
-    requests.post(custom_url)
-    return str(custom_url)
+    if custom_url.startswith("http://127.0.0.1") or custom_url.startswith(
+        "http://localhost"
+    ):
+        return "Docker container in use - use admin_panel as hostname to access admin functionality."
+    if custom_url.startswith("http://admin_panel") and not custom_url.startswith(
+        "http://admin_panel:8484"
+    ):
+        return "Incorrect port. Use 8484 instead."
+    r = requests.post(custom_url)
+    response_body = r.text[:1000]
+
+    return (
+        (f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}", 200)
+        if was_successful_ssrf_attack(custom_url)
+        else (f"{response_body}...\n\nFailure", 401)
+    )
 
 
-    # return (f"Success - passphrase: {secrets.PASSPHRASE['ssrf1']}", 200) if user_valid else ("Failure", 401)
+def was_successful_ssrf_attack(url):
+    successful_url = "http://admin_panel:8484/reset_admin_password"
+    return url == successful_url or url == successful_url + "/"
