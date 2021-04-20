@@ -1,18 +1,13 @@
-from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
+from flask import Flask, render_template
+
+app = Flask(__name__)
 
 
-class AdminHandler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        if self.path != "/reset_admin_password":
-            self.send_error(404, message="Path not found")
-        else:
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            response = "Admin password reset to admin\n".encode("utf8")
-            self.wfile.write(response)
+@app.route("/reset_admin_password", methods=["POST", "GET"])
+def reset_admin_password():
+    return "Administrator password reset to: admin"
 
 
-server_address = ("127.0.0.1", 8484)
-httpd = ThreadingHTTPServer(server_address, AdminHandler)
-httpd.serve_forever()
+@app.route("/", methods=["POST", "GET"])
+def index():
+    return render_template("index.html")

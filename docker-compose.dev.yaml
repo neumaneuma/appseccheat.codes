@@ -15,6 +15,19 @@ services:
     volumes:
       - ./webapp/:/app
 
+  admin_panel:
+    build:
+      context: ./ssrf
+    ports:
+      - 8484:8484
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=true
+      - FLASK_APP=admin_panel.py
+    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8484" ]
+    volumes:
+      - ./ssrf/:/app
+
   db:
     image: mysql:8.0.23
     environment:
