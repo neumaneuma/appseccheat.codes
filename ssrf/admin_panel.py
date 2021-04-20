@@ -7,7 +7,7 @@ class AdminHandler(BaseHTTPRequestHandler):
             self.send_error(404, message="Path not found")
         else:
             self.send_response(200)
-            self.send_header("Content-type", "text/json")
+            self.send_header("Content-type", "text/plain")
             self.end_headers()
             response = "Admin password reset to admin\n".encode("utf8")
             self.wfile.write(response)
