@@ -72,10 +72,33 @@ def attempt_ip_address_parse(address):
 def is_invalid_scheme(scheme):
     return not (scheme == "https" or scheme == "http" or scheme == "")
 
+
 # need to try different file protocols,different encodings,encodings for the file protocols,etc
+ADMIN_PANEL_NO_PORT = "http://admin_panel"
+
+# http://admin_panel:8484
+ADMIN_PANEL = ADMIN_PANEL_NO_PORT + ":8484"
+
+# http://admin_panel:8484/
+ADMIN_PANEL_WITH_SLASH = ADMIN_PANEL + "/"
+
+# http://admin_panel:8484/reset_admin_password
+ADMIN_PANEL_WITH_PATH = ADMIN_PANEL_WITH_SLASH + "reset_admin_password"
+
+# http://admin_panel:8484/reset_admin_password/
+ADMIN_PANEL_WITH_PATH_AND_SLASH = ADMIN_PANEL_WITH_PATH + "/"
+
+
+def is_valid_internal_url(url):
+    valid_internal_urls = [ADMIN_PANEL, ADMIN_PANEL_WITH_SLASH,
+                           ADMIN_PANEL_WITH_PATH, ADMIN_PANEL_WITH_PATH_AND_SLASH]
+    return url in valid_internal_urls
 
 
 def is_url_invalid(url):
+    if is_valid_internal_url(url):
+        return False
+
     # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
     ip = attempt_ip_address_parse(url)
     if ip != None:
@@ -103,7 +126,7 @@ def should_reveal_first_hint(url):
 
 
 def should_reveal_second_hint(url):
-    return url.startswith("http://admin_panel") and not url.startswith("http://admin_panel:8484")
+    return url.startswith(ADMIN_PANEL_NO_PORT) and not url.startswith(ADMIN_PANEL)
 
 
 FIRST_HINT = "Docker container in use - use admin_panel as hostname to access admin functionality."
@@ -112,5 +135,4 @@ SECOND_HINT = "Incorrect port. Use 8484 instead."
 
 
 def was_successful_ssrf_attack(url):
-    successful_url = "http://admin_panel:8484/reset_admin_password"
-    return url == successful_url or url == successful_url + "/"
+    return url == ADMIN_PANEL_WITH_PATH or url == ADMIN_PANEL_WITH_PATH_AND_SLASH
