@@ -1,3 +1,5 @@
+from os import environ
+import logging
 from flask import Flask
 from . import database
 
@@ -7,9 +9,18 @@ def init_app():
     app.config.from_object("config.Config")
 
     with app.app_context():
+        logging.basicConfig(
+            filename="main.log",
+            format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
+            level=logging.DEBUG,
+        )
+        if environ.get("FLASK_ENV") != "development":
+            gunicorn_logger = logging.getLogger("gunicorn.error")
+            app.logger.handlers = gunicorn_logger.handlers
+            app.logger.setLevel(gunicorn_logger.level)
+
         database.init_connection(app)
 
-    with app.app_context():
         from .vulnerabilities import sqli_login_bypass as v_sqli1
         from .vulnerabilities import sqli_second_order as v_sqli2
         from .vulnerabilities import ssrf_webhook as v_ssrf1

@@ -1,3 +1,4 @@
+import logging
 from urllib.parse import urlparse
 import ipaddress
 
@@ -13,6 +14,7 @@ from . import VULNERABILITIES_PREFIX
 bp = Blueprint(
     "vulnerabilities_ssrf1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf1"
 )
+LOG = logging.getLogger(__name__)
 
 TIMEOUT = .25
 DNS_RESOLVER = "1.1.1.1"
@@ -26,6 +28,7 @@ def submit_webhook():
     if not custom_url:
         return ("Failure: fields can not be empty", 401)
 
+    LOG.debug(f"User supplied URL: {custom_url}")
     if should_reveal_first_hint(custom_url):
         return FIRST_HINT
     if should_reveal_second_hint(custom_url):
@@ -53,17 +56,14 @@ def get_ip_address_from_dns(qname):
         if len(r.answer) > 0:
             return str(r.answer[0][0])
     except Exception as e:
-        # should add logging for this
-        print("Original address: " + qname)
-        print(e)
+        LOG.debug("Original address: " + qname)
+        LOG.debug(e)
     return qname
 
 
 def attempt_ip_address_parse(address):
     try:
         ip_addr = ipaddress.ip_address(address)
-        print(f"Is ip address private? {ip_addr.is_private}")
-        print(f"Is ip address global? {ip_addr.is_global}")
         return ip_addr
     except ValueError:
         return None
@@ -97,25 +97,26 @@ def is_valid_internal_url(url):
 
 def is_url_invalid(url):
     if is_valid_internal_url(url):
+        LOG.debug(f"Valid internal url: {url}")
         return False
 
     # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
     ip = attempt_ip_address_parse(url)
     if ip != None:
-        print("ip is not None")
+        LOG.debug(f"IP address successfully parsed on first attempt: {ip}")
         return ip.is_private
 
     parsed_url = urlparse(url)
     if is_invalid_scheme(parsed_url.scheme):
-        print("scheme is invalid")
+        LOG.debug(f"Invalid schema: {parsed_url.scheme}")
         return True
 
     # If urlparse is unable to correctly parse the url, then everything will be in the path
     hostname = parsed_url.hostname if parsed_url.hostname != None else parsed_url.path
     dns_ip = get_ip_address_from_dns(hostname)
-    print("ip address returned: " + dns_ip)
+    LOG.debug(f"Response from DNS: {dns_ip}")
 
-    ip = attempt_ip_address_parse(url)
+    ip = attempt_ip_address_parse(dns_ip)
     if ip == None:
         return True
     return ip.is_private
