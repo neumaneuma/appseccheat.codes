@@ -9,7 +9,7 @@ username_to_exploit = "username_to_exploit_for_sqli2"
 user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
 
 
-@bp.route("/get_username", methods=["GET"])
+@bp.route("/get_username/", methods=["GET"])
 def get_username_to_exploit():
     connection = database.get_connection()
     transaction = connection.begin()
@@ -31,7 +31,7 @@ def get_username_to_exploit():
     return username
 
 
-@bp.route("/register", methods=["POST"])
+@bp.route("/register/", methods=["POST"])
 def register():
     connection = database.get_connection()
     transaction = connection.begin()
@@ -61,7 +61,7 @@ def register():
     return ("Success (1/2)", 200)
 
 
-@bp.route("/change_password", methods=["POST"])
+@bp.route("/change_password/", methods=["POST"])
 def change_password():
     connection = database.get_connection()
     if (

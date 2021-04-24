@@ -6,7 +6,7 @@ from . import PATCHES_PREFIX
 bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
 
 
-@bp.route("/login", methods=["POST"])
+@bp.route("/login/", methods=["POST"])
 def login():
     connection = database.get_connection()
     username = request.form.get("username")

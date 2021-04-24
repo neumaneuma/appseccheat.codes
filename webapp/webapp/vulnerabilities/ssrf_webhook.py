@@ -22,7 +22,7 @@ DNS_RESOLVER = "1.1.1.1"
 # DNS_RESOLVER = "9.9.9.9"
 
 
-@bp.route("/submit_webhook", methods=["POST"])
+@bp.route("/submit_webhook/", methods=["POST"])
 def submit_webhook():
     custom_url = request.form.get("custom_url")
     if not custom_url:

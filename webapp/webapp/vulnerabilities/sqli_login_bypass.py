@@ -8,7 +8,7 @@ bp = Blueprint(
 )
 
 
-@bp.route("/login", methods=["POST"])
+@bp.route("/login/", methods=["POST"])
 def login():
     connection = database.get_connection()
     username = request.form.get("username")
