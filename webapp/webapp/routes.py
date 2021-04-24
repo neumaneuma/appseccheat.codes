@@ -11,7 +11,7 @@ def index():
     return render_template("index.html", collapsible_is_present=False)
 
 
-@bp.route("/faq", methods=["GET"])
+@bp.route("/faq/", methods=["GET"])
 def faq():
     return render_template("faq.html", collapsible_is_present=False)
 
@@ -24,7 +24,7 @@ def should_show_introduction(routes):
     return refer_path not in routes
 
 
-@bp.route("/sqli1", methods=["GET", "POST"])
+@bp.route("/sqli1/", methods=["GET", "POST"])
 def sqli1():
     routes_to_not_show_introduction_for = {url_for("routes.sqli2")}
 
@@ -59,7 +59,7 @@ def sqli1():
     )
 
 
-@bp.route("/sqli2", methods=["GET", "POST"])
+@bp.route("/sqli2/", methods=["GET", "POST"])
 def sqli2():
     routes_to_not_show_introduction_for = {url_for("routes.sqli1")}
 
