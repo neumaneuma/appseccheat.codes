@@ -21,6 +21,10 @@ sqli2_urls = [
         [f"{url_prefix}/patches/sqli2/change_password/", 400],
     ],
 ]
+ssrf1_urls = [
+    f"{url_prefix}/vulnerabilities/ssrf1/submit_webhook/",
+    # f"{url_prefix}/patches/ssrf1/submit_webhook/",
+]
 
 
 def check_status_code(expected_status_code, actual_status_code, url):
@@ -63,5 +67,24 @@ def sqli2():
         check_status_code(status_code, r.status_code, url)
 
 
+def ssrf1():
+    custom_urls = {
+        "http://admin_panel:8484/": 401,
+        "http://admin_panel:8484/reset_admin_password/": 200,
+        "https://dzone.com/services/internal/action/dzoneUsers-isUserEmailValidated": 401,
+        "169.254.169.254": 401,
+        "http://74": 401,
+        "https://01111111.00000000.00000000.00000001": 401,
+        "https://google.com": 401,
+    }
+
+    for url in ssrf1_urls:
+        for custom_url, status_code in custom_urls.items():
+            data = {"custom_url": custom_url}
+            r = requests.post(url, data=data, verify=verify)
+            check_status_code(status_code, r.status_code, custom_url)
+
+
 sqli1()
 sqli2()
+ssrf1()
