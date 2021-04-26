@@ -26,6 +26,7 @@ def init_app():
         from .vulnerabilities import ssrf_webhook as v_ssrf1
         from .patches import sqli_login_bypass as p_sqli1
         from .patches import sqli_second_order as p_sqli2
+        from .patches import ssrf_webhook as p_ssrf1
         from . import routes
 
         app.register_blueprint(v_sqli1.bp)
@@ -33,6 +34,7 @@ def init_app():
         app.register_blueprint(v_ssrf1.bp)
         app.register_blueprint(p_sqli1.bp)
         app.register_blueprint(p_sqli2.bp)
+        app.register_blueprint(p_ssrf1.bp)
         app.register_blueprint(routes.bp)
         app.register_blueprint(database.bp)
 

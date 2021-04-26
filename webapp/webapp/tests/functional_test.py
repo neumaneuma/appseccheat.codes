@@ -1,9 +1,18 @@
+import time
 import requests
 
 url_prefix = "http://127.0.0.1:5000"
 verify = False
 requests.packages.urllib3.disable_warnings()
 
+
+urls_for_verifying_ssrf_safety = {
+    "https://dzone.com/services/internal/action/dzoneUsers-isUserEmailValidated": 401,
+    "169.254.169.254": 401,
+    "http://74": 401,
+    "https://01111111.00000000.00000000.00000001": 401,
+    "https://google.com": 401,
+}
 
 sqli1_urls = {
     f"{url_prefix}/vulnerabilities/sqli1/login/": 200,
@@ -23,8 +32,17 @@ sqli2_urls = [
 ]
 ssrf1_urls = [
     f"{url_prefix}/vulnerabilities/ssrf1/submit_webhook/",
-    # f"{url_prefix}/patches/ssrf1/submit_webhook/",
+    f"{url_prefix}/patches/ssrf1/submit_webhook/",
 ]
+# index 0 for vulnerabilities, index 1 for patches
+ssrf1_test_urls = [
+    dict(urls_for_verifying_ssrf_safety),
+    dict(urls_for_verifying_ssrf_safety),
+]
+ssrf1_test_urls[0]["http://admin_panel:8484/"] = 401
+ssrf1_test_urls[1]["http://admin_panel:8484/"] = 401
+ssrf1_test_urls[0]["http://admin_panel:8484/reset_admin_password/"] = 200
+ssrf1_test_urls[1]["http://admin_panel:8484/reset_admin_password/"] = 401
 
 
 def check_status_code(expected_status_code, actual_status_code, url):
@@ -68,23 +86,18 @@ def sqli2():
 
 
 def ssrf1():
-    custom_urls = {
-        "http://admin_panel:8484/": 401,
-        "http://admin_panel:8484/reset_admin_password/": 200,
-        "https://dzone.com/services/internal/action/dzoneUsers-isUserEmailValidated": 401,
-        "169.254.169.254": 401,
-        "http://74": 401,
-        "https://01111111.00000000.00000000.00000001": 401,
-        "https://google.com": 401,
-    }
-
-    for url in ssrf1_urls:
-        for custom_url, status_code in custom_urls.items():
+    for index in range(len(ssrf1_urls)):
+        url = ssrf1_urls[index]
+        for custom_url, status_code in ssrf1_test_urls[index].items():
             data = {"custom_url": custom_url}
             r = requests.post(url, data=data, verify=verify)
             check_status_code(status_code, r.status_code, custom_url)
 
-
+start_time = round(time.time() * 1000)
+print("Starting functional test...")
 sqli1()
 sqli2()
 ssrf1()
+stop_time = round(time.time() * 1000)
+run_time = (stop_time - start_time) / 1000
+print(f"Finished running functional tests. Run time: {run_time} seconds")

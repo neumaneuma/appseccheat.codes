@@ -17,17 +17,30 @@ class Ssrf1Tests(unittest.TestCase):
         )
 
     def test_empty_custom_url_returns_401(self):
-        # response = self.test_client.post(self.patched_submit_webhook_path, follow_redirects=True)
-        # self.assertEqual(response.status_code, 401)
+        response = self.test_client.post(
+            self.patched_submit_webhook_path, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
         response = self.test_client.post(
             self.vulnerable_submit_webhook_path, follow_redirects=True
         )
         self.assertEqual(response.status_code, 401)
 
-    def test_first_hint_returns_200(self):
+    def test_first_hint_patched_endpoint_returns_200(self):
         data = {"custom_url": "http://127.0.0.1"}
-        # response = self.test_client.post(self.patched_submit_webhook_path, data=data, follow_redirects=True)
-        # self.assertEqual(response.status_code, 401)
+        response = self.test_client.post(
+            self.patched_submit_webhook_path, data=data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
+
+        data = {"custom_url": "http://localhost"}
+        response = self.test_client.post(
+            self.patched_submit_webhook_path, data=data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_first_hint_vulnerable_endpoint_returns_200(self):
+        data = {"custom_url": "http://127.0.0.1"}
         response = self.test_client.post(
             self.vulnerable_submit_webhook_path, data=data, follow_redirects=True
         )
@@ -35,18 +48,14 @@ class Ssrf1Tests(unittest.TestCase):
         self.assertEqual(response.data.decode("utf-8"), ssrf_webhook.FIRST_HINT)
 
         data = {"custom_url": "http://localhost"}
-        # response = self.test_client.post(self.patched_submit_webhook_path, data=data, follow_redirects=True)
-        # self.assertEqual(response.status_code, 401)
         response = self.test_client.post(
             self.vulnerable_submit_webhook_path, data=data, follow_redirects=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.decode("utf-8"), ssrf_webhook.FIRST_HINT)
 
-    def test_second_hint_returns_200(self):
+    def test_second_hint_vulnerable_endpoint_returns_200(self):
         data = {"custom_url": "http://admin_panel"}
-        # response = self.test_client.post(self.patched_submit_webhook_path, data=data, follow_redirects=True)
-        # self.assertEqual(response.status_code, 401)
         response = self.test_client.post(
             self.vulnerable_submit_webhook_path, data=data, follow_redirects=True
         )
@@ -54,10 +63,21 @@ class Ssrf1Tests(unittest.TestCase):
         self.assertEqual(response.data.decode("utf-8"), ssrf_webhook.SECOND_HINT)
 
         data = {"custom_url": "http://admin_panel:80"}
-        # response = self.test_client.post(self.patched_submit_webhook_path, data=data, follow_redirects=True)
-        # self.assertEqual(response.status_code, 401)
         response = self.test_client.post(
             self.vulnerable_submit_webhook_path, data=data, follow_redirects=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.decode("utf-8"), ssrf_webhook.SECOND_HINT)
+
+    def test_second_hint_patched_endpoint_returns_200(self):
+        data = {"custom_url": "http://admin_panel"}
+        response = self.test_client.post(
+            self.patched_submit_webhook_path, data=data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
+
+        data = {"custom_url": "http://admin_panel:80"}
+        response = self.test_client.post(
+            self.patched_submit_webhook_path, data=data, follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
