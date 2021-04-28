@@ -31,7 +31,7 @@ def submit_webhook():
         return (f"Failure: supplied url is invalid ({custom_url})", 400)
 
     try:
-        r = requests.post(custom_url)
+        r = requests.post(custom_url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
         return (
@@ -42,7 +42,8 @@ def submit_webhook():
             if did_successfully_reset_admin_password(custom_url)
             else (f"{response_body}...\n\nFailure", 400)
         )
-    except requests.exceptions.MissingSchema as e:
+    except requests.exceptions.RequestException as e:
+        LOG.debug("Request exception: " + str(e))
         return ("Failure: " + str(e), 400)
 
 
@@ -111,7 +112,7 @@ def is_url_valid(url):
         return False
 
     is_global = ip.is_global
-    LOG.debug(f"Returning {is_global} for is url valid")
+    LOG.debug(f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
     return is_global
 
 

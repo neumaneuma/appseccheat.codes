@@ -25,7 +25,7 @@ urls_for_verifying_ssrf_safety_minus_private_ip = {
     "http://172.16.0.0/12": 400,
     "http://10.0.0.0/8": 400,
     "http://169.254.169.254/latest/user-data": 400,
-    # "http://192.0.0.192/latest/meta-data/": 400,
+    "http://192.0.0.192/latest/meta-data/": 400,
     "https://localhost/": 400,
     "http://[::]/": 400,
     "http://[::]:80/": 400,
