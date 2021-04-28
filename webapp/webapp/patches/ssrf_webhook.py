@@ -11,12 +11,10 @@ import dns.rdatatype
 from .. import secrets
 from . import PATCHES_PREFIX
 
-bp = Blueprint(
-    "patches_ssrf1", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf1"
-)
+bp = Blueprint("patches_ssrf1", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf1")
 LOG = logging.getLogger(__name__)
 
-TIMEOUT = .25
+TIMEOUT = 0.25
 DNS_RESOLVER = "1.1.1.1"
 # DNS_RESOLVER = "8.8.8.8"
 # DNS_RESOLVER = "9.9.9.9"
@@ -26,23 +24,26 @@ DNS_RESOLVER = "1.1.1.1"
 def submit_webhook():
     custom_url = request.form.get("custom_url")
     if not custom_url:
-        return ("Failure: fields can not be empty", 401)
+        return ("Failure: fields can not be empty", 400)
 
     LOG.debug(f"User supplied URL: {custom_url}")
-    if is_url_invalid(custom_url):
-        return (f"Failure: supplied url is invalid ({custom_url})", 401)
+    if not is_url_valid(custom_url):
+        return (f"Failure: supplied url is invalid ({custom_url})", 400)
 
     try:
         r = requests.post(custom_url)
         response_body = r.text[:1000]
 
         return (
-            (f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}", 200)
-            if was_successful_ssrf_attack(custom_url)
-            else (f"{response_body}...\n\nFailure", 401)
+            (
+                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
+                200,
+            )
+            if did_successfully_reset_admin_password(custom_url)
+            else (f"{response_body}...\n\nFailure", 400)
         )
     except requests.exceptions.MissingSchema as e:
-        return ("Failure: " + str(e), 401)
+        return ("Failure: " + str(e), 400)
 
 
 def get_ip_address_from_dns(qname):
@@ -84,17 +85,20 @@ ADMIN_PANEL_WITH_PATH = ADMIN_PANEL_WITH_SLASH + "reset_admin_password"
 ADMIN_PANEL_WITH_PATH_AND_SLASH = ADMIN_PANEL_WITH_PATH + "/"
 
 
-def is_url_invalid(url):
+def is_url_valid(url):
     # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
     ip = attempt_ip_address_parse(url)
     if ip != None:
-        LOG.debug(f"IP address successfully parsed on first attempt: {ip}")
-        return ip.is_private
+        is_global = ip.is_global
+        LOG.debug(
+            f"IP address successfully parsed on first attempt: {ip}. Returning {is_global} for is url valid"
+        )
+        return is_global
 
     parsed_url = urlparse(url)
     if is_invalid_scheme(parsed_url.scheme):
         LOG.debug(f"Invalid schema: {parsed_url.scheme}")
-        return True
+        return False
 
     # If urlparse is unable to correctly parse the url, then everything will be in the path
     hostname = parsed_url.hostname if parsed_url.hostname != None else parsed_url.path
@@ -103,9 +107,13 @@ def is_url_invalid(url):
 
     ip = attempt_ip_address_parse(dns_ip)
     if ip == None:
-        return True
-    return ip.is_private
+        LOG.debug("Unable to parse the IP address from the DNS response")
+        return False
+
+    is_global = ip.is_global
+    LOG.debug(f"Returning {is_global} for is url valid")
+    return is_global
 
 
-def was_successful_ssrf_attack(url):
+def did_successfully_reset_admin_password(url):
     return url == ADMIN_PANEL_WITH_PATH or url == ADMIN_PANEL_WITH_PATH_AND_SLASH
