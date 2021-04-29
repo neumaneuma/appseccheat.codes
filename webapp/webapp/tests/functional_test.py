@@ -39,6 +39,31 @@ ssrf1_test_urls = [
     dict(urls_for_verifying_ssrf_safety),
 ]
 
+# def convert_to_hex_representation(s):
+#     hex_repr = ""
+#     for c in s:
+#         hex_repr += hex(ord(c)).replace("0x", "%")
+#
+#     return hex_repr
+#
+#
+# def double_url_enc(s):
+#     hex_repr = ""
+#     for c in s:
+#         hex_repr += "%25"
+#         hex_repr += hex(ord(c)).replace("0x", "")
+#
+#     return hex_repr
+#
+# print(convert_to_hex_representation("127.0.0.1"))
+# print(convert_to_hex_representation("localhost"))
+# print(convert_to_hex_representation("169.254.169.254"))
+# print(convert_to_hex_representation("ssh"))
+# print(double_url_enc("127.0.0.1"))
+# print(double_url_enc("localhost"))
+# print(double_url_enc("169.254.169.254"))
+# print(double_url_enc("ssh"))
+
 def check_status_code(expected_status_code, actual_status_code, url):
     assert (
         expected_status_code == actual_status_code
