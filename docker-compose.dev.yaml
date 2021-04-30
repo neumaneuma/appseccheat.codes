@@ -17,13 +17,23 @@ services:
 
   admin_panel:
     build:
-      context: ./ssrf
+      context: ./ssrf/admin_panel
     environment:
       - FLASK_ENV=development
-      - FLASK_APP=admin_panel.py
+      - FLASK_APP=index.py
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8484" ]
     volumes:
-      - ./ssrf/:/app
+      - ./ssrf/admin_panel/:/app
+
+  cat_coin_api:
+    build:
+      context: ./ssrf/cat_coin_api
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=index.py
+    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8181" ]
+    volumes:
+      - ./ssrf/cat_coin_api/:/app
 
   db:
     image: mysql:8.0.23
