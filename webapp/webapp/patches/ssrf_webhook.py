@@ -71,19 +71,19 @@ def is_invalid_scheme(scheme):
     return not (scheme == "https" or scheme == "http" or scheme == "")
 
 
-ADMIN_PANEL_NO_PORT = "http://admin_panel"
+INTERNAL_API_NO_PORT = "http://internal_api"
 
-# http://admin_panel:8484
-ADMIN_PANEL = ADMIN_PANEL_NO_PORT + ":8484"
+# http://internal_api:8484
+INTERNAL_API = INTERNAL_API_NO_PORT + ":8484"
 
-# http://admin_panel:8484/
-ADMIN_PANEL_WITH_SLASH = ADMIN_PANEL + "/"
+# http://internal_api:8484/
+INTERNAL_API_WITH_SLASH = INTERNAL_API + "/"
 
-# http://admin_panel:8484/reset_admin_password
-ADMIN_PANEL_WITH_PATH = ADMIN_PANEL_WITH_SLASH + "reset_admin_password"
+# http://internal_api:8484/reset_admin_password
+INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "reset_admin_password"
 
-# http://admin_panel:8484/reset_admin_password/
-ADMIN_PANEL_WITH_PATH_AND_SLASH = ADMIN_PANEL_WITH_PATH + "/"
+# http://internal_api:8484/reset_admin_password/
+INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 
 
 def is_url_valid(url):
@@ -117,4 +117,4 @@ def is_url_valid(url):
 
 
 def did_successfully_reset_admin_password(url):
-    return url == ADMIN_PANEL_WITH_PATH or url == ADMIN_PANEL_WITH_PATH_AND_SLASH
+    return url == INTERNAL_API_WITH_PATH or url == INTERNAL_API_WITH_PATH_AND_SLASH

@@ -45,7 +45,7 @@ def submit_webhook():
                 f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
                 200,
             )
-        elif did_access_admin_panel(custom_url):
+        elif did_access_internal_api(custom_url):
             return (f"{response_body}", 200)
         else:
             return (f"{response_body}...\n\nFailure", 400)
@@ -78,27 +78,27 @@ def is_invalid_scheme(scheme):
     return not (scheme == "https" or scheme == "http" or scheme == "")
 
 
-ADMIN_PANEL_NO_PORT = "http://admin_panel"
+INTERNAL_API_NO_PORT = "http://internal_api"
 
-# http://admin_panel:8484
-ADMIN_PANEL = ADMIN_PANEL_NO_PORT + ":8484"
+# http://internal_api:8484
+INTERNAL_API = INTERNAL_API_NO_PORT + ":8484"
 
-# http://admin_panel:8484/
-ADMIN_PANEL_WITH_SLASH = ADMIN_PANEL + "/"
+# http://internal_api:8484/
+INTERNAL_API_WITH_SLASH = INTERNAL_API + "/"
 
-# http://admin_panel:8484/reset_admin_password
-ADMIN_PANEL_WITH_PATH = ADMIN_PANEL_WITH_SLASH + "reset_admin_password"
+# http://internal_api:8484/reset_admin_password
+INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "reset_admin_password"
 
-# http://admin_panel:8484/reset_admin_password/
-ADMIN_PANEL_WITH_PATH_AND_SLASH = ADMIN_PANEL_WITH_PATH + "/"
+# http://internal_api:8484/reset_admin_password/
+INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 
 
 def is_valid_internal_url(url):
     valid_internal_urls = [
-        ADMIN_PANEL,
-        ADMIN_PANEL_WITH_SLASH,
-        ADMIN_PANEL_WITH_PATH,
-        ADMIN_PANEL_WITH_PATH_AND_SLASH,
+        INTERNAL_API,
+        INTERNAL_API_WITH_SLASH,
+        INTERNAL_API_WITH_PATH,
+        INTERNAL_API_WITH_PATH_AND_SLASH,
     ]
     return url in valid_internal_urls
 
@@ -142,17 +142,17 @@ def should_reveal_first_hint(url):
 
 
 def should_reveal_second_hint(url):
-    return url.startswith(ADMIN_PANEL_NO_PORT) and not url.startswith(ADMIN_PANEL)
+    return url.startswith(INTERNAL_API_NO_PORT) and not url.startswith(INTERNAL_API)
 
 
-FIRST_HINT = "Docker container in use - use admin_panel as hostname to access admin functionality."
+FIRST_HINT = "Docker container in use - use internal_api as hostname to access admin functionality."
 
 SECOND_HINT = "Incorrect port. Use 8484 instead."
 
 
 def did_successfully_reset_admin_password(url):
-    return url == ADMIN_PANEL_WITH_PATH or url == ADMIN_PANEL_WITH_PATH_AND_SLASH
+    return url == INTERNAL_API_WITH_PATH or url == INTERNAL_API_WITH_PATH_AND_SLASH
 
 
-def did_access_admin_panel(url):
-    return url == ADMIN_PANEL_WITH_SLASH
+def did_access_internal_api(url):
+    return url == INTERNAL_API_WITH_SLASH
