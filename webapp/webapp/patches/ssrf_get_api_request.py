@@ -9,11 +9,13 @@ import dns.query
 import dns.rdatatype
 
 from .. import secrets
+from .. import local_file_adapter
 from . import PATCHES_PREFIX
 
 bp = Blueprint(
     "patches_ssrf2", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf2"
 )
+
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
@@ -29,30 +31,32 @@ def submit_api_url():
         return ("Failure: fields can not be empty", 400)
 
     LOG.debug(f"User supplied URL: {custom_url}")
-    # if should_reveal_first_hint(custom_url):
-    #     return (FIRST_HINT, 202)
-    # if should_reveal_second_hint(custom_url):
-    #     return (SECOND_HINT, 202)
-    # if not is_url_valid(custom_url):
-    #     return (f"Failure: supplied url is invalid ({custom_url})", 400)
+    if not is_url_valid(custom_url):
+        return (f"Failure: supplied url is invalid ({custom_url})", 400)
 
     try:
-        r = requests.get(custom_url, timeout=TIMEOUT)
+        requests_session = requests.session()
+        requests_session.mount(
+            'file://', local_file_adapter.LocalFileAdapter())
+        r = requests_session.get(custom_url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        # if did_successfully_reset_admin_password(custom_url):
-        #     return (
-        #         f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
-        #         200,
-        #     )
-        # elif did_access_admin_panel(custom_url):
-        #     return (f"{response_body}", 200)
-        # else:
-        #     return (f"{response_body}...\n\nFailure", 400)
-        return response_body
+        if did_successfully_get_file(custom_url):
+            return (
+                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf2']}",
+                200,
+            )
+        elif accessed_cat_coin_api(custom_url):
+            return (f"{response_body}", 200)
+        else:
+            return (f"{response_body}...\n\nFailure", 400)
     except requests.exceptions.RequestException as e:
         LOG.debug("Request exception: " + str(e))
         return ("Failure: " + str(e), 400)
+
+
+FILE_SCHEMA = "file://"
+ALLOWED_URLS = [f"{FILE_SCHEMA}/etc/passwd", f"{FILE_SCHEMA}/etc/shadow"]
 
 
 def get_ip_address_from_dns(qname):
@@ -79,27 +83,27 @@ def is_invalid_scheme(scheme):
     return not (scheme == "https" or scheme == "http" or scheme == "")
 
 
-ADMIN_PANEL_NO_PORT = "http://admin_panel"
+INTERNAL_API_NO_PORT = "http://internal_api"
 
-# http://admin_panel:8484
-ADMIN_PANEL = ADMIN_PANEL_NO_PORT + ":8484"
+# http://internal_api:8484
+INTERNAL_API = INTERNAL_API_NO_PORT + ":8484"
 
-# http://admin_panel:8484/
-ADMIN_PANEL_WITH_SLASH = ADMIN_PANEL + "/"
+# http://internal_api:8484/
+INTERNAL_API_WITH_SLASH = INTERNAL_API + "/"
 
-# http://admin_panel:8484/reset_admin_password
-ADMIN_PANEL_WITH_PATH = ADMIN_PANEL_WITH_SLASH + "reset_admin_password"
+# http://internal_api:8484/get_cat_coin_price
+INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "get_cat_coin_price"
 
-# http://admin_panel:8484/reset_admin_password/
-ADMIN_PANEL_WITH_PATH_AND_SLASH = ADMIN_PANEL_WITH_PATH + "/"
+# http://internal_api:8484/get_cat_coin_price/
+INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 
 
 def is_valid_internal_url(url):
     valid_internal_urls = [
-        ADMIN_PANEL,
-        ADMIN_PANEL_WITH_SLASH,
-        ADMIN_PANEL_WITH_PATH,
-        ADMIN_PANEL_WITH_PATH_AND_SLASH,
+        INTERNAL_API,
+        INTERNAL_API_WITH_SLASH,
+        INTERNAL_API_WITH_PATH,
+        INTERNAL_API_WITH_PATH_AND_SLASH,
     ]
     return url in valid_internal_urls
 
@@ -134,26 +138,14 @@ def is_url_valid(url):
         return False
 
     is_global = ip.is_global
-    LOG.debug(f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
+    LOG.debug(
+        f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
     return is_global
 
 
-def should_reveal_first_hint(url):
-    return url.startswith("http://127.0.0.1") or url.startswith("http://localhost")
+def did_successfully_get_file(url):
+    return url in ALLOWED_URLS
 
 
-def should_reveal_second_hint(url):
-    return url.startswith(ADMIN_PANEL_NO_PORT) and not url.startswith(ADMIN_PANEL)
-
-
-FIRST_HINT = "Docker container in use - use admin_panel as hostname to access admin functionality."
-
-SECOND_HINT = "Incorrect port. Use 8484 instead."
-
-
-def did_successfully_reset_admin_password(url):
-    return url == ADMIN_PANEL_WITH_PATH or url == ADMIN_PANEL_WITH_PATH_AND_SLASH
-
-
-def did_access_admin_panel(url):
-    return url == ADMIN_PANEL_WITH_SLASH
+def accessed_cat_coin_api(url):
+    return url == INTERNAL_API_WITH_SLASH or url == INTERNAL_API_WITH_PATH_AND_SLASH
