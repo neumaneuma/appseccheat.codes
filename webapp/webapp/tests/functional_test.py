@@ -27,6 +27,10 @@ ssrf1_urls = [
     f"{url_prefix}/vulnerabilities/ssrf1/submit_webhook/",
     f"{url_prefix}/patches/ssrf1/submit_webhook/",
 ]
+ssrf2_urls = [
+    f"{url_prefix}/vulnerabilities/ssrf2/submit_api_url/",
+    f"{url_prefix}/patches/ssrf2/submit_api_url/",
+]
 
 
 urls_for_verifying_ssrf_safety = {}
@@ -35,6 +39,10 @@ with open("ssrf_test_urls.json") as test_urls:
 
 # index 0 for vulnerabilities, index 1 for patches
 ssrf1_test_urls = [
+    dict(urls_for_verifying_ssrf_safety),
+    dict(urls_for_verifying_ssrf_safety),
+]
+ssrf2_test_urls = [
     dict(urls_for_verifying_ssrf_safety),
     dict(urls_for_verifying_ssrf_safety),
 ]
@@ -63,6 +71,7 @@ ssrf1_test_urls = [
 # print(double_url_enc("localhost"))
 # print(double_url_enc("169.254.169.254"))
 # print(double_url_enc("ssh"))
+
 
 def check_status_code(expected_status_code, actual_status_code, url):
     assert (
@@ -111,19 +120,45 @@ def ssrf1():
     ssrf1_test_urls[0]["http://localhost"] = 202
     ssrf1_test_urls[0]["http://localhost:22/"] = 202
 
-    ssrf1_test_urls[0]["http://admin_panel/"] = 202
-    ssrf1_test_urls[1]["http://admin_panel/"] = 400
-    ssrf1_test_urls[0]["http://admin_panel:8484/"] = 200
-    ssrf1_test_urls[1]["http://admin_panel:8484/"] = 400
-    ssrf1_test_urls[0]["http://admin_panel:8484/reset_admin_password/"] = 200
-    ssrf1_test_urls[1]["http://admin_panel:8484/reset_admin_password/"] = 400
+    ssrf1_test_urls[0]["http://internal_api/"] = 202
+    ssrf1_test_urls[1]["http://internal_api/"] = 400
+    ssrf1_test_urls[0]["http://internal_api:8484/"] = 200
+    ssrf1_test_urls[1]["http://internal_api:8484/"] = 400
+    ssrf1_test_urls[0]["http://internal_api:8484/reset_admin_password/"] = 200
+    ssrf1_test_urls[1]["http://internal_api:8484/reset_admin_password/"] = 400
 
     for index in range(len(ssrf1_urls)):
         url = ssrf1_urls[index]
         for custom_url, status_code in ssrf1_test_urls[index].items():
             data = {"custom_url": custom_url}
             r = requests.post(url, data=data, verify=verify)
-            check_status_code(status_code, r.status_code, custom_url)
+            check_status_code(status_code, r.status_code,
+                              f"{url}({custom_url})")
+
+
+def ssrf2():
+    # do not need to add this for the patches urls because it's already included
+    ssrf2_test_urls[0]["file:///etc/passwd"] = 200
+    ssrf2_test_urls[0]["file:///etc/shadow"] = 200
+    ssrf2_test_urls[0]["file://etc/passwd"] = 202
+    ssrf2_test_urls[0]["file://etc/shadow"] = 202
+    ssrf2_test_urls[0]["file://\\/\\/etc/passwd"] = 202
+    ssrf2_test_urls[0]["file://\\/\\/etc/shadow"] = 202
+
+    ssrf1_test_urls[0]["http://internal_api/"] = 400
+    ssrf1_test_urls[1]["http://internal_api/"] = 400
+    ssrf1_test_urls[0]["http://internal_api:8484/"] = 200
+    ssrf1_test_urls[1]["http://internal_api:8484/"] = 200
+    ssrf2_test_urls[0]["http://internal_api:8484/get_cat_coin_price/"] = 200
+    ssrf2_test_urls[1]["http://internal_api:8484/get_cat_coin_price/"] = 200
+
+    for index in range(len(ssrf2_urls)):
+        url = ssrf2_urls[index]
+        for custom_url, status_code in ssrf2_test_urls[index].items():
+            data = {"custom_url": custom_url}
+            r = requests.post(url, data=data, verify=verify)
+            check_status_code(status_code, r.status_code,
+                              f"{url}({custom_url})")
 
 
 start_time = round(time.time() * 1000)
@@ -131,6 +166,7 @@ print("Starting functional test...")
 sqli1()
 sqli2()
 ssrf1()
+ssrf2()
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
 print(f"Finished running functional tests. Run time: {run_time} seconds")

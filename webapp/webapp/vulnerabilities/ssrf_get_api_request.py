@@ -105,7 +105,6 @@ INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "get_cat_coin_price"
 # http://internal_api:8484/get_cat_coin_price/
 INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 
-
 def is_valid_internal_url(url):
     valid_internal_urls = [
         INTERNAL_API,
@@ -113,11 +112,11 @@ def is_valid_internal_url(url):
         INTERNAL_API_WITH_PATH,
         INTERNAL_API_WITH_PATH_AND_SLASH,
     ]
-    return url in (valid_internal_urls + ALLOWED_URLS)
+    return url in valid_internal_urls
 
 
 def is_url_valid(url):
-    if is_valid_internal_url(url):
+    if is_valid_internal_url(url) or url in ALLOWED_URLS:
         LOG.debug(f"Valid internal url: {url}")
         return True
 
@@ -156,4 +155,4 @@ def did_successfully_get_file(url):
 
 
 def accessed_cat_coin_api(url):
-    return url == INTERNAL_API_WITH_SLASH or url == INTERNAL_API_WITH_PATH_AND_SLASH
+    return is_valid_internal_url(url)

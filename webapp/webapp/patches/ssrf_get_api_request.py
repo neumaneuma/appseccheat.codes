@@ -148,4 +148,4 @@ def did_successfully_get_file(url):
 
 
 def accessed_cat_coin_api(url):
-    return url == INTERNAL_API_WITH_SLASH or url == INTERNAL_API_WITH_PATH_AND_SLASH
+    return is_valid_internal_url(url)
