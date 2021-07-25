@@ -9,6 +9,8 @@ services:
     environment:
       - MYSQL_DATABASE=appsecdb
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
     volumes:
       - db-data:/var/lib/mysql
     networks:

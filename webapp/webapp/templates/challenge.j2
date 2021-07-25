@@ -20,7 +20,7 @@
 
 {% macro challenge_button(position, hidden, link, label) -%}
 <div class="flex {{ position }}">
-    <a class="{{ hidden }} inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
+    <a class="{{ hidden }} inline-block px-3 py-2 sm:px-5 sm:text-sm sm:py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-xs text-white shadow-lg"
         href="{{ link }}">{{ label }}
     </a>
 </div>

@@ -47,7 +47,7 @@
     <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
         <div class="pt-4 space-y-4">
             <h2 class="mt-6 text-4xl font-bold text-gray-900">
-                Challenge #1: SQLi login bypass
+                Challenge #4: SSRF local file inclusion
             </h2>
             <div class="border border-gray-900 rounded-md bg-white my-4 shadow">
     <div class="grid grid-cols-3 bg-gray-200 rounded-md hover:bg-gray-300 h-12 collapsible cursor-pointer">
@@ -85,59 +85,42 @@
     </div>
 </div>
             
-<p>Never assume user input is safe. HTML form data can contain all sorts of things that you as a developer
-    don't expect!</p>
+<p>Should you trust your database? Not always as it turns out.</p>
 
             
         </div>
         
         <div class="pt-4 space-y-4">
             <h2 class="mt-6 text-2xl font-bold text-gray-900">
-    What is SQL injection?
+    What is SSRF?
 </h2>
             
 <p>
-    SQL injection is when an attacker can trick the server into
-    running attacker-supplied SQL code against its database. For
-    example, suppose you are an <a href="https://xkcd.com/327/" class="text-blue-400 hover:underline" target="_blank">elite hacker mom</a>
-    . You name your son
-    <span class="bg-gray-200 p-1 font-mono">Robert'); DROP TABLE Students;--
-    </span>
-    and send him off to school.
+    SSRF (server side request forgery) is when an attacker can trick the server in to performing HTTP requests on the
+    attacker's behalf. Examples of HTTP requests that can be potentially dangerous for a web application are requests to a
+    private IP address (i.e., one that is not accessible from the public Internet such as
+    <span class="bg-gray-200 p-1 font-mono">127.0.0.1</span>), requests to an internal admin API, or requests that use
+    the <span class="bg-gray-200 p-1 font-mono">file://</span> protocol to access internal files on the network.
 </p>
 <p>
-    If your son's school has a server that is vulnerable to SQL
-    injection, then when they go to add your son as a student in
-    the school's database this is the SQL query that is run:
-</p>
-<p class="bg-gray-200 p-1 font-mono w-max">
-    <span class="text-black">INSERT INTO Students VALUES '</span>
-    <span class="text-red-500">Robert</span>
-    <span class="text-black">'); DROP TABLE Students;</span>
-    <span class="text-green-500">-- ');</span>
-</p>
-<p class="text-black">Black text is SQL code</p>
-<p class="text-red-500">Red text is data from the user</p>
-<p class="text-green-500">Green text is a comment</p>
-<p>
-    The intended result is for an insert statement to be
-    executed. However, because the school is vulnerable to SQL
-    injection, what actually happens is that the insert
-    statement is executed, and then a drop statement is
-    subsequently executed.
+    How might an attacker pull this off? They simply need a server endpoint that accepts a URL or an IP address as
+    input. A <a href="https://en.wikipedia.org/wiki/Webhook" class="text-blue-400 hover:underline" target="_blank">webhook</a> is a common feature these days
+    that offers such a vector to attackers. The intended functionality of a webhook is to provide a way for client
+    applications to receive notifications about events in real time. But instead of supplying a valid public IP address,
+    what if an attacker supplies a private IP address?
 </p>
 <p>
-    In plain english: a student named Robert gets added to the
-    list of students at the school, and then that list of
-    students is subsequently deleted. This is how the student
-    records are lost for the year. What would the SQL query look
-    like if the school wasn't vulnerable to SQL injection?
+    For example, suppose your web application runs on one of the major cloud providers such as AWS or Azure, and has a
+    webhook endpoint. If an attacker provides the IP address
+    <span class="bg-gray-200 p-1 font-mono">169.254.169.254</span> as input to the endpoint, then they might be able to
+    access sensitive data from the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html" class="text-blue-400 hover:underline" target="_blank">metadata</a> <a href="https://docs.microsoft.com/en-us/azure/virtual-machines/windows/instance-metadata-service?tabs=windows" class="text-blue-400 hover:underline" target="_blank">service</a> running on the cloud instance.
 </p>
-<p class="bg-gray-200 p-1 font-mono w-max">
-    <span class="text-black">INSERT INTO Students VALUES '</span>
-    <span class="text-red-500">Robert'); DROP TABLE Students;--
-    </span>
-    <span class="text-black">');</span>
+<p>
+    In plain english: the server is expecting a URL or an IP address as input. The attacker provides an IP address that
+    is only available to access by the web server because it gives out sensitive credentials. The web server accesses
+    this IP address with an HTTP request (the attacker is not directly accessing this IP address; this is what is meant
+    by the server doing stuff on the attacker's behalf) and returns the response back to the attacker. Now the attacker
+    has these sensitive credentials even though they were not able to access that metadata service directly.
 </p>
 
         </div>
@@ -146,11 +129,15 @@
     Heard about it in the news?
 </h2>
             
-<p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/" class="text-blue-400 hover:underline" target="_blank">the social media
-    platform Gab fell victim to a SQL injection attack</a>
-    that exposed users' private messages, posts, and passwords. SQL injection
-    is probably the most well known web vulnerability out there. It has been in the spotlight since the
-    early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>
+<p>SSRF is arguably the most popular vulnerability being exploited today. It is not easy to defend against, and it can
+    cause a lot of damage. Here are three recent examples of it being exploited:</p>
+<ol class="list-decimal">
+    <li>2019: Capital One <a href="https://krebsonsecurity.com/2019/08/what-we-can-learn-from-the-capital-one-hack/" class="text-blue-400 hover:underline" target="_blank">suffered a
+        breach of over 100 million customers because of SSRF</a></li>
+    <li>2020: Atlassian fell victim to the same <a href="https://jira.atlassian.com/browse/BSERV-12433" class="text-blue-400 hover:underline" target="_blank">webhook attack described above</a></li>
+    <li>2021: Microsoft Exchange servers <a href="https://www.extrahop.com/company/blog/2021/exchange-server-security/" class="text-blue-400 hover:underline" target="_blank">were compromised to
+        devastating effect</a></li>
+</ol>
 
         </div>
         
@@ -199,9 +186,9 @@
 </div>
                 </div>
                 <div class="collapsible-content mx-4">
-                    <p class="mt-4 text-xs">File truncated for brevity. <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_login_bypass.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
+                    <p class="mt-4 text-xs">File truncated for brevity. <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/ssrf_webhook.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
 </p>
-<script src="https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js"></script>
+<script src="https://gist.github.com/neumaneuma/a96c8d6c304e94cdd343a17a7ad0a7ee.js"></script>
                 </div>
             </div>
             <div class="border border-green-900 rounded-md bg-green-50 my-4 shadow">
@@ -220,50 +207,102 @@
                 </div>
                 <div class="collapsible-content mx-4">
                     <p class="mt-4">View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md" class="text-blue-400 hover:underline" target="_blank">exploit README</a> to run the exploits locally. </p>
-                    <p class="mt-4 text-xs">File truncated for brevity. <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
+                    <p class="mt-4 text-xs">File truncated for brevity. <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_webhook.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
 </p>
-<script src="https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js"></script>
+<script src="https://gist.github.com/neumaneuma/a258d30a2551184f00e455969d9fc413.js"></script>
                 </div>
             </div>
             
-<p class="my-8">You know there is a user with the username <span
-       class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to
-   figure out how to login as
-   <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their
-   password is!
+<p class="my-8">You are provided with another user's username. This is all you need to know in order to change their
+    password for
+    them!</p>
+
+<div class="w-full max-w-xs">
+    <form method="GET" action="/vulnerabilities/sqli2/get_username/"
+        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-4">
+                Username:
+            </label>
+            <button
+                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit">
+                Get username
+            </button>
+        </div>
+    </form>
+</div>
+<p class="my-8">Create an account so that you can access the change password flow.</p>
+<div class="w-full max-w-xs">
+    <form method="POST" action="/vulnerabilities/sqli2/register/"
+        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                Username
+            </label>
+            <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                name="username" id="username" type="text" placeholder="Username">
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                Password
+            </label>
+            <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                name="password" id="password" type="password" placeholder="******************">
+        </div>
+        <div class="flex items-center justify-between">
+            <button
+                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit">
+                Create user
+            </button>
+        </div>
+    </form>
+</div>
+<p class="my-8">Now that you are logged in as the user you just created, try changing the original user's password!
 </p>
-<div class="divide-y divide-gray-500 pt-6">
+<div class="divide-y divide-gray-500">
     <div class="w-full max-w-xs mb-10">
-        <form method="POST" action="/vulnerabilities/sqli1/login/"
+        <form method="POST" action="/vulnerabilities/sqli2/change_password/"
             class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                    Username
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="old_password">
+                    Old password
                 </label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    name="username" id="username" type="text" placeholder="Username">
+                    name="old_password" id="old_password" type="password" placeholder="******************">
             </div>
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                    Password
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password1">
+                    New password
                 </label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    name="password" id="password" type="password" placeholder="******************">
+                    name="new_password1" id="new_password1" type="password" placeholder="******************">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password2">
+                    Re-type password
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                    name="new_password2" id="new_password2" type="password" placeholder="******************">
             </div>
             <div class="flex items-center justify-between">
                 <button
                     class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     type="submit">
-                    Sign In
+                    Change password
                 </button>
             </div>
         </form>
     </div>
     <div class="pt-8 mb-6">
     <a id="passphrase_form"></a>
-    <form method="POST" action="/sqli1/">
+    <form method="POST" action="/sqli2/">
         <label class="block text-gray-700 text-sm font-bold mb-4" for="passphrase">
             Solve challenge by entering the passphrase:
         </label>

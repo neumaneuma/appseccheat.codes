@@ -10,9 +10,9 @@
     and the previous one is that it is predicated on the fact that developers often assume that anything in the database
     is safe because it is <span class="italic">their</span> database. However, if the database was populated using user
     input, then reading from the database is just as unsafe as handling user input through HTML form data.</p>
-<p>Another technique that can supplement a parameterized query is to implement an allow-list. An
-    allow-list specifies what characters are allowed as input, and rejects everything else. However, for
-    most situations involving SQL injection, it is impractical to implement an allow-list because all
+<p>Another technique that can supplement a parameterized query is to implement an allowlist. An
+    allowlist specifies what characters are allowed as input, and rejects everything else. However, for
+    most situations involving SQL injection, it is impractical to implement an allowlist because all
     characters are valid. For example, restricting what characters a user can enter for a password is
     considered a poor user experience. Therefore a parameterized query is the primary line of defense.
 </p>

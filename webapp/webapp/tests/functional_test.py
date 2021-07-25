@@ -126,6 +126,10 @@ def ssrf1():
     ssrf1_test_urls[1]["http://internal_api:8484/"] = 400
     ssrf1_test_urls[0]["http://internal_api:8484/reset_admin_password/"] = 200
     ssrf1_test_urls[1]["http://internal_api:8484/reset_admin_password/"] = 400
+    ssrf1_test_urls[0]["http://127.0.0.1:8485/permanent/"] = 202
+    ssrf1_test_urls[1]["http://127.0.0.1:8485/permanent/"] = 400
+    ssrf1_test_urls[0]["http://127.0.0.1:8485/temporary/"] = 202
+    ssrf1_test_urls[1]["http://127.0.0.1:8485/temporary/"] = 400
 
     for index in range(len(ssrf1_urls)):
         url = ssrf1_urls[index]
@@ -149,8 +153,14 @@ def ssrf2():
     ssrf1_test_urls[1]["http://internal_api/"] = 400
     ssrf1_test_urls[0]["http://internal_api:8484/"] = 200
     ssrf1_test_urls[1]["http://internal_api:8484/"] = 200
-    ssrf2_test_urls[0]["http://internal_api:8484/get_cat_coin_price/"] = 200
-    ssrf2_test_urls[1]["http://internal_api:8484/get_cat_coin_price/"] = 200
+    ssrf2_test_urls[0]["http://internal_api:8484/get_cat_coin_price_v1/"] = 200
+    ssrf2_test_urls[1]["http://internal_api:8484/get_cat_coin_price_v1/"] = 200
+    ssrf2_test_urls[0]["http://internal_api:8484/get_cat_coin_price_v2/"] = 200
+    ssrf2_test_urls[1]["http://internal_api:8484/get_cat_coin_price_v2/"] = 200
+    ssrf2_test_urls[0]["http://127.0.0.1:8485/permanent/"] = 400
+    ssrf2_test_urls[1]["http://127.0.0.1:8485/permanent/"] = 400
+    ssrf2_test_urls[0]["http://127.0.0.1:8485/temporary/"] = 400
+    ssrf2_test_urls[1]["http://127.0.0.1:8485/temporary/"] = 400
 
     for index in range(len(ssrf2_urls)):
         url = ssrf2_urls[index]
