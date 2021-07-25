@@ -28,3 +28,17 @@ class RoutesTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.app.post(path, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_ssrf1_path_returns_200(self):
+        path = "/ssrf1/"
+        response = self.app.get(path)
+        self.assertEqual(response.status_code, 200)
+        response = self.app.post(path, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_ssrf2_path_returns_200(self):
+        path = "/ssrf2/"
+        response = self.app.get(path)
+        self.assertEqual(response.status_code, 200)
+        response = self.app.post(path, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)

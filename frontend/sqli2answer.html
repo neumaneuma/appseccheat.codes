@@ -6,133 +6,129 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
+    <link rel="stylesheet" href="/static/tailwind.css" />
 
-    <!-- <link rel="stylesheet" href="/static/tailwind.css" /> -->
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-
+    
 </head>
 
 <body>
     <nav class="bg-gray-700 text-gray-100 fixed w-full">
-        <div class="container mx-auto px-6 py-2 flex justify-between items-center">
-            <a href="/" class="font-bold text-2xl">AppSec Cheat Codes <span
-                    class="text-sm border-2 ml-2 uppercase rounded">beta</span></a>
-            <div class="block">
-                <ul class="inline-flex">
-                    <li><a class="px-4 hover:text-blue-400" href="/faq">FAQ</a></li>
-                    <li><a class="px-4 hover:text-blue-400" target="_blank"
-                            href="https://github.com/neumaneuma/appseccheat.codes">GitHub</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-
-    <div class="bg-gray-100">
-        <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-4xl font-bold text-gray-900">
-                    Challenge #2: SQLi second order
-                </h2>
-            </div>
-            <div class="pt-8">
-                <h3 class="text-2xl font-bold text-gray-900">
-                    Congratulations on solving the second challenge!
-                </h3>
-            </div>
-            <div class="border border-blue-900 rounded-md bg-blue-50 my-4 shadow">
-                <div class="grid grid-cols-3 bg-blue-200 rounded-t-md h-12 collapsible cursor-pointer">
-                    <div class="flex justify-start col-span-2 items-center">
-                        <h3 class="text-base font-bold text-gray-900 ml-4">
-                            The fix: <span class="text-blue-700">how to write secure code</span>
-                        </h3>
-                    </div>
-
-                </div>
-                <div class="collapsible-content mx-4">
-                    <p class="mt-4 text-xs"><a
-                            href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_second_order.py"
-                            class="text-blue-400 hover:underline" target="_blank">Click here</a> to view the entire
-                        file, and not just the diff.
-                    </p>
-                    <script src="https://gist.github.com/neumaneuma/bef037bcd02ae91e6c6ecf1aac46546d.js"></script>
-                </div>
-            </div>
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    Explanation
-                </h2>
-
-                <p>
-                    This defense makes use of what is known as a <a
-                        href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples"
-                        class="text-blue-400 hover:underline" target="_blank">parameterized query</a>. A succinct way of
-                    explaining it
-                    is that a parameterized query interprets user input as data instead of code. A key difference
-                    between this challenge
-                    and the previous one is that it is predicated on the fact that developers often assume that anything
-                    in the database
-                    is safe because it is <span class="italic">their</span> database. However, if the database was
-                    populated using user
-                    input, then reading from the database is just as unsafe as handling user input through HTML form
-                    data.</p>
-                <p>Another technique that can supplement a parameterized query is to implement an allow-list. An
-                    allow-list specifies what characters are allowed as input, and rejects everything else. However, for
-                    most situations involving SQL injection, it is impractical to implement an allow-list because all
-                    characters are valid. For example, restricting what characters a user can enter for a password is
-                    considered a poor user experience. Therefore a parameterized query is the primary line of defense.
-                </p>
-
-            </div>
-            <div class="grid grid-cols-2 pt-48">
-
-                <div class="flex justify-start">
-                    <a class=" inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-                        href="/sqli1">Previous Challenge
-                    </a>
-                </div>
-
-
-                <div class="flex justify-end">
-                    <a class="hidden inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
-                        href="">Next Challenge
-                    </a>
-                </div>
-
-            </div>
+    <div class="container mx-auto px-6 py-2 flex justify-between items-center">
+        <a href="/" class="font-bold text-2xl"
+            >AppSec Cheat Codes<span class="text-sm border-2 ml-2 uppercase rounded">beta</span></a
+        >
+        <div class="block">
+            <ul class="inline-flex">
+                <li><a class="px-4 hover:text-blue-400" href="/faq/">FAQs</a></li>
+                <li>
+                    <a
+                        class="px-4 hover:text-blue-400"
+                        target="_blank"
+                        href="https://github.com/neumaneuma/appseccheat.codes"
+                        >GitHub</a
+                    >
+                </li>
+            </ul>
         </div>
     </div>
-    <script>
-        var collapsible = document.getElementsByClassName("collapsible");
+</nav>
+    
 
-        for (var i = 0; i < collapsible.length; i++) {
-            collapsible[i].addEventListener("click", event => {
-                var plus = event.currentTarget.getElementsByClassName("plus")[0];
-                var minus = event.currentTarget.getElementsByClassName("minus")[0];
-                var content = event.currentTarget.nextElementSibling;
+<div class="bg-gray-100">
+    <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
+        <div class="pt-4 space-y-4">
+            <h2 class="mt-6 text-4xl font-bold text-gray-900">
+                Challenge #2: SQLi second order
+            </h2>
+        </div>
+        <div class="pt-8">
+            <h3 class="text-2xl font-bold text-gray-900">
+                Congratulations on solving the second challenge!
+            </h3>
+        </div>
+        <div class="border border-blue-900 rounded-md bg-blue-50 my-4 shadow">
+            <div class="grid grid-cols-3 bg-blue-200 rounded-t-md h-12 collapsible cursor-pointer">
+                <div class="flex justify-start col-span-2 items-center">
+                    <h3 class="text-base font-bold text-gray-900 ml-4">
+                        The fix: <span class="text-blue-700">how to write secure code</span>
+                    </h3>
+                </div>
 
-                plus.classList.toggle("hidden")
-                minus.classList.toggle("hidden")
-                content.classList.toggle("pb-4");
+            </div>
+            <div class="collapsible-content mx-4">
+                <p class="mt-4 text-xs"><a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_second_order.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view the entire file, and not just the diff.
+</p>
+<script src="https://gist.github.com/neumaneuma/bef037bcd02ae91e6c6ecf1aac46546d.js"></script>
+            </div>
+        </div>
+        <div class="pt-4 space-y-4">
+            <h2 class="mt-6 text-2xl font-bold text-gray-900">
+    Explanation
+</h2>
+            
+<p>
+    This defense makes use of what is known as a <a href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#parameterized-query-examples" class="text-blue-400 hover:underline" target="_blank">parameterized query</a>. A succinct way of explaining it
+    is that a parameterized query interprets user input as data instead of code. A key difference between this challenge
+    and the previous one is that it is predicated on the fact that developers often assume that anything in the database
+    is safe because it is <span class="italic">their</span> database. However, if the database was populated using user
+    input, then reading from the database is just as unsafe as handling user input through HTML form data.</p>
+<p>Another technique that can supplement a parameterized query is to implement an allow-list. An
+    allow-list specifies what characters are allowed as input, and rejects everything else. However, for
+    most situations involving SQL injection, it is impractical to implement an allow-list because all
+    characters are valid. For example, restricting what characters a user can enter for a password is
+    considered a poor user experience. Therefore a parameterized query is the primary line of defense.
+</p>
 
-                var currentElement = event.currentTarget.classList;
-                if (currentElement.contains("rounded-md")) {
-                    currentElement.remove("rounded-md");
-                    currentElement.add("rounded-t-md");
-                } else {
-                    currentElement.add("rounded-md");
-                    currentElement.remove("rounded-t-md");
-                }
+        </div>
+        <div class="grid grid-cols-2 pt-48">
+            
+            <div class="flex justify-start">
+    <a class=" inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
+        href="/sqli1/">Previous Challenge
+    </a>
+</div>
+            
+            
+            <div class="flex justify-end">
+    <a class=" inline-block px-5 py-3 rounded bg-gray-500 hover:bg-gray-400 uppercase font-bold text-sm text-white shadow-lg sm:text-base"
+        href="/ssrf1/">Next Challenge
+    </a>
+</div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    var collapsible = document.getElementsByClassName("collapsible");
 
-                // Toggle setting max height between nothing and the height of the sibling element in pixels
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                } else {
-                    content.style.maxHeight = `${content.scrollHeight}px`;
-                }
-            });
-        }
-    </script>
+    for (var i = 0; i < collapsible.length; i++) {
+        collapsible[i].addEventListener("click", event => {
+            var plus = event.currentTarget.getElementsByClassName("plus")[0];
+            var minus = event.currentTarget.getElementsByClassName("minus")[0];
+            var content = event.currentTarget.nextElementSibling;
+
+            plus.classList.toggle("hidden")
+            minus.classList.toggle("hidden")
+            content.classList.toggle("pb-4");
+
+            var currentElement = event.currentTarget.classList;
+            if (currentElement.contains("rounded-md")) {
+                currentElement.remove("rounded-md");
+                currentElement.add("rounded-t-md");
+            } else {
+                currentElement.add("rounded-md");
+                currentElement.remove("rounded-t-md");
+            }
+
+            // Toggle setting max height between nothing and the height of the sibling element in pixels
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = `${content.scrollHeight}px`;
+            }
+        });
+    }
+</script>
 
 </body>
 

@@ -6,10 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppSec Cheat Codes</title>
+    <link rel="stylesheet" href="/static/tailwind.css" />
 
-    <!-- <link rel="stylesheet" href="/static/tailwind.css" /> -->
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-
+    
     <style>
         /* For some reason including the tailwind classes inside of the div class makes this not work */
         .collapsible-content {
@@ -18,402 +17,355 @@
             transition: max-height 0.2s ease-out;
         }
     </style>
-
+    
 </head>
 
 <body>
     <nav class="bg-gray-700 text-gray-100 fixed w-full">
-        <div class="container mx-auto px-6 py-2 flex justify-between items-center">
-            <a href="/" class="font-bold text-2xl">AppSec Cheat Codes <span
-                    class="text-sm border-2 ml-2 uppercase rounded">beta</span></a>
-            <div class="block">
-                <ul class="inline-flex">
-                    <li><a class="px-4 hover:text-blue-400" href="/faq">FAQ</a></li>
-                    <li><a class="px-4 hover:text-blue-400" target="_blank"
-                            href="https://github.com/neumaneuma/appseccheat.codes">GitHub</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-
-    <div class="bg-gray-100">
-        <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-4xl font-bold text-gray-900">
-                    Challenge #2: SQLi second order
-                </h2>
-                <div class="border border-gray-900 rounded-md bg-white my-4 shadow">
-                    <div
-                        class="grid grid-cols-3 bg-gray-200 rounded-md hover:bg-gray-300 h-12 collapsible cursor-pointer">
-                        <div class="flex justify-start col-span-2 items-center">
-                            <h3 class="text-base font-bold text-gray-900 ml-4">
-                                How should I approach this?
-                            </h3>
-                        </div>
-                        <div class="flex justify-end items-center">
-                            <span class="plus text-gray-900 mr-4">+</span>
-                            <span class="minus hidden text-gray-900 mr-4">-</span>
-                        </div>
-                    </div>
-                    <div class="collapsible-content px-4 space-y-4">
-                        <p class="mt-4">This is a <a href="https://dev.to/atan/what-is-ctf-and-how-to-get-started-3f04"
-                                class="text-blue-400 hover:underline" target="_blank">capture the flag (CTF)</a> webapp
-                            designed to teach software developers the fundamentals of <a
-                                href="https://en.wikipedia.org/wiki/Application_security"
-                                class="text-blue-400 hover:underline" target="_blank">application security (AppSec)</a>.
-                            Software developers learn best when reading and writing code. Most CTFs are catered towards
-                            <a href="https://en.wikipedia.org/wiki/Penetration_test"
-                                class="text-blue-400 hover:underline" target="_blank">pentesters</a> who predominantly
-                            use a
-                            variety of tools for CTFs and in their day jobs. While certainly a more efficient approach,
-                            this does not,
-                            however, translate well for a software developer trying to learn AppSec.</p>
-                        <p>How is a software developer supposed to learn how to write secure code if all they learn how
-                            to do from a CTF
-                            is click a few buttons and enter some input into a text field? That is why the purpose of
-                            this CTF is to
-                            reframe the concept of AppSec in terms of code.</p>
-                        <p>There are 3 hints for every challenge. One hint will show you <span class="italic">the exact
-                                code of the
-                                server-side vulnerability that you are trying to exploit</span>. It is one thing to read
-                            a description
-                            of a vulnerability, and a whole another thing to actually see a working example of the code.
-                            Another hint
-                            will show you <span class="italic">the exact code of the exploit and how to run it</span>.
-                            Technically this
-                            is less of a hint and more just the answer to how to solve the challenge, but let's not get
-                            too hung up on
-                            semantics.</p>
-                        <p>The next logical step is to provide the diff between what the vulnerable code looks like and
-                            what the secure
-                            code looks like. This is accessible to anyone who solves the challenge, which considering
-                            the exploit is
-                            provided if you cannot figure out how to write it on your own, is literally anyone.</p>
-                        <p>And finally, as if this wall of text wasn't long enough, there is even more to it. If you
-                            want to run the
-                            webapp locally just follow the instructions on this <a
-                                href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md"
-                                class="text-blue-400 hover:underline" target="_blank">README</a>. Make
-                            any modifications you want. Add code, remove code, break things, figure out how to fix them.
-                            This is what I
-                            believe to be the most effective way for a developer to learn a concept: through code.</p>
-                    </div>
-                </div>
-
-                <p>Should you trust your database? Not always as it turns out.</p>
-
-
-            </div>
-
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    What is SQL injection?
-                </h2>
-
-                <p>
-                    SQL injection is when an attacker can trick the server into
-                    running attacker-supplied SQL code against its database. For
-                    example, suppose you are an <a href="https://xkcd.com/327/" class="text-blue-400 hover:underline"
-                        target="_blank">elite hacker mom</a>
-                    . You name your son
-                    <span class="bg-gray-200 p-1 font-mono">Robert'); DROP TABLE Students;--
-                    </span>
-                    and send him off to school.
-                </p>
-                <p>
-                    If your son's school has a server that is vulnerable to SQL
-                    injection, then when they go to add your son as a student in
-                    the school's database this is the SQL query that is run:
-                </p>
-                <p class="bg-gray-200 p-1 font-mono w-max">
-                    <span class="text-black">INSERT INTO Students VALUES '</span>
-                    <span class="text-red-500">Robert</span>
-                    <span class="text-black">'); DROP TABLE Students;</span>
-                    <span class="text-green-500">-- ');</span>
-                </p>
-                <p class="text-black">Black text is SQL code</p>
-                <p class="text-red-500">Red text is data from the user</p>
-                <p class="text-green-500">Green text is a comment</p>
-                <p>
-                    The intended result is for an insert statement to be
-                    executed. However, because the school is vulnerable to SQL
-                    injection, what actually happens is that the insert
-                    statement is executed, and then a drop statement is
-                    subsequently executed.
-                </p>
-                <p>
-                    In plain english: a student named Robert gets added to the
-                    list of students at the school, and then that list of
-                    students is subsequently deleted. This is how the student
-                    records are lost for the year. What would the SQL query look
-                    like if the school wasn't vulnerable to SQL injection?
-                </p>
-                <p class="bg-gray-200 p-1 font-mono w-max">
-                    <span class="text-black">INSERT INTO Students VALUES '</span>
-                    <span class="text-red-500">Robert'); DROP TABLE Students;--
-                    </span>
-                    <span class="text-black">');</span>
-                </p>
-
-            </div>
-            <div class="pt-4 space-y-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    Heard about it in the news?
-                </h2>
-
-                <p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/"
-                        class="text-blue-400 hover:underline" target="_blank">the social media
-                        platform Gab fell victim to a SQL injection attack</a>
-                    that exposed users' private messages, posts, and passwords. SQL injection
-                    is probably the most well known web vulnerability out there. It has been in the spotlight since the
-                    early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>
-
-            </div>
-
-            <div class="pt-4">
-                <h2 class="mt-6 text-2xl font-bold text-gray-900">
-                    Challenge
-                </h2>
-                <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 ">
-                    <div
-                        class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-12 collapsible cursor-pointer">
-                        <div class="flex justify-start items-center">
-                            <h3 class="text-base font-bold text-gray-900 ml-4">
-                                Hint #1: <span class="group-hover:text-yellow-800 text-yellow-700">Generic Hint</span>
-                            </h3>
-                        </div>
-                        <div class="flex justify-end items-center">
-                            <span class="plus text-gray-900 mr-4">+</span>
-                            <span class="minus hidden text-gray-900 mr-4">-</span>
-                        </div>
-                    </div>
-                    <div class="collapsible-content px-4 space-y-4">
-                        <p class="mt-4">If you are unsure on how to proceed, then the following may help:</p>
-                        <p>You can enter the input necessary to exploit this challenge manually through your browser, or
-                            you can use an
-                            automated tool such as <a href="https://portswigger.net/burp"
-                                class="text-blue-400 hover:underline" target="_blank">Burp Suite</a> or <a
-                                href="https://www.zaproxy.org" class="text-blue-400 hover:underline"
-                                target="_blank">OWASP ZAP</a>. However, since this CTF is focused specifically
-                            on the code side of application security, neither of those solutions will be presented here.
-                        </p>
-                        <p>The exploit code and instructions on how to run it is presented in the third hint. However,
-                            you are
-                            encouraged to attempt to write the exploit code yourself before looking at the answer. In
-                            order to do this,
-                            you need to understand what fields are being set in the HTTP request being sent to the
-                            server from the
-                            browser. This is so that you can craft your own HTTP request from the script you write. You
-                            can use your <a
-                                href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html"
-                                class="text-blue-400 hover:underline" target="_blank">browser's developer tools</a> to
-                            figure out this information or you can use a tool that can decrypt
-                            encrypted traffic on your computer. Burp Suite and OWASP ZAP both offer this feature in
-                            addition to their
-                            automated pentesting. I personally used <a href="https://mitmproxy.org"
-                                class="text-blue-400 hover:underline" target="_blank">mitmproxy</a> when
-                            writing the exploit scripts for this site because it has a lot fewer features than those
-                            other tools, and
-                            therefore is a lot simpler to use. There is no right answer though. Any of those options
-                            will suffice.</p>
-                    </div>
-                </div>
-                <div class="border border-red-900 rounded-md bg-red-50 my-4 shadow">
-                    <div
-                        class="grid grid-cols-3 bg-red-200 rounded-md hover:bg-red-300 h-12 collapsible cursor-pointer">
-                        <div class="flex justify-start col-span-2 items-center">
-                            <h3 class="text-base font-bold text-gray-900 ml-4">
-                                Hint #2: <span class="hover:text-red-800 text-red-700">Reverse engineer the
-                                    exploit using the server-side vulnerability</span>
-                            </h3>
-                        </div>
-                        <div class="flex justify-end items-center">
-                            <span class="plus text-gray-900 mr-4">+</span>
-                            <span class="minus hidden text-gray-900 mr-4">-</span>
-                        </div>
-                    </div>
-                    <div class="collapsible-content mx-4">
-                        <p class="mt-4 text-xs">File truncated for brevity. <a
-                                href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_second_order.py"
-                                class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
-                        </p>
-                        <script src="https://gist.github.com/neumaneuma/a96c8d6c304e94cdd343a17a7ad0a7ee.js"></script>
-                    </div>
-                </div>
-                <div class="border border-green-900 rounded-md bg-green-50 my-4 shadow">
-                    <div
-                        class="grid grid-cols-3 bg-green-200 rounded-md hover:bg-green-300 h-12 collapsible cursor-pointer">
-                        <div class="flex justify-start col-span-2 items-center">
-                            <h3 class="text-base font-bold text-gray-900 ml-4">
-                                Hint #3: <span class="group-hover:text-green-800 text-green-700">Couldn't figure out the
-                                    answer? Here is the exploit</span>
-                            </h3>
-                        </div>
-                        <div class="flex justify-end items-center">
-                            <span class="plus text-gray-900 mr-4">+</span>
-                            <span class="minus hidden text-gray-900 mr-4">-</span>
-                        </div>
-                    </div>
-                    <div class="collapsible-content mx-4">
-                        <p class="mt-4">View the <a
-                                href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
-                                class="text-blue-400 hover:underline" target="_blank">exploit README</a> to run the
-                            exploits locally. </p>
-                        <p class="mt-4 text-xs">File truncated for brevity. <a
-                                href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py"
-                                class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
-                        </p>
-                        <script src="https://gist.github.com/neumaneuma/a258d30a2551184f00e455969d9fc413.js"></script>
-                    </div>
-                </div>
-
-                <p class="my-8">You are provided with another user's username. This is all you need to know in order to
-                    change their
-                    password for
-                    them!</p>
-
-                <div class="w-full max-w-xs">
-                    <form method="GET" action="/vulnerabilities/sqli2/get_username"
-                        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-4">
-                                Username:
-                            </label>
-                            <button
-                                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                type="submit">
-                                Get username
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <p class="my-8">Create an account so that you can access the change password flow.</p>
-                <div class="w-full max-w-xs">
-                    <form method="POST" action="/vulnerabilities/sqli2/register"
-                        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                                Username
-                            </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                name="username" id="username" type="text" placeholder="Username">
-                        </div>
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                                Password
-                            </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                name="password" id="password" type="password" placeholder="******************">
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <button
-                                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                type="submit">
-                                Create user
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <p class="my-8">Now that you are logged in as the user you just created, try changing the original
-                    user's password!
-                </p>
-                <div class="divide-y divide-gray-500">
-                    <div class="w-full max-w-xs mb-10">
-                        <form method="POST" action="/vulnerabilities/sqli2/change_password"
-                            class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="old_password">
-                                    Old password
-                                </label>
-                                <input
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    name="old_password" id="old_password" type="password"
-                                    placeholder="******************">
-                            </div>
-                            <div class="mb-6">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password1">
-                                    New password
-                                </label>
-                                <input
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    name="new_password1" id="new_password1" type="password"
-                                    placeholder="******************">
-                            </div>
-                            <div class="mb-6">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password2">
-                                    Re-type password
-                                </label>
-                                <input
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    name="new_password2" id="new_password2" type="password"
-                                    placeholder="******************">
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <button
-                                    class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                    type="submit">
-                                    Change password
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="pt-8 mb-6">
-                        <a id="passphrase_form"></a>
-                        <form method="POST" action="/sqli2">
-                            <label class="block text-gray-700 text-sm font-bold mb-4" for="passphrase">
-                                Solve challenge by entering the passphrase:
-                            </label>
-
-
-
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline max-w-md"
-                                name="passphrase" id="passphrase" type="password" placeholder="******************">
-                            <button
-                                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
-                                type="submit">Submit
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-            </div>
+    <div class="container mx-auto px-6 py-2 flex justify-between items-center">
+        <a href="/" class="font-bold text-2xl"
+            >AppSec Cheat Codes<span class="text-sm border-2 ml-2 uppercase rounded">beta</span></a
+        >
+        <div class="block">
+            <ul class="inline-flex">
+                <li><a class="px-4 hover:text-blue-400" href="/faq/">FAQs</a></li>
+                <li>
+                    <a
+                        class="px-4 hover:text-blue-400"
+                        target="_blank"
+                        href="https://github.com/neumaneuma/appseccheat.codes"
+                        >GitHub</a
+                    >
+                </li>
+            </ul>
         </div>
     </div>
-    <script>
-        var collapsible = document.getElementsByClassName("collapsible");
+</nav>
+    
 
-        for (var i = 0; i < collapsible.length; i++) {
-            collapsible[i].addEventListener("click", event => {
-                var plus = event.currentTarget.getElementsByClassName("plus")[0];
-                var minus = event.currentTarget.getElementsByClassName("minus")[0];
-                var content = event.currentTarget.nextElementSibling;
+<div class="bg-gray-100">
+    <div class="px-8 py-12 max-w-5xl mx-auto text-gray-600">
+        <div class="pt-4 space-y-4">
+            <h2 class="mt-6 text-4xl font-bold text-gray-900">
+                Challenge #2: SQLi second order
+            </h2>
+            <div class="border border-gray-900 rounded-md bg-white my-4 shadow">
+    <div class="grid grid-cols-3 bg-gray-200 rounded-md hover:bg-gray-300 h-12 collapsible cursor-pointer">
+        <div class="flex justify-start col-span-2 items-center">
+            <h3 class="text-base font-bold text-gray-900 ml-4">
+                How should I approach this?
+            </h3>
+        </div>
+        <div class="flex justify-end items-center">
+    <span class="plus text-gray-900 mr-4">+</span>
+    <span class="minus hidden text-gray-900 mr-4">-</span>
+</div>
+    </div>
+    <div class="collapsible-content px-4 space-y-4">
+        <p class="mt-4">This is a <a href="https://dev.to/atan/what-is-ctf-and-how-to-get-started-3f04" class="text-blue-400 hover:underline" target="_blank">capture the flag (CTF)</a> webapp designed to teach software developers the fundamentals of <a href="https://en.wikipedia.org/wiki/Application_security" class="text-blue-400 hover:underline" target="_blank">application security (AppSec)</a>.
+            Software developers learn best when reading and writing code. Most CTFs are catered towards <a href="https://en.wikipedia.org/wiki/Penetration_test" class="text-blue-400 hover:underline" target="_blank">pentesters</a> who predominantly use a
+            variety of tools for CTFs and in their day jobs. While certainly a more efficient approach, this does not,
+            however, translate well for a software developer trying to learn AppSec.</p>
+        <p>How is a software developer supposed to learn how to write secure code if all they learn how to do from a CTF
+            is click a few buttons and enter some input into a text field? That is why the purpose of this CTF is to
+            reframe the concept of AppSec in terms of code.</p>
+        <p>There are 3 hints for every challenge. One hint will show you <span class="italic">the exact code of the
+                server-side vulnerability that you are trying to exploit</span>. It is one thing to read a description
+            of a vulnerability, and a whole another thing to actually see a working example of the code. Another hint
+            will show you <span class="italic">the exact code of the exploit and how to run it</span>. Technically this
+            is less of a hint and more just the answer to how to solve the challenge, but let's not get too hung up on
+            semantics.</p>
+        <p>The next logical step is to provide the diff between what the vulnerable code looks like and what the secure
+            code looks like. This is accessible to anyone who solves the challenge, which considering the exploit is
+            provided if you cannot figure out how to write it on your own, is literally anyone.</p>
+        <p>And finally, as if this wall of text wasn't long enough, there is even more to it. If you want to run the
+            webapp locally just follow the instructions on this <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md" class="text-blue-400 hover:underline" target="_blank">README</a>. Make
+            any modifications you want. Add code, remove code, break things, figure out how to fix them. This is what I
+            believe to be the most effective way for a developer to learn a concept: through code.</p>
+    </div>
+</div>
+            
+<p>Should you trust your database? Not always as it turns out.</p>
 
-                plus.classList.toggle("hidden")
-                minus.classList.toggle("hidden")
-                content.classList.toggle("pb-4");
+            
+        </div>
+        
+        <div class="pt-4 space-y-4">
+            <h2 class="mt-6 text-2xl font-bold text-gray-900">
+    What is SQL injection?
+</h2>
+            
+<p>
+    SQL injection is when an attacker can trick the server into
+    running attacker-supplied SQL code against its database. For
+    example, suppose you are an <a href="https://xkcd.com/327/" class="text-blue-400 hover:underline" target="_blank">elite hacker mom</a>
+    . You name your son
+    <span class="bg-gray-200 p-1 font-mono">Robert'); DROP TABLE Students;--
+    </span>
+    and send him off to school.
+</p>
+<p>
+    If your son's school has a server that is vulnerable to SQL
+    injection, then when they go to add your son as a student in
+    the school's database this is the SQL query that is run:
+</p>
+<p class="bg-gray-200 p-1 font-mono w-max">
+    <span class="text-black">INSERT INTO Students VALUES '</span>
+    <span class="text-red-500">Robert</span>
+    <span class="text-black">'); DROP TABLE Students;</span>
+    <span class="text-green-500">-- ');</span>
+</p>
+<p class="text-black">Black text is SQL code</p>
+<p class="text-red-500">Red text is data from the user</p>
+<p class="text-green-500">Green text is a comment</p>
+<p>
+    The intended result is for an insert statement to be
+    executed. However, because the school is vulnerable to SQL
+    injection, what actually happens is that the insert
+    statement is executed, and then a drop statement is
+    subsequently executed.
+</p>
+<p>
+    In plain english: a student named Robert gets added to the
+    list of students at the school, and then that list of
+    students is subsequently deleted. This is how the student
+    records are lost for the year. What would the SQL query look
+    like if the school wasn't vulnerable to SQL injection?
+</p>
+<p class="bg-gray-200 p-1 font-mono w-max">
+    <span class="text-black">INSERT INTO Students VALUES '</span>
+    <span class="text-red-500">Robert'); DROP TABLE Students;--
+    </span>
+    <span class="text-black">');</span>
+</p>
 
-                var currentElement = event.currentTarget.classList;
-                if (currentElement.contains("rounded-md")) {
-                    currentElement.remove("rounded-md");
-                    currentElement.add("rounded-t-md");
-                } else {
-                    currentElement.add("rounded-md");
-                    currentElement.remove("rounded-t-md");
-                }
+        </div>
+        <div class="pt-4 space-y-4">
+            <h2 class="mt-6 text-2xl font-bold text-gray-900">
+    Heard about it in the news?
+</h2>
+            
+<p>In early 2021, <a href="https://www.wired.com/story/gab-hack-data-breach-ddosecrets/" class="text-blue-400 hover:underline" target="_blank">the social media
+    platform Gab fell victim to a SQL injection attack</a>
+    that exposed users' private messages, posts, and passwords. SQL injection
+    is probably the most well known web vulnerability out there. It has been in the spotlight since the
+    early 2010s. Yet despite that, it still remains a potent threat even a decade later.</p>
 
-                // Toggle setting max height between nothing and the height of the sibling element in pixels
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                } else {
-                    content.style.maxHeight = `${content.scrollHeight}px`;
-                }
-            });
-        }
-    </script>
+        </div>
+        
+        <div class="pt-4">
+            <h2 class="mt-6 text-2xl font-bold text-gray-900">
+    Challenge
+</h2>
+            <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 ">
+    <div class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-12 collapsible cursor-pointer">
+        <div class="flex justify-start items-center">
+            <h3 class="text-base font-bold text-gray-900 ml-4">
+                Hint #1: <span class="group-hover:text-yellow-800 text-yellow-700">Generic Hint</span>
+            </h3>
+        </div>
+        <div class="flex justify-end items-center">
+    <span class="plus text-gray-900 mr-4">+</span>
+    <span class="minus hidden text-gray-900 mr-4">-</span>
+</div>
+    </div>
+    <div class="collapsible-content px-4 space-y-4">
+        <p class="mt-4">If you are unsure on how to proceed, then the following may help:</p>
+        <p>You can enter the input necessary to exploit this challenge manually through your browser, or you can use an
+            automated tool such as <a href="https://portswigger.net/burp" class="text-blue-400 hover:underline" target="_blank">Burp Suite</a> or <a href="https://www.zaproxy.org" class="text-blue-400 hover:underline" target="_blank">OWASP ZAP</a>. However, since this CTF is focused specifically
+            on the code side of application security, neither of those solutions will be presented here.</p>
+        <p>The exploit code and instructions on how to run it is presented in the third hint. However, you are
+            encouraged to attempt to write the exploit code yourself before looking at the answer. In order to do this,
+            you need to understand what fields are being set in the HTTP request being sent to the server from the
+            browser. This is so that you can craft your own HTTP request from the script you write. You can use your <a href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html" class="text-blue-400 hover:underline" target="_blank">browser's developer tools</a> to figure out this information or you can use a tool that can decrypt
+            encrypted traffic on your computer. Burp Suite and OWASP ZAP both offer this feature in addition to their
+            automated pentesting. I personally used <a href="https://mitmproxy.org" class="text-blue-400 hover:underline" target="_blank">mitmproxy</a> when
+            writing the exploit scripts for this site because it has a lot fewer features than those other tools, and
+            therefore is a lot simpler to use. There is no right answer though. Any of those options will suffice.</p>
+    </div>
+</div>
+            <div class="border border-red-900 rounded-md bg-red-50 my-4 shadow">
+                <div class="grid grid-cols-3 bg-red-200 rounded-md hover:bg-red-300 h-12 collapsible cursor-pointer">
+                    <div class="flex justify-start col-span-2 items-center">
+                        <h3 class="text-base font-bold text-gray-900 ml-4">
+                            Hint #2: <span class="hover:text-red-800 text-red-700">Reverse engineer the
+                                exploit using the server-side vulnerability</span>
+                        </h3>
+                    </div>
+                    <div class="flex justify-end items-center">
+    <span class="plus text-gray-900 mr-4">+</span>
+    <span class="minus hidden text-gray-900 mr-4">-</span>
+</div>
+                </div>
+                <div class="collapsible-content mx-4">
+                    <p class="mt-4 text-xs">File truncated for brevity. <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_second_order.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
+</p>
+<script src="https://gist.github.com/neumaneuma/a96c8d6c304e94cdd343a17a7ad0a7ee.js"></script>
+                </div>
+            </div>
+            <div class="border border-green-900 rounded-md bg-green-50 my-4 shadow">
+                <div
+                    class="grid grid-cols-3 bg-green-200 rounded-md hover:bg-green-300 h-12 collapsible cursor-pointer">
+                    <div class="flex justify-start col-span-2 items-center">
+                        <h3 class="text-base font-bold text-gray-900 ml-4">
+                            Hint #3: <span class="group-hover:text-green-800 text-green-700">Couldn't figure out the
+                                answer? Here is the exploit</span>
+                        </h3>
+                    </div>
+                    <div class="flex justify-end items-center">
+    <span class="plus text-gray-900 mr-4">+</span>
+    <span class="minus hidden text-gray-900 mr-4">-</span>
+</div>
+                </div>
+                <div class="collapsible-content mx-4">
+                    <p class="mt-4">View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md" class="text-blue-400 hover:underline" target="_blank">exploit README</a> to run the exploits locally. </p>
+                    <p class="mt-4 text-xs">File truncated for brevity. <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py" class="text-blue-400 hover:underline" target="_blank">Click here</a> to view full file.
+</p>
+<script src="https://gist.github.com/neumaneuma/a258d30a2551184f00e455969d9fc413.js"></script>
+                </div>
+            </div>
+            
+<p class="my-8">You are provided with another user's username. This is all you need to know in order to change their
+    password for
+    them!</p>
+
+<div class="w-full max-w-xs">
+    <form method="GET" action="/vulnerabilities/sqli2/get_username/"
+        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-4">
+                Username:
+            </label>
+            <button
+                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit">
+                Get username
+            </button>
+        </div>
+    </form>
+</div>
+<p class="my-8">Create an account so that you can access the change password flow.</p>
+<div class="w-full max-w-xs">
+    <form method="POST" action="/vulnerabilities/sqli2/register/"
+        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                Username
+            </label>
+            <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                name="username" id="username" type="text" placeholder="Username">
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                Password
+            </label>
+            <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                name="password" id="password" type="password" placeholder="******************">
+        </div>
+        <div class="flex items-center justify-between">
+            <button
+                class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit">
+                Create user
+            </button>
+        </div>
+    </form>
+</div>
+<p class="my-8">Now that you are logged in as the user you just created, try changing the original user's password!
+</p>
+<div class="divide-y divide-gray-500">
+    <div class="w-full max-w-xs mb-10">
+        <form method="POST" action="/vulnerabilities/sqli2/change_password/"
+            class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="old_password">
+                    Old password
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    name="old_password" id="old_password" type="password" placeholder="******************">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password1">
+                    New password
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                    name="new_password1" id="new_password1" type="password" placeholder="******************">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password2">
+                    Re-type password
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                    name="new_password2" id="new_password2" type="password" placeholder="******************">
+            </div>
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit">
+                    Change password
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="pt-8 mb-6">
+    <a id="passphrase_form"></a>
+    <form method="POST" action="/sqli2/">
+        <label class="block text-gray-700 text-sm font-bold mb-4" for="passphrase">
+            Solve challenge by entering the passphrase:
+        </label>
+        
+        
+        
+        <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline max-w-md"
+            name="passphrase" id="passphrase" type="password" placeholder="******************">
+        <button
+            class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
+            type="submit">Submit
+        </button>
+    </form>
+</div>
+</div>
+
+        </div>
+    </div>
+</div>
+<script>
+    var collapsible = document.getElementsByClassName("collapsible");
+
+    for (var i = 0; i < collapsible.length; i++) {
+        collapsible[i].addEventListener("click", event => {
+            var plus = event.currentTarget.getElementsByClassName("plus")[0];
+            var minus = event.currentTarget.getElementsByClassName("minus")[0];
+            var content = event.currentTarget.nextElementSibling;
+
+            plus.classList.toggle("hidden")
+            minus.classList.toggle("hidden")
+            content.classList.toggle("pb-4");
+
+            var currentElement = event.currentTarget.classList;
+            if (currentElement.contains("rounded-md")) {
+                currentElement.remove("rounded-md");
+                currentElement.add("rounded-t-md");
+            } else {
+                currentElement.add("rounded-md");
+                currentElement.remove("rounded-t-md");
+            }
+
+            // Toggle setting max height between nothing and the height of the sibling element in pixels
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = `${content.scrollHeight}px`;
+            }
+        });
+    }
+</script>
 
 </body>
 

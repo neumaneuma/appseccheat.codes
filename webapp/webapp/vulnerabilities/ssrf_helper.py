@@ -1,3 +1,4 @@
+
 import ipaddress
 import logging
 from urllib.parse import urlparse
@@ -5,13 +6,7 @@ from urllib.parse import urlparse
 import dns.message
 import dns.query
 import dns.rdatatype
-import requests
-from flask import Blueprint, request
 
-from .. import secrets
-from . import PATCHES_PREFIX
-
-bp = Blueprint("patches_ssrf1", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf1")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
@@ -19,51 +14,14 @@ DNS_RESOLVER = "1.1.1.1"
 # DNS_RESOLVER = "8.8.8.8"
 # DNS_RESOLVER = "9.9.9.9"
 
+# In order to simultaneously make this a valid ssrf vulnerability, but also not render my entire
+# web app and cloud infrastructure vulnerable to ssrf, I had to finesse together an allowlist-blocklist
+# mutant hybrid that could perform an ssrf attack on the input I allow, but prevent it for anything else.
+def is_url_valid(url, is_valid_internal_url):
+    if is_valid_internal_url(url):
+        LOG.debug(f"Valid internal url: {url}")
+        return True
 
-@bp.route("/submit_webhook/", methods=["POST"])
-def submit_webhook():
-    custom_url = request.form.get("custom_url")
-    if not custom_url:
-        return ("Failure: fields can not be empty", 400)
-
-    LOG.debug(f"User supplied URL: {custom_url}")
-    if not input_is_permitted_through_blocklist(custom_url):
-        return (f"Failure: supplied url is invalid ({custom_url})", 400)
-
-    try:
-        r = requests.post(custom_url, timeout=TIMEOUT)
-        response_body = r.text[:1000]
-
-        return (
-            (
-                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
-                200,
-            )
-            if did_successfully_reset_admin_password(custom_url)
-            else (f"{response_body}...\n\nFailure", 400)
-        )
-    except requests.exceptions.RequestException as e:
-        LOG.debug("Request exception: " + str(e))
-        return ("Failure: " + str(e), 400)
-
-
-INTERNAL_API_NO_PORT = "http://internal_api"
-
-# http://internal_api:8484
-INTERNAL_API = INTERNAL_API_NO_PORT + ":8484"
-
-# http://internal_api:8484/
-INTERNAL_API_WITH_SLASH = INTERNAL_API + "/"
-
-# http://internal_api:8484/reset_admin_password
-INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "reset_admin_password"
-
-# http://internal_api:8484/reset_admin_password/
-INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
-
-
-# This is what a blocklist implementation should look like
-def input_is_permitted_through_blocklist(url):
     # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
     ip = attempt_ip_address_parse(url)
     if ip != None:
@@ -116,7 +74,3 @@ def get_ip_address_from_dns(qname):
         LOG.debug("Original address: " + qname)
         LOG.debug(e)
     return qname
-
-
-def did_successfully_reset_admin_password(url):
-    return url == INTERNAL_API_WITH_PATH or url == INTERNAL_API_WITH_PATH_AND_SLASH

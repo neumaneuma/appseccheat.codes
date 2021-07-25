@@ -1,7 +1,7 @@
 {% import 'challenge.j2' as cm -%}
 
 <div class="border border-yellow-900 rounded-md bg-yellow-50 my-4 ">
-    <div class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-12 collapsible cursor-pointer">
+    <div class="grid grid-cols-2 bg-yellow-200 rounded-md hover:bg-yellow-300 h-20 sm:h-12 collapsible cursor-pointer">
         <div class="flex justify-start items-center">
             <h3 class="text-base font-bold text-gray-900 ml-4">
                 Hint #1: <span class="group-hover:text-yellow-800 text-yellow-700">Generic Hint</span>
@@ -24,6 +24,6 @@
             encrypted traffic on your computer. Burp Suite and OWASP ZAP both offer this feature in addition to their
             automated pentesting. I personally used {{ lm.link_new_tab("https://mitmproxy.org", "mitmproxy") }} when
             writing the exploit scripts for this site because it has a lot fewer features than those other tools, and
-            therefore is a lot simpler to use. There is no right answer though. Any of those options will suffice.</p>
+            therefore is a lot simpler to use.</p>
     </div>
 </div>
