@@ -38,7 +38,7 @@ services:
       - ./webapp/webapp/tests/open_redirect/:/app
 
   db:
-    image: mysql:8.0.23
+    image: mysql:8.0.26
     environment:
       - MYSQL_DATABASE=appsecdb
       - MYSQL_ROOT_PASSWORD=test

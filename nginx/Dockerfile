@@ -1,2 +1,2 @@
-FROM nginx:1.18.0
+FROM nginx:1.21.3
 COPY . /etc/nginx/
