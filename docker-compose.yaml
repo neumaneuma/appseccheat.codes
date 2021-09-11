@@ -30,6 +30,19 @@ services:
       - frontend
       - backend
 
+  internal_api:
+    build:
+      context: ./ssrf/internal_api
+    environment:
+      - FLASK_APP=wsgi.py
+    expose:
+      - 8484
+    command: [ "/usr/local/bin/gunicorn", "--log-level=debug", "-w", "3", "-b", ":8484", "wsgi" ]
+    networks:
+      - frontend
+    volumes:
+      - ./ssrf/internal_api/:/app
+
   nginx:
     restart: always
     build:
