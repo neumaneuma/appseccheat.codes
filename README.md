@@ -4,7 +4,7 @@ A CTF web app designed to teach software developers application security by show
 ## How to run webapp locally
 ### Running for the first time
 1. Install [docker](https://docs.docker.com/get-docker/) if it is not already installed.
-2. Run `docker-compose -f docker-compose.dev.yaml up --build`. Be sure to wait enough time before running the next command to allow time for the application to start up, especially on first run. The presence of this log line indicates the database is ready:
+2. Run `docker compose -f docker-compose.dev.yaml up --build`. Be sure to wait enough time before running the next command to allow time for the application to start up, especially on first run. The presence of this log line indicates the database is ready:
 ```
 db_1   | 2021-03-22T22:37:00.973213Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.23'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
 ```
@@ -12,7 +12,7 @@ db_1   | 2021-03-22T22:37:00.973213Z 0 [System] [MY-010931] [Server] /usr/sbin/m
 4. The web server is now accessible at [`127.0.0.1:5000`](http://127.0.0.1:5000)
 
 ### Running subsequent times
-1. Run `docker-compose -f docker-compose.dev.yaml up --build`
+1. Run `docker compose -f docker-compose.dev.yaml up --build`
 2. The web server is now accessible at [`127.0.0.1:5000`](http://127.0.0.1:5000)
 
 ## Miscellaneous
