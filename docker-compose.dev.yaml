@@ -40,13 +40,6 @@ services:
     environment:
       MYSQL_DATABASE: "appsecdb"
       MYSQL_ROOT_PASSWORD: "test"
-      MYSQL_USER: "test"
-      MYSQL_PASSWORD: "test"
-      MYSQL_ROOT_HOST: "0.0.0.0"
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE https://stackoverflow.com/questions/55559386/how-to-fix-mbind-operation-not-permitted-in-mysql-error-log
-    volumes:
-      - db-data:/var/lib/mysql
 
-volumes:
-  db-data:
