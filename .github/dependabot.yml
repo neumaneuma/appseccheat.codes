@@ -10,9 +10,11 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "dependabot-merges"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "webapp" # Location of package manifests
     schedule:
       interval: "weekly"
     target-branch: "dependabot-merges"
+    open-pull-requests-limit: 10
