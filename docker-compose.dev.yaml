@@ -1,16 +1,14 @@
-version: "3.7"
-
 services:
   web:
     build:
       context: ./webapp
     ports:
-      - 5000:5000
+      - "5000:5000"
     environment:
-      - FLASK_ENV=development
-      - FLASK_DEBUG=true
-      - FLASK_APP=wsgi.py
-      - SECRET_KEY=test
+      FLASK_ENV: "development"
+      FLASK_DEBUG: "true"
+      FLASK_APP: "wsgi.py"
+      SECRET_KEY: "test"
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
     volumes:
       - ./webapp/:/app
@@ -19,8 +17,8 @@ services:
     build:
       context: ./ssrf/internal_api
     environment:
-      - FLASK_ENV=development
-      - FLASK_APP=wsgi.py
+      FLASK_ENV: "development"
+      FLASK_APP: "wsgi.py"
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8484" ]
     volumes:
       - ./ssrf/internal_api/:/app
@@ -29,23 +27,19 @@ services:
     build:
       context: ./webapp/webapp/tests/open_redirect
     ports:
-      - 8485:8485
+      - "8485:8485"
     environment:
-      - FLASK_ENV=development
-      - FLASK_APP=index.py
+      FLASK_ENV: "development"
+      FLASK_APP: "index.py"
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=8485" ]
     volumes:
       - ./webapp/webapp/tests/open_redirect/:/app
 
   db:
-    image: mysql:8.0.26
+    image: mysql:latest
     environment:
-      - MYSQL_DATABASE=appsecdb
-      - MYSQL_ROOT_PASSWORD=test
+      MYSQL_DATABASE: "appsecdb"
+      MYSQL_ROOT_PASSWORD: "test"
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE https://stackoverflow.com/questions/55559386/how-to-fix-mbind-operation-not-permitted-in-mysql-error-log
-    volumes:
-      - db-data:/var/lib/mysql
 
-volumes:
-  db-data:
