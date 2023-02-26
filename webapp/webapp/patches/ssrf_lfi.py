@@ -54,22 +54,22 @@ ALLOWED_URLS = [f"{FILE_SCHEME}/etc/passwd", f"{FILE_SCHEME}/etc/shadow"]
 
 INTERNAL_API_NO_PORT = "http://internal_api"
 
-# http://internal_api:8484
-INTERNAL_API = INTERNAL_API_NO_PORT + ":8484"
+# http://internal_api:12301
+INTERNAL_API = INTERNAL_API_NO_PORT + ":12301"
 
-# http://internal_api:8484/
+# http://internal_api:12301/
 INTERNAL_API_WITH_SLASH = INTERNAL_API + "/"
 
-# http://internal_api:8484/get_cat_coin_price_v1
+# http://internal_api:12301/get_cat_coin_price_v1
 INTERNAL_API_WITH_PATH_V1 = INTERNAL_API_WITH_SLASH + "get_cat_coin_price_v1"
 
-# http://internal_api:8484/get_cat_coin_price_v2
+# http://internal_api:12301/get_cat_coin_price_v2
 INTERNAL_API_WITH_PATH_V2 = INTERNAL_API_WITH_SLASH + "get_cat_coin_price_v2"
 
-# http://internal_api:8484/get_cat_coin_price_v1/
+# http://internal_api:12301/get_cat_coin_price_v1/
 INTERNAL_API_WITH_PATH_AND_SLASH_V1 = INTERNAL_API_WITH_PATH_V1 + "/"
 
-# http://internal_api:8484/get_cat_coin_price_v2/
+# http://internal_api:12301/get_cat_coin_price_v2/
 INTERNAL_API_WITH_PATH_AND_SLASH_V2 = INTERNAL_API_WITH_PATH_V2 + "/"
 
 VALID_INTERNAL_URLS = [

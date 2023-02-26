@@ -4,13 +4,13 @@ from flask import redirect
 app = Flask(__name__)
 
 
-# http://127.0.0.1:8485/permanent/
+# http://127.0.0.1:12302/permanent/
 @app.route("/permanent/", methods=["GET"])
 def permanent():
-    return redirect("http://127.0.0.1:5000", 301)
+    return redirect("http://127.0.0.1:12300", 301)
 
 
-# http://127.0.0.1:8485/temporary/
+# http://127.0.0.1:12302/temporary/
 @app.route("/temporary/", methods=["GET"])
 def temporary():
-    return redirect("http://127.0.0.1:5000", 307)
+    return redirect("http://127.0.0.1:12300", 307)

@@ -36,8 +36,8 @@ services:
     environment:
       - FLASK_APP=wsgi.py
     expose:
-      - 8484
-    command: [ "/usr/local/bin/gunicorn", "--log-level=debug", "-w", "3", "-b", ":8484", "wsgi" ]
+      - 12301
+    command: [ "/usr/local/bin/gunicorn", "--log-level=debug", "-w", "3", "-b", ":12301", "wsgi" ]
     networks:
       - frontend
     volumes:

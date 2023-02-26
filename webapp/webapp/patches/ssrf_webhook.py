@@ -49,16 +49,16 @@ def submit_webhook():
 
 INTERNAL_API_NO_PORT = "http://internal_api"
 
-# http://internal_api:8484
-INTERNAL_API = INTERNAL_API_NO_PORT + ":8484"
+# http://internal_api:12301
+INTERNAL_API = INTERNAL_API_NO_PORT + ":12301"
 
-# http://internal_api:8484/
+# http://internal_api:12301/
 INTERNAL_API_WITH_SLASH = INTERNAL_API + "/"
 
-# http://internal_api:8484/reset_admin_password
+# http://internal_api:12301/reset_admin_password
 INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "reset_admin_password"
 
-# http://internal_api:8484/reset_admin_password/
+# http://internal_api:12301/reset_admin_password/
 INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 
 
