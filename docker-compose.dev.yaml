@@ -1,7 +1,7 @@
 services:
-  web:
+  frontend:
     build:
-      context: ./webapp
+      context: ./frontend
     ports:
       - "12300:12300"
     environment:
@@ -11,7 +11,21 @@ services:
       SECRET_KEY: "test"
     command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=12300" ]
     volumes:
-      - ./webapp/:/app
+      - ./backend/:/app
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "12300:12300"
+    environment:
+      FLASK_ENV: "development"
+      FLASK_DEBUG: "true"
+      FLASK_APP: "wsgi.py"
+      SECRET_KEY: "test"
+    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=12300" ]
+    volumes:
+      - ./backend/:/app
 
   internal_api:
     build:
@@ -36,7 +50,7 @@ services:
       - ./webapp/webapp/tests/open_redirect/:/app
 
   db:
-    image: mysql:latest
+    image: postgres:16
     environment:
       MYSQL_DATABASE: "appsecdb"
       MYSQL_ROOT_PASSWORD: "test"

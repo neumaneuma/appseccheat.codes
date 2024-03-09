@@ -3,7 +3,7 @@ version: "3.7"
 services:
   db:
     restart: always
-    image: mysql:8.0.26
+    image: postgres:16
     secrets:
       - db-password
     environment:
