@@ -9,9 +9,9 @@ services:
       FLASK_DEBUG: "true"
       FLASK_APP: "wsgi.py"
       SECRET_KEY: "test"
-    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=12300" ]
+    command: [ "npm", "run" , "dev" ]
     volumes:
-      - ./backend/:/app
+      - ./frontend/:/app
 
   backend:
     build:
@@ -23,7 +23,7 @@ services:
       FLASK_DEBUG: "true"
       FLASK_APP: "wsgi.py"
       SECRET_KEY: "test"
-    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=12300" ]
+    command: [ "/usr/local/bin/hypercorn", "main:app" ]
     volumes:
       - ./backend/:/app
 
@@ -33,7 +33,7 @@ services:
     environment:
       FLASK_ENV: "development"
       FLASK_APP: "wsgi.py"
-    command: [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=12301" ]
+    command: [ "/usr/local/bin/hypercorn", "main:app" ]
     volumes:
       - ./ssrf/internal_api/:/app
 
