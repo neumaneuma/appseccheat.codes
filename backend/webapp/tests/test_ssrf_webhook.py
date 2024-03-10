@@ -5,12 +5,12 @@ from ..vulnerabilities import ssrf_webhook
 from ..patches import PATCHES_PREFIX
 
 
-class Ssrf1Tests(unittest.TestCase):
+class ssrf-bypass-webhookTests(unittest.TestCase):
     def setUp(self):
         self.test_client = init_app().test_client()
         self.first_hint = ssrf_webhook.FIRST_HINT
         self.second_hint = ssrf_webhook.SECOND_HINT
-        submit_webhook_path = "/ssrf1/submit_webhook/"
+        submit_webhook_path = "/ssrf-bypass-webhook/submit_webhook/"
         self.patched_submit_webhook_path = f"{PATCHES_PREFIX}{submit_webhook_path}"
         self.vulnerable_submit_webhook_path = (
             f"{VULNERABILITIES_PREFIX}{submit_webhook_path}"

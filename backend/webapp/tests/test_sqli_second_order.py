@@ -9,7 +9,7 @@ from ..vulnerabilities import VULNERABILITIES_PREFIX
 from ..patches import PATCHES_PREFIX
 
 
-class Sqli2Tests(unittest.TestCase):
+class sqli-second-orderTests(unittest.TestCase):
     def setUp(self):
         self.test_client = init_app().test_client()
         self.session_cookie_name = "session"
@@ -17,9 +17,9 @@ class Sqli2Tests(unittest.TestCase):
         self.username_cookie = sqli_second_order.username_to_exploit
         self.user_id_cookie = sqli_second_order.user_id_for_registered_account
 
-        get_username_path = "/sqli2/get_username/"
-        register_path = "/sqli2/register/"
-        change_password_path = "/sqli2/change_password/"
+        get_username_path = "/sqli-second-order/get_username/"
+        register_path = "/sqli-second-order/register/"
+        change_password_path = "/sqli-second-order/change_password/"
         self.patched_get_username_path = f"{PATCHES_PREFIX}{get_username_path}"
         self.patched_register_path = f"{PATCHES_PREFIX}{register_path}"
         self.patched_change_password_path = f"{PATCHES_PREFIX}{change_password_path}"

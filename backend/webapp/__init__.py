@@ -21,24 +21,24 @@ def init_app():
 
         database.init_connection(app)
 
-        from .vulnerabilities import sqli_login_bypass as v_sqli1
-        from .vulnerabilities import sqli_second_order as v_sqli2
-        from .vulnerabilities import ssrf_webhook as v_ssrf1
-        from .vulnerabilities import ssrf_lfi as v_ssrf2
-        from .patches import sqli_login_bypass as p_sqli1
-        from .patches import sqli_second_order as p_sqli2
-        from .patches import ssrf_webhook as p_ssrf1
-        from .patches import ssrf_lfi as p_ssrf2
+        from .vulnerabilities import sqli-login-bypass as v_sqli-login-bypass
+        from .vulnerabilities import sqli_second_order as v_sqli-second-order
+        from .vulnerabilities import ssrf_webhook as v_ssrf-bypass-webhook
+        from .vulnerabilities import ssrf_lfi as v_ssrf-local-file-inclusion
+        from .patches import sqli-login-bypass as p_sqli-login-bypass
+        from .patches import sqli_second_order as p_sqli-second-order
+        from .patches import ssrf_webhook as p_ssrf-bypass-webhook
+        from .patches import ssrf_lfi as p_ssrf-local-file-inclusion
         from . import routes
 
-        app.register_blueprint(v_sqli1.bp)
-        app.register_blueprint(v_sqli2.bp)
-        app.register_blueprint(v_ssrf1.bp)
-        app.register_blueprint(v_ssrf2.bp)
-        app.register_blueprint(p_sqli1.bp)
-        app.register_blueprint(p_sqli2.bp)
-        app.register_blueprint(p_ssrf1.bp)
-        app.register_blueprint(p_ssrf2.bp)
+        app.register_blueprint(v_sqli-login-bypass.bp)
+        app.register_blueprint(v_sqli-second-order.bp)
+        app.register_blueprint(v_ssrf-bypass-webhook.bp)
+        app.register_blueprint(v_ssrf-local-file-inclusion.bp)
+        app.register_blueprint(p_sqli-login-bypass.bp)
+        app.register_blueprint(p_sqli-second-order.bp)
+        app.register_blueprint(p_ssrf-bypass-webhook.bp)
+        app.register_blueprint(p_ssrf-local-file-inclusion.bp)
         app.register_blueprint(routes.bp)
         app.register_blueprint(database.bp)
 

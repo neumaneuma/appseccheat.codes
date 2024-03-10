@@ -3,12 +3,12 @@ import logging
 import requests
 from flask import Blueprint, request
 
-from .. import secrets
+from ... import local_flags
 from . import VULNERABILITIES_PREFIX
 from . import ssrf_helper
 
 bp = Blueprint(
-    "vulnerabilities_ssrf1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf1"
+    "vulnerabilities_ssrf-bypass-webhook", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf-bypass-webhook"
 )
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def submit_webhook():
 
         if did_successfully_reset_admin_password(custom_url):
             return (
-                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
+                f"{response_body}\n\nSuccess - passphrase: {local_flags.PASSPHRASE['ssrf-bypass-webhook']}",
                 200,
             )
         elif did_access_internal_api(custom_url):

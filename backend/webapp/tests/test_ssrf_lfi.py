@@ -5,11 +5,11 @@ from ..vulnerabilities import ssrf_lfi
 from ..patches import PATCHES_PREFIX
 
 
-class Ssrf1Tests(unittest.TestCase):
+class ssrf-bypass-webhookTests(unittest.TestCase):
     def setUp(self):
         self.test_client = init_app().test_client()
         self.first_hint = ssrf_lfi.FIRST_HINT
-        submit_api_path = "/ssrf2/submit_api_url/"
+        submit_api_path = "/ssrf-local-file-inclusion/submit_api_url/"
         self.patched_submit_api_path = f"{PATCHES_PREFIX}{submit_api_path}"
         self.vulnerable_submit_api_path = (
             f"{VULNERABILITIES_PREFIX}{submit_api_path}"

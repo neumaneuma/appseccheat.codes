@@ -4,10 +4,10 @@ from ..vulnerabilities import VULNERABILITIES_PREFIX
 from ..patches import PATCHES_PREFIX
 
 
-class Sqli1Tests(unittest.TestCase):
+class sqli-login-bypassTests(unittest.TestCase):
     def setUp(self):
         self.test_client = init_app().test_client()
-        login_path = "/sqli1/login/"
+        login_path = "/sqli-login-bypass/login/"
         self.patched_login_path = f"{PATCHES_PREFIX}{login_path}"
         self.vulnerable_login_path = f"{VULNERABILITIES_PREFIX}{login_path}"
 

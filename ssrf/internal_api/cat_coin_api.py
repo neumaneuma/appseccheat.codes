@@ -3,7 +3,7 @@ from datetime import datetime
 import random
 
 
-bp = Blueprint("ssrf2", __name__, url_prefix="/")
+bp = Blueprint("ssrf-local-file-inclusion", __name__, url_prefix="/")
 
 
 @bp.route("get_cat_coin_price_v2/", methods=["GET"])

@@ -1,13 +1,14 @@
 import logging
 
 import requests
+from ... import local_flags
 from flask import Blueprint, request
 
-from .. import local_file_adapter, secrets
+from .. import local_file_adapter
 from . import VULNERABILITIES_PREFIX, ssrf_helper
 
 bp = Blueprint(
-    "vulnerabilities_ssrf2", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf2"
+    "vulnerabilities_ssrf-local-file-inclusion", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf-local-file-inclusion"
 )
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ def submit_api_url():
 
         if did_successfully_get_file(custom_url):
             return (
-                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf2']}",
+                f"{response_body}\n\nSuccess - passphrase: {local_flags.PASSPHRASE['ssrf-local-file-inclusion']}",
                 200,
             )
         elif accessed_cat_coin_api(custom_url):

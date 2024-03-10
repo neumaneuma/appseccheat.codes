@@ -2,14 +2,14 @@ import uuid
 from flask import Blueprint, request, session
 from sqlalchemy import text
 from .. import database
-from .. import secrets
+from ... import local_flags
 from . import VULNERABILITIES_PREFIX
 
 bp = Blueprint(
-    "vulnerabilities_sqli2", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli2"
+    "vulnerabilities_sqli-second-order", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli-second-order"
 )
-username_to_exploit = "username_to_exploit_for_sqli2"
-user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
+username_to_exploit = "username_to_exploit_for_sqli-second-order"
+user_id_for_registered_account = "user_id_for_registered_account_for_sqli-second-order"
 
 
 @bp.route("/get_username/", methods=["GET"])
@@ -21,7 +21,7 @@ def get_username_to_exploit():
 
     try:
         query = text(
-            "INSERT INTO sqli2_users (username, password) VALUES (:username, :password)"
+            "INSERT INTO sqli-second-order_users (username, password) VALUES (:username, :password)"
         )
         connection.execute(query, username=username, password=password)
         transaction.commit()
@@ -45,7 +45,7 @@ def register():
 
     try:
         query = text(
-            "INSERT INTO sqli2_users (username, password) VALUES (:username, :password)"
+            "INSERT INTO sqli-second-order_users (username, password) VALUES (:username, :password)"
         )
         connection.execute(query, username=username, password=password)
         transaction.commit()
@@ -54,7 +54,7 @@ def register():
         return ("Failed to create user", 400)
 
     query = text(
-        "SELECT id FROM sqli2_users WHERE username = :username AND password = :password"
+        "SELECT id FROM sqli-second-order_users WHERE username = :username AND password = :password"
     )
     results = connection.execute(query, username=username, password=password)
     user_id = results.fetchone()
@@ -80,7 +80,7 @@ def change_password():
     old_password = request.form.get("old_password")
     new_password = request.form.get("new_password1")
 
-    query = text("SELECT username, password FROM sqli2_users WHERE id = :id")
+    query = text("SELECT username, password FROM sqli-second-order_users WHERE id = :id")
     results = connection.execute(query, id=user_id)
     values = results.fetchone()
     username_from_database = values[0]
@@ -96,7 +96,7 @@ def change_password():
     transaction = connection.begin()
     try:
         query = text(
-            f"UPDATE sqli2_users SET password = :new_password WHERE username = '{username_from_database}' AND password = :old_password"
+            f"UPDATE sqli-second-order_users SET password = :new_password WHERE username = '{username_from_database}' AND password = :old_password"
         )
 
         connection.execute(query, new_password=new_password, old_password=old_password)
@@ -106,11 +106,11 @@ def change_password():
         return ("Failed to change password", 400)
 
     query = text(
-        "SELECT id FROM sqli2_users WHERE username = :username AND password = :password"
+        "SELECT id FROM sqli-second-order_users WHERE username = :username AND password = :password"
     )
     results = connection.execute(
         query, username=original_username, password=new_password
     )
     change_password_successful = results.fetchone()
 
-    return (f"Success (2/2) - passphrase: {secrets.PASSPHRASE['sqli2']}", 200) if change_password_successful else ("Failure", 400)
+    return (f"Success (2/2) - passphrase: {local_flags.PASSPHRASE['sqli-second-order']}", 200) if change_password_successful else ("Failure", 400)

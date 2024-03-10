@@ -3,7 +3,7 @@ from flask import request, Blueprint
 from .. import database
 from . import PATCHES_PREFIX
 
-bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
+bp = Blueprint("patches_sqli-login-bypass", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli-login-bypass")
 
 
 @bp.route("/login/", methods=["POST"])
@@ -15,7 +15,7 @@ def login():
         return ("Failure: fields can not be empty", 401)
 
     query = text(
-        f"SELECT * FROM sqli1_users WHERE password = :password AND username = :username"
+        f"SELECT * FROM sqli-login-bypass_users WHERE password = :password AND username = :username"
     )
     results = connection.execute(query, password=password, username=username)
     user_valid = results.fetchone()

@@ -15,29 +15,29 @@ class RoutesTests(unittest.TestCase):
         response = self.app.get(path, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_sqli1_path_returns_200(self):
-        path = "/sqli1/"
+    def test_sqli-login-bypass_path_returns_200(self):
+        path = "/sqli-login-bypass/"
         response = self.app.get(path)
         self.assertEqual(response.status_code, 200)
         response = self.app.post(path, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_sqli2_path_returns_200(self):
-        path = "/sqli2/"
+    def test_sqli-second-order_path_returns_200(self):
+        path = "/sqli-second-order/"
         response = self.app.get(path)
         self.assertEqual(response.status_code, 200)
         response = self.app.post(path, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_ssrf1_path_returns_200(self):
-        path = "/ssrf1/"
+    def test_ssrf-bypass-webhook_path_returns_200(self):
+        path = "/ssrf-bypass-webhook/"
         response = self.app.get(path)
         self.assertEqual(response.status_code, 200)
         response = self.app.post(path, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_ssrf2_path_returns_200(self):
-        path = "/ssrf2/"
+    def test_ssrf-local-file-inclusion_path_returns_200(self):
+        path = "/ssrf-local-file-inclusion/"
         response = self.app.get(path)
         self.assertEqual(response.status_code, 200)
         response = self.app.post(path, follow_redirects=True)

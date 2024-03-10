@@ -8,10 +8,10 @@ import dns.rdatatype
 import requests
 from flask import Blueprint, request
 
-from .. import secrets
+from ... import local_flags
 from . import PATCHES_PREFIX
 
-bp = Blueprint("patches_ssrf1", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf1")
+bp = Blueprint("patches_ssrf-bypass-webhook", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf-bypass-webhook")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
@@ -36,7 +36,7 @@ def submit_webhook():
 
         return (
             (
-                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
+                f"{response_body}\n\nSuccess - passphrase: {local_flags.PASSPHRASE['ssrf-bypass-webhook']}",
                 200,
             )
             if did_successfully_reset_admin_password(custom_url)

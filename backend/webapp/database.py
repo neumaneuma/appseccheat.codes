@@ -53,11 +53,11 @@ def reset_database():
     connection = get_connection()
     transaction = connection.begin()
     try:
-        connection.execute("DROP TABLE IF EXISTS sqli1_users;")
-        connection.execute("DROP TABLE IF EXISTS sqli2_users;")
+        connection.execute("DROP TABLE IF EXISTS sqli-login-bypass_users;")
+        connection.execute("DROP TABLE IF EXISTS sqli-second-order_users;")
         connection.execute(
             """
-        CREATE TABLE sqli1_users (
+        CREATE TABLE sqli-login-bypass_users (
             id INT PRIMARY KEY AUTO_INCREMENT,
             username VARCHAR(300) UNIQUE NOT NULL,
             password VARCHAR(300) NOT NULL
@@ -66,7 +66,7 @@ def reset_database():
         )
         connection.execute(
             """
-        CREATE TABLE sqli2_users (
+        CREATE TABLE sqli-second-order_users (
             id INT PRIMARY KEY AUTO_INCREMENT,
             username VARCHAR(300) UNIQUE NOT NULL,
             password VARCHAR(300) NOT NULL
@@ -74,7 +74,7 @@ def reset_database():
         """
         )
         connection.execute(
-            "INSERT INTO sqli1_users (username, password) VALUES ('administrator', 'password123')"
+            "INSERT INTO sqli-login-bypass_users (username, password) VALUES ('administrator', 'password123')"
         )
         transaction.commit()
     except:

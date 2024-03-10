@@ -1,13 +1,13 @@
-SQLI1_LINKS = {
-    "vulnerability_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_login_bypass.py",
+sqli-login-bypass_LINKS = {
+    "vulnerability_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli-login-bypass.py",
     "vulnerability_gist": "https://gist.github.com/neumaneuma/39a853dfe14e7084ecc8ac8b304c60a3.js",
-    "exploit_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py",
+    "exploit_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli-login-bypass.py",
     "exploit_gist": "https://gist.github.com/neumaneuma/2cd5ffda86a9f3beee7858fd3ee21b10.js",
-    "patch_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_login_bypass.py",
+    "patch_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli-login-bypass.py",
     "patch_gist": "https://gist.github.com/neumaneuma/0076b3c6735f6002c680415483566e6e.js",
 }
 
-SQLI2_LINKS = {
+sqli-second-order_LINKS = {
     "vulnerability_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/sqli_second_order.py",
     "vulnerability_gist": "https://gist.github.com/neumaneuma/a96c8d6c304e94cdd343a17a7ad0a7ee.js",
     "exploit_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py",
@@ -15,7 +15,7 @@ SQLI2_LINKS = {
     "patch_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/patches/sqli_second_order.py",
     "patch_gist": "https://gist.github.com/neumaneuma/bef037bcd02ae91e6c6ecf1aac46546d.js",
 }
-SSRF1_LINKS = {
+ssrf-bypass-webhook_LINKS = {
     "vulnerability_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/ssrf_webhook.py",
     "vulnerability_gist": "https://gist.github.com/neumaneuma/b107ad89537341dcbc9c6d2867d0ba96.js",
     "exploit_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_webhook.py",
@@ -24,7 +24,7 @@ SSRF1_LINKS = {
     "patch_gist": "https://gist.github.com/neumaneuma/c392c3eb4bd101f87810c058419cdc29.js",
 }
 
-SSRF2_LINKS = {
+ssrf-local-file-inclusion_LINKS = {
     "vulnerability_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/webapp/webapp/vulnerabilities/ssrf_lfi.py",
     "vulnerability_gist": "https://gist.github.com/neumaneuma/118a03193a5c35bdbe737cbbb501554a.js",
     "exploit_source_code": "https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_lfi.py",
