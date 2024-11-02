@@ -16,7 +16,7 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 
 [tool.ruff]
-line-length = 100
+line-length = 200
 target-version = "py313"
 
 [tool.ruff.lint]

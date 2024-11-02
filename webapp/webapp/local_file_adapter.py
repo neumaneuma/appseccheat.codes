@@ -1,10 +1,11 @@
-import requests
 import os
 from urllib.request import url2pathname
 
+import requests
+
 
 class LocalFileAdapter(requests.adapters.BaseAdapter):
-    """Protocol Adapter to allow Requests to GET file:// URLs """
+    """Protocol Adapter to allow Requests to GET file:// URLs"""
 
     @staticmethod
     def _chkpath(path):
@@ -19,21 +20,20 @@ class LocalFileAdapter(requests.adapters.BaseAdapter):
             return 200, "OK"
 
     def send(self, req, **kwargs):  # pylint: disable=unused-argument
-        """Return the file specified by the given request
-        """
+        """Return the file specified by the given request"""
         path = os.path.normcase(os.path.normpath(url2pathname(req.path_url)))
         response = requests.Response()
 
         response.status_code, response.reason = self._chkpath(path)
         if response.status_code == 200:
             try:
-                response.raw = open(path, 'rb')
+                response.raw = open(path, "rb")
             except (OSError, IOError) as err:
                 response.status_code = 500
                 response.reason = str(err)
 
         if isinstance(req.url, bytes):
-            response.url = req.url.decode('utf-8')
+            response.url = req.url.decode("utf-8")
         else:
             response.url = req.url
 

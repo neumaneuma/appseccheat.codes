@@ -18,7 +18,7 @@ services:
 
   web:
     restart: always
-    build: 
+    build:
       context: ./webapp
     expose:
       - 8000

@@ -11,7 +11,7 @@ repos:
     rev: v0.7.1
     hooks:
     -   id: ruff
-        args: [--fix]
+        args: [--fix, --unsafe-fixes]
     -   id: ruff-format
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
@@ -20,20 +20,27 @@ repos:
     -   id: mypy
         stages: [manual]
 
--   repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.14.0
-    hooks:
-    -   id: eslint
-        files: \.[jt]sx?$  # *.js, *.jsx, *.ts and *.tsx
-        types: [file]
-        additional_dependencies:
-        -   eslint
-        -   eslint-config-prettier
-        -   '@typescript-eslint/eslint-plugin'
-        -   '@typescript-eslint/parser'
+# -   repo: https://github.com/pre-commit/mirrors-eslint
+#     rev: v9.14.0
+#     hooks:
+#     -   id: eslint
+#         files: \.[jt]sx?$  # *.js, *.jsx, *.ts and *.tsx
+#         types: [file]
+#         additional_dependencies:
+#         -   eslint
+#         -   eslint-config-prettier
+#         -   '@typescript-eslint/eslint-plugin'
+#         -   '@typescript-eslint/parser'
 
 -   repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
     -   id: prettier
         types_or: [javascript, jsx, ts, tsx, json, css, markdown]
+
+# -   repo: https://github.com/darold/pgFormatter
+#     rev: v5.5
+#     hooks:
+#     -   id: pgformatter
+#         args: [--spaces=4, --type-case=lower, --keyword-case=upper]
+#         types: [sql]

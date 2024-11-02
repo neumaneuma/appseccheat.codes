@@ -6,9 +6,7 @@ from flask import Blueprint, request
 from .. import local_file_adapter, secrets
 from . import VULNERABILITIES_PREFIX, ssrf_helper
 
-bp = Blueprint(
-    "vulnerabilities_ssrf2", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf2"
-)
+bp = Blueprint("vulnerabilities_ssrf2", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf2")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
@@ -28,8 +26,7 @@ def submit_api_url():
 
     try:
         requests_session = requests.session()
-        requests_session.mount(
-            'file://', local_file_adapter.LocalFileAdapter())
+        requests_session.mount("file://", local_file_adapter.LocalFileAdapter())
         r = requests_session.get(custom_url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 

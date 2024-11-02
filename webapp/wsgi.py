@@ -1,4 +1,5 @@
 """Application entry point."""
+
 from webapp import init_app
 
 # Gunicorn requires the exposed flask app to be called `application`

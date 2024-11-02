@@ -1,4 +1,3 @@
-
 import ipaddress
 import logging
 from urllib.parse import urlparse
@@ -14,6 +13,7 @@ DNS_RESOLVER = "1.1.1.1"
 # DNS_RESOLVER = "8.8.8.8"
 # DNS_RESOLVER = "9.9.9.9"
 
+
 # In order to simultaneously make this a valid ssrf vulnerability, but also not render my entire
 # web app and cloud infrastructure vulnerable to ssrf, I had to finesse together an allowlist-blocklist
 # mutant hybrid that could perform an ssrf attack on the input I allow, but prevent it for anything else.
@@ -24,11 +24,9 @@ def is_url_valid(url, is_valid_internal_url):
 
     # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
     ip = attempt_ip_address_parse(url)
-    if ip != None:
+    if ip is not None:
         is_global = ip.is_global
-        LOG.debug(
-            f"IP address successfully parsed on first attempt: {ip}. Returning {is_global} for is url valid"
-        )
+        LOG.debug(f"IP address successfully parsed on first attempt: {ip}. Returning {is_global} for is url valid")
         return is_global
 
     parsed_url = urlparse(url)
@@ -37,18 +35,17 @@ def is_url_valid(url, is_valid_internal_url):
         return False
 
     # If urlparse is unable to correctly parse the url, then everything will be in the path
-    hostname = parsed_url.hostname if parsed_url.hostname != None else parsed_url.path
+    hostname = parsed_url.hostname if parsed_url.hostname is not None else parsed_url.path
     dns_ip = get_ip_address_from_dns(hostname)
     LOG.debug(f"Response from DNS: {dns_ip}")
 
     ip = attempt_ip_address_parse(dns_ip)
-    if ip == None:
+    if ip is None:
         LOG.debug("Unable to parse the IP address from the DNS response")
         return False
 
     is_global = ip.is_global
-    LOG.debug(
-        f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
+    LOG.debug(f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
     return is_global
 
 

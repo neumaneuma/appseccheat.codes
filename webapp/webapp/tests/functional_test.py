@@ -1,5 +1,6 @@
 import json
 import time
+
 import requests
 
 url_prefix = "http://127.0.0.1:12300"
@@ -74,9 +75,7 @@ ssrf2_test_urls = [
 
 
 def check_status_code(expected_status_code, actual_status_code, url):
-    assert (
-        expected_status_code == actual_status_code
-    ), f"{url}\nExpected status code: {expected_status_code}\nActual_status_code: {actual_status_code}"
+    assert expected_status_code == actual_status_code, f"{url}\nExpected status code: {expected_status_code}\nActual_status_code: {actual_status_code}"
 
 
 def sqli1():
@@ -136,8 +135,7 @@ def ssrf1():
         for custom_url, status_code in ssrf1_test_urls[index].items():
             data = {"custom_url": custom_url}
             r = requests.post(url, data=data, verify=verify)
-            check_status_code(status_code, r.status_code,
-                              f"{url}({custom_url})")
+            check_status_code(status_code, r.status_code, f"{url}({custom_url})")
 
 
 def ssrf2():
@@ -167,8 +165,7 @@ def ssrf2():
         for custom_url, status_code in ssrf2_test_urls[index].items():
             data = {"custom_url": custom_url}
             r = requests.post(url, data=data, verify=verify)
-            check_status_code(status_code, r.status_code,
-                              f"{url}({custom_url})")
+            check_status_code(status_code, r.status_code, f"{url}({custom_url})")
 
 
 start_time = round(time.time() * 1000)

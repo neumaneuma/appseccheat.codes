@@ -1,7 +1,8 @@
 import unittest
+
 from .. import init_app
-from ..vulnerabilities import VULNERABILITIES_PREFIX
 from ..patches import PATCHES_PREFIX
+from ..vulnerabilities import VULNERABILITIES_PREFIX
 
 
 class Sqli1Tests(unittest.TestCase):

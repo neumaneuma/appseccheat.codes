@@ -1,7 +1,6 @@
-from flask import Flask, render_template
 from admin_panel import bp as admin_panel_bp
 from cat_coin_api import bp as cat_coin_api_bp
-
+from flask import Flask, render_template
 
 # Gunicorn requires the exposed flask app to be called `application`
 application = Flask(__name__)

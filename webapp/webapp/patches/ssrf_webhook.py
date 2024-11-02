@@ -66,11 +66,9 @@ INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 def input_is_permitted_through_blocklist(url):
     # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
     ip = attempt_ip_address_parse(url)
-    if ip != None:
+    if ip is not None:
         is_global = ip.is_global
-        LOG.debug(
-            f"IP address successfully parsed on first attempt: {ip}. Returning {is_global} for is url valid"
-        )
+        LOG.debug(f"IP address successfully parsed on first attempt: {ip}. Returning {is_global} for is url valid")
         return is_global
 
     parsed_url = urlparse(url)
@@ -79,18 +77,17 @@ def input_is_permitted_through_blocklist(url):
         return False
 
     # If urlparse is unable to correctly parse the url, then everything will be in the path
-    hostname = parsed_url.hostname if parsed_url.hostname != None else parsed_url.path
+    hostname = parsed_url.hostname if parsed_url.hostname is not None else parsed_url.path
     dns_ip = get_ip_address_from_dns(hostname)
     LOG.debug(f"Response from DNS: {dns_ip}")
 
     ip = attempt_ip_address_parse(dns_ip)
-    if ip == None:
+    if ip is None:
         LOG.debug("Unable to parse the IP address from the DNS response")
         return False
 
     is_global = ip.is_global
-    LOG.debug(
-        f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
+    LOG.debug(f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
     return is_global
 
 

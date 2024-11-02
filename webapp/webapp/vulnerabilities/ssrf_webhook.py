@@ -4,12 +4,9 @@ import requests
 from flask import Blueprint, request
 
 from .. import secrets
-from . import VULNERABILITIES_PREFIX
-from . import ssrf_helper
+from . import VULNERABILITIES_PREFIX, ssrf_helper
 
-bp = Blueprint(
-    "vulnerabilities_ssrf1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf1"
-)
+bp = Blueprint("vulnerabilities_ssrf1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf1")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25

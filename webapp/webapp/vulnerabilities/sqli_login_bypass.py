@@ -1,11 +1,9 @@
 from flask import Blueprint, request
-from .. import database
-from .. import secrets
+
+from .. import database, secrets
 from . import VULNERABILITIES_PREFIX
 
-bp = Blueprint(
-    "vulnerabilities_sqli1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli1"
-)
+bp = Blueprint("vulnerabilities_sqli1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli1")
 
 
 @bp.route("/login/", methods=["POST"])

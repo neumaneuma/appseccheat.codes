@@ -1,7 +1,7 @@
-from flask import g, Blueprint
 from pathlib import Path
-from sqlalchemy import create_engine
 
+from flask import Blueprint, g
+from sqlalchemy import create_engine
 
 bp = Blueprint("db", __name__)
 
@@ -73,10 +73,8 @@ def reset_database():
         );
         """
         )
-        connection.execute(
-            "INSERT INTO sqli1_users (username, password) VALUES ('administrator', 'password123')"
-        )
+        connection.execute("INSERT INTO sqli1_users (username, password) VALUES ('administrator', 'password123')")
         transaction.commit()
-    except:
+    except Exception:
         transaction.rollback()
         print("transaction failed")

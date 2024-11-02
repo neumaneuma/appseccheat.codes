@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, url_for, request, flash, redirect
 from urllib.parse import urlparse
-from . import html_builder
-from . import secrets
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+
+from . import html_builder, secrets
 
 bp = Blueprint("routes", __name__)
 
@@ -29,7 +30,9 @@ def sqli1():
     routes_to_not_show_introduction_for = {url_for("routes.sqli2")}
 
     headers = html_builder.build_headers(
-        "Challenge #1: SQLi login bypass", "What is SQL injection?", "Congratulations on solving the first challenge!"
+        "Challenge #1: SQLi login bypass",
+        "What is SQL injection?",
+        "Congratulations on solving the first challenge!",
     )
     challenge_links = {"prev": "", "next": url_for("routes.sqli2")}
 
@@ -39,10 +42,9 @@ def sqli1():
             headers=headers,
             gh_links=html_builder.SQLI1_LINKS,
             challenge_links=challenge_links,
-            should_show_introduction=should_show_introduction(
-                routes_to_not_show_introduction_for),
+            should_show_introduction=should_show_introduction(routes_to_not_show_introduction_for),
             current_link=url_for("routes.sqli1"),
-            collapsible_is_present=True
+            collapsible_is_present=True,
         )
 
     passphrase = request.form.get("passphrase")
@@ -55,7 +57,7 @@ def sqli1():
         headers=headers,
         gh_links=html_builder.SQLI1_LINKS,
         challenge_links=challenge_links,
-        collapsible_is_present=False
+        collapsible_is_present=False,
     )
 
 
@@ -64,7 +66,9 @@ def sqli2():
     routes_to_not_show_introduction_for = {url_for("routes.sqli1")}
 
     headers = html_builder.build_headers(
-        "Challenge #2: SQLi second order", "What is SQL injection?", "Congratulations on solving the second challenge!"
+        "Challenge #2: SQLi second order",
+        "What is SQL injection?",
+        "Congratulations on solving the second challenge!",
     )
     challenge_links = {"prev": url_for("routes.sqli1"), "next": url_for("routes.ssrf1")}
 
@@ -74,10 +78,9 @@ def sqli2():
             headers=headers,
             gh_links=html_builder.SQLI2_LINKS,
             challenge_links=challenge_links,
-            should_show_introduction=should_show_introduction(
-                routes_to_not_show_introduction_for),
+            should_show_introduction=should_show_introduction(routes_to_not_show_introduction_for),
             current_link=url_for("routes.sqli2"),
-            collapsible_is_present=True
+            collapsible_is_present=True,
         )
 
     passphrase = request.form.get("passphrase")
@@ -90,7 +93,7 @@ def sqli2():
         headers=headers,
         gh_links=html_builder.SQLI2_LINKS,
         challenge_links=challenge_links,
-        collapsible_is_present=False
+        collapsible_is_present=False,
     )
 
 
@@ -99,7 +102,9 @@ def ssrf1():
     routes_to_not_show_introduction_for = {url_for("routes.ssrf2")}
 
     headers = html_builder.build_headers(
-        "Challenge #3: SSRF bypass webhook", "What is SSRF?", "Congratulations on solving the third challenge!"
+        "Challenge #3: SSRF bypass webhook",
+        "What is SSRF?",
+        "Congratulations on solving the third challenge!",
     )
     challenge_links = {"prev": url_for("routes.sqli2"), "next": url_for("routes.ssrf2")}
 
@@ -109,10 +114,9 @@ def ssrf1():
             headers=headers,
             gh_links=html_builder.SSRF1_LINKS,
             challenge_links=challenge_links,
-            should_show_introduction=should_show_introduction(
-                routes_to_not_show_introduction_for),
+            should_show_introduction=should_show_introduction(routes_to_not_show_introduction_for),
             current_link=url_for("routes.ssrf1"),
-            collapsible_is_present=True
+            collapsible_is_present=True,
         )
 
     passphrase = request.form.get("passphrase")
@@ -125,17 +129,18 @@ def ssrf1():
         headers=headers,
         gh_links=html_builder.SSRF1_LINKS,
         challenge_links=challenge_links,
-        collapsible_is_present=False
+        collapsible_is_present=False,
     )
 
 
 @bp.route("/ssrf2/", methods=["GET", "POST"])
 def ssrf2():
-
     routes_to_not_show_introduction_for = {url_for("routes.ssrf1")}
 
     headers = html_builder.build_headers(
-        "Challenge #4: SSRF local file inclusion", "What is SSRF?", "Congratulations on solving the fourth challenge!"
+        "Challenge #4: SSRF local file inclusion",
+        "What is SSRF?",
+        "Congratulations on solving the fourth challenge!",
     )
     challenge_links = {"prev": url_for("routes.ssrf1"), "next": ""}
 
@@ -145,10 +150,9 @@ def ssrf2():
             headers=headers,
             gh_links=html_builder.SSRF2_LINKS,
             challenge_links=challenge_links,
-            should_show_introduction=should_show_introduction(
-                routes_to_not_show_introduction_for),
+            should_show_introduction=should_show_introduction(routes_to_not_show_introduction_for),
             current_link=url_for("routes.ssrf2"),
-            collapsible_is_present=True
+            collapsible_is_present=True,
         )
 
     passphrase = request.form.get("passphrase")
@@ -161,5 +165,5 @@ def ssrf2():
         headers=headers,
         gh_links=html_builder.SSRF2_LINKS,
         challenge_links=challenge_links,
-        collapsible_is_present=False
+        collapsible_is_present=False,
     )

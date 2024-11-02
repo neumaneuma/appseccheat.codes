@@ -1,5 +1,6 @@
+from flask import Blueprint, request
 from sqlalchemy import text
-from flask import request, Blueprint
+
 from .. import database
 from . import PATCHES_PREFIX
 
@@ -14,9 +15,7 @@ def login():
     if not username or not password:
         return ("Failure: fields can not be empty", 401)
 
-    query = text(
-        f"SELECT * FROM sqli1_users WHERE password = :password AND username = :username"
-    )
+    query = text("SELECT * FROM sqli1_users WHERE password = :password AND username = :username")
     results = connection.execute(query, password=password, username=username)
     user_valid = results.fetchone()
 

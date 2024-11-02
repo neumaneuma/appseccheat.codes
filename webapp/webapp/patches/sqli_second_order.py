@@ -1,6 +1,8 @@
 import uuid
+
 from flask import Blueprint, request, session
 from sqlalchemy import text
+
 from .. import database
 from . import PATCHES_PREFIX
 
@@ -17,12 +19,10 @@ def get_username_to_exploit():
     password = str(uuid.uuid4()).replace("-", "")
 
     try:
-        query = text(
-            "INSERT INTO sqli2_users (username, password) VALUES (:username, :password)"
-        )
+        query = text("INSERT INTO sqli2_users (username, password) VALUES (:username, :password)")
         connection.execute(query, username=username, password=password)
         transaction.commit()
-    except:
+    except Exception:
         transaction.rollback()
         return ("Failed to generate username", 400)
 
@@ -41,18 +41,14 @@ def register():
         return ("Failure: fields can not be empty", 401)
 
     try:
-        query = text(
-            "INSERT INTO sqli2_users (username, password) VALUES (:username, :password)"
-        )
+        query = text("INSERT INTO sqli2_users (username, password) VALUES (:username, :password)")
         connection.execute(query, username=username, password=password)
         transaction.commit()
-    except:
+    except Exception:
         transaction.rollback()
         return ("Failed to create user", 400)
 
-    query = text(
-        "SELECT id FROM sqli2_users WHERE username = :username AND password = :password"
-    )
+    query = text("SELECT id FROM sqli2_users WHERE username = :username AND password = :password")
     results = connection.execute(query, username=username, password=password)
     user_id = results.fetchone()
 
@@ -64,10 +60,7 @@ def register():
 @bp.route("/change_password/", methods=["POST"])
 def change_password():
     connection = database.get_connection()
-    if (
-        username_to_exploit not in session
-        or user_id_for_registered_account not in session
-    ):
+    if username_to_exploit not in session or user_id_for_registered_account not in session:
         return (
             "Session cookies are not found or have been modified. Either include them in the request or restart challenge.",
             400,
@@ -92,9 +85,7 @@ def change_password():
 
     transaction = connection.begin()
     try:
-        query = text(
-            f"UPDATE sqli2_users SET password = :new_password WHERE username = :username AND password = :old_password"
-        )
+        query = text("UPDATE sqli2_users SET password = :new_password WHERE username = :username AND password = :old_password")
 
         connection.execute(
             query,
@@ -103,16 +94,12 @@ def change_password():
             old_password=old_password,
         )
         transaction.commit()
-    except:
+    except Exception:
         transaction.rollback()
         return ("Failed to change password", 400)
 
-    query = text(
-        "SELECT id FROM sqli2_users WHERE username = :username AND password = :password"
-    )
-    results = connection.execute(
-        query, username=original_username, password=new_password
-    )
+    query = text("SELECT id FROM sqli2_users WHERE username = :username AND password = :password")
+    results = connection.execute(query, username=original_username, password=new_password)
     change_password_successful = results.fetchone()
 
     return ("Success (2/2)", 200) if change_password_successful else ("Failure", 400)
