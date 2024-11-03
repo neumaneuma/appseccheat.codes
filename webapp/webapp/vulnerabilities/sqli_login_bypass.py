@@ -1,21 +1,29 @@
-from flask import Blueprint, request
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-from .. import database, secrets
-from . import VULNERABILITIES_PREFIX
+from backend.database import get_db
+from backend.passphrases import Passphrases
+from backend.vulnerabilities import VULNERABILITIES
 
-bp = Blueprint("vulnerabilities_sqli1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/sqli1")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/")
 
 
-@bp.route("/login/", methods=["POST"])
-def login():
-    connection = database.get_connection()
-    username = request.form.get("username")
-    password = request.form.get("password")
-    if not username or not password:
-        return ("Failure: fields can not be empty", 401)
+class Login(BaseModel):
+    username: str
+    password: str
 
-    query = f"SELECT * FROM sqli1_users WHERE password = '{password}' AND username = '{username}'"
-    results = connection.execute(query)
-    user_valid = results.fetchone()
 
-    return (f"Success - passphrase: {secrets.PASSPHRASE['sqli1']}", 200) if user_valid else ("Failure", 401)
+@router.post("sqli1/login/")
+async def login(login: Login) -> str:
+    if not len(login.username) or not len(login.password):
+        raise HTTPException(status_code=400, detail="Fields can not be empty")
+
+    query = f"SELECT * FROM sqli1_users WHERE password = '{login.password}' AND username = '{login.username}'"
+    async with get_db() as db:
+        result = await db.execute_sql(query)
+        result = await result.fetchall()
+
+    if not result:
+        raise HTTPException(status_code=403, detail="Failure")
+
+    return Passphrases.sqli1.value

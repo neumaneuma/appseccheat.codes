@@ -3,11 +3,12 @@ name = "appseccheat-codes"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.9"
 dependencies = [
-    "pre-commit==4.0.1",    "fastapi==0.115.4",
+    "pre-commit==4.0.1",
+    "fastapi==0.115.4",
     "requests==2.32.3",
-    "sqlalchemy==2.0.36",
+    "peewee>=3.17.7",
 ]
 
 [tool.mypy]

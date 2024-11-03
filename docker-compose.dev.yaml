@@ -39,6 +39,6 @@ services:
     image: postgres:17.0
     restart: always
     environment:
-      POSTGRES_PASSWORD: "test"
+      POSTGRES_PASSWORD: "postgres"
     ports:
       - "5432:5432"

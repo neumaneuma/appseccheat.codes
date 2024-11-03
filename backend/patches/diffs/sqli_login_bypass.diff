@@ -1,0 +1,8 @@
+18,19c17,20
+<     query = f"SELECT * FROM sqli1_users WHERE password = '{password}' AND username = '{username}'"
+<     results = connection.execute(query)
+---
+>     query = text(
+>         f"SELECT * FROM sqli1_users WHERE password = :password AND username = :username"
+>     )
+>     results = connection.execute(query, password=password, username=username)
