@@ -1,31 +1,12 @@
 [project]
 name = "appseccheat-codes"
-version = "0.1.0"
+version = "1.0.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 dependencies = [
     "pre-commit==4.0.1",
     "fastapi==0.115.4",
     "requests==2.32.3",
-    "peewee>=3.17.7",
-]
-
-[tool.mypy]
-python_version = "3.13"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-
-[tool.ruff]
-line-length = 200
-target-version = "py313"
-
-[tool.ruff.lint]
-select = [
-    "E",  # pycodestyle errors
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
+    "peewee==3.17.7",
 ]

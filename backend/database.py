@@ -1,7 +1,11 @@
+import secrets
+import uuid
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
-from peewee import CharField, Model, PostgresqlDatabase
+from peewee import CharField, ForeignKeyField, Model, PostgresqlDatabase, UUIDField
+
+SQLI2_USERNAME = "batman"
 
 
 class Database:
@@ -10,11 +14,14 @@ class Database:
     @classmethod
     def get_instance(cls) -> PostgresqlDatabase:
         if cls._instance is None:
-            db = PostgresqlDatabase("postgres", user="postgres", password="postgres", host="db", port=5432)
+            db = PostgresqlDatabase(
+                "postgres", user="postgres", password="postgres", host="db", port=5432
+            )
             # reset/instantiate db
-            db.drop_tables([Sqli1User, Sqli2User])
-            db.create_tables([Sqli1User, Sqli2User])
-            Sqli1User.create(username="administrator", password="password123")
+            db.drop_tables([User, Session])
+            db.create_tables([User, Session])
+            User.create(username="administrator", password="password123")
+            User.create(username=SQLI2_USERNAME, password=secrets.token_hex(16))
 
         cls._instance = db
         return cls._instance
@@ -23,20 +30,24 @@ class Database:
 db = Database.get_instance()
 
 
-class Sqli1User(Model):
+class User(Model):
+    user_id = UUIDField(primary_key=True, default=uuid.uuid4())
     username = CharField()
     password = CharField()
 
     class Meta:
         database = db
+        table_name = "user"
 
 
-class Sqli2User(Model):
-    username = CharField()
-    password = CharField()
+class Session(Model):
+    session_id = UUIDField(primary_key=True, default=uuid.uuid4())
+    cookie = CharField()
+    user = ForeignKeyField(User)
 
     class Meta:
         database = db
+        table_name = "session"
 
 
 @asynccontextmanager
