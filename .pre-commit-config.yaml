@@ -14,13 +14,6 @@ repos:
         args: [--fix, --unsafe-fixes]
     -   id: ruff-format
 
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
-    hooks:
-    -   id: mypy
-        # mypy is not run automatically because it is slow, can run it manually with:
-        # pre-commit run --hook-stage manual mypy --all-files
-        stages: [manual]
 
 # -   repo: https://github.com/pre-commit/mirrors-eslint
 #     rev: v9.14.0
