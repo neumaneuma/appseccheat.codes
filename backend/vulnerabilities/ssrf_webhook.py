@@ -1,47 +1,54 @@
 import logging
 
 import requests
-from flask import Blueprint, request
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-from .. import secrets
-from . import VULNERABILITIES_PREFIX, ssrf_helper
+from backend.passphrases import Passphrases
+from backend.vulnerabilities import VULNERABILITIES
 
-bp = Blueprint("vulnerabilities_ssrf1", __name__, url_prefix=f"{VULNERABILITIES_PREFIX}/ssrf1")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf1/")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
 
 
-@bp.route("/submit_webhook/", methods=["POST"])
-def submit_webhook():
-    custom_url = request.form.get("custom_url")
-    if not custom_url:
-        return ("Failure: fields can not be empty", 400)
+class UserSuppliedUrl(BaseModel):
+    url: str
 
-    LOG.debug(f"User supplied URL: {custom_url}")
-    if should_reveal_first_hint(custom_url):
-        return (FIRST_HINT, 202)
-    if should_reveal_second_hint(custom_url):
-        return (SECOND_HINT, 202)
-    if not ssrf_helper.is_url_valid(custom_url, is_valid_internal_url):
-        return (f"Failure: supplied url is invalid ({custom_url})", 400)
+
+@router.post("submit_webhook/", response_model=str)
+async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
+    if not user_supplied_url.url:
+        raise HTTPException(status_code=400, detail="Fields can not be empty")
+
+    LOG.debug(f"User supplied URL: {user_supplied_url.url}")
+    if should_reveal_first_hint(user_supplied_url.url):
+        return FIRST_HINT
+    if should_reveal_second_hint(user_supplied_url.url):
+        return SECOND_HINT
+
+    if not is_valid_internal_url(user_supplied_url.url):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
+        )
 
     try:
-        r = requests.post(custom_url, timeout=TIMEOUT)
+        r = requests.post(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        if did_successfully_reset_admin_password(custom_url):
-            return (
-                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
-                200,
-            )
-        elif did_access_internal_api(custom_url):
-            return (f"{response_body}", 200)
+        if did_successfully_reset_admin_password(user_supplied_url.url):
+            return Passphrases.ssrf1.value
+        elif did_access_internal_api(user_supplied_url.url):
+            return response_body
         else:
-            return (f"{response_body}...\n\nFailure", 400)
+            raise HTTPException(
+                status_code=400, detail=f"{response_body}...\n\nFailure"
+            )
     except requests.exceptions.RequestException as e:
         LOG.debug("Request exception: " + str(e))
-        return ("Failure: " + str(e), 400)
+        raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e
 
 
 FIRST_HINT = "Docker container in use - use internal_api as hostname to access admin functionality."
@@ -70,21 +77,21 @@ VALID_INTERNAL_URLS = [
 ]
 
 
-def should_reveal_first_hint(url):
+def should_reveal_first_hint(url: str) -> bool:
     return url.startswith("http://127.0.0.1") or url.startswith("http://localhost")
 
 
-def should_reveal_second_hint(url):
+def should_reveal_second_hint(url: str) -> bool:
     return url.startswith(INTERNAL_API_NO_PORT) and not url.startswith(INTERNAL_API)
 
 
-def is_valid_internal_url(url):
+def is_valid_internal_url(url: str) -> bool:
     return url in VALID_INTERNAL_URLS
 
 
-def did_successfully_reset_admin_password(url):
+def did_successfully_reset_admin_password(url: str) -> bool:
     return url == INTERNAL_API_WITH_PATH or url == INTERNAL_API_WITH_PATH_AND_SLASH
 
 
-def did_access_internal_api(url):
+def did_access_internal_api(url: str) -> bool:
     return url == INTERNAL_API_WITH_SLASH

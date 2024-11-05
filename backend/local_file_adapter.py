@@ -8,7 +8,7 @@ class LocalFileAdapter(requests.adapters.BaseAdapter):
     """Protocol Adapter to allow Requests to GET file:// URLs"""
 
     @staticmethod
-    def _chkpath(path):
+    def _chkpath(path: str) -> tuple[int, str]:
         """Return an HTTP status for the given filesystem path."""
         if os.path.isdir(path):
             return 400, "Path Not A File"
@@ -19,7 +19,7 @@ class LocalFileAdapter(requests.adapters.BaseAdapter):
         else:
             return 200, "OK"
 
-    def send(self, req, **kwargs):  # pylint: disable=unused-argument
+    def send(self, req: requests.PreparedRequest, **kwargs) -> requests.Response:
         """Return the file specified by the given request"""
         path = os.path.normcase(os.path.normpath(url2pathname(req.path_url)))
         response = requests.Response()
@@ -28,7 +28,7 @@ class LocalFileAdapter(requests.adapters.BaseAdapter):
         if response.status_code == 200:
             try:
                 response.raw = open(path, "rb")
-            except (OSError, IOError) as err:
+            except OSError as err:
                 response.status_code = 500
                 response.reason = str(err)
 
@@ -42,5 +42,5 @@ class LocalFileAdapter(requests.adapters.BaseAdapter):
 
         return response
 
-    def close(self):
+    def close(self) -> None:
         pass
