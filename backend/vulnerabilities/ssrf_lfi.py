@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from backend import local_file_adapter
+from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
@@ -39,7 +40,21 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
         r = requests_session.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        if did_successfully_get_file(user_supplied_url.url):
+        # Read allowed files from disk
+        passwd_contents = ""
+        shadow_contents = ""
+        try:
+            with open("/etc/passwd") as f:
+                passwd_contents = f.read()[:1000]
+            with open("/etc/shadow") as f:
+                shadow_contents = f.read()[:1000]
+        except Exception as e:
+            LOG.debug(f"Error reading files: {e}")
+
+        # Check if response matches either file
+        if timing_safe_compare(response_body, passwd_contents) or timing_safe_compare(
+            response_body, shadow_contents
+        ):
             return Passphrases.ssrf2.value
         elif accessed_cat_coin_api(user_supplied_url.url):
             return response_body
@@ -93,10 +108,6 @@ def should_reveal_first_hint(url: str) -> bool:
 
 def is_valid_internal_url(url: str) -> bool:
     return url in VALID_INTERNAL_URLS or url in ALLOWED_PATHS
-
-
-def did_successfully_get_file(url: str) -> bool:
-    return url in ALLOWED_PATHS
 
 
 def accessed_cat_coin_api(url: str) -> bool:

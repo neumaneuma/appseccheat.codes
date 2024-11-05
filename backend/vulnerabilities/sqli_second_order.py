@@ -1,4 +1,3 @@
-import hmac
 import secrets
 
 from fastapi import APIRouter, HTTPException, Request
@@ -6,13 +5,18 @@ from peewee import DoesNotExist
 from pydantic import BaseModel
 
 from backend.database import SQLI2_USERNAME, Session, User, get_db
+from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
-from backend.vulnerabilities.sqli_login_bypass import Credentials
 
 router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli2/")
 
 SESSION_IDENTIFIER = "sid"
+
+
+class Credentials(BaseModel):
+    username: str
+    password: str
 
 
 class ChangePassword(BaseModel):
@@ -54,8 +58,8 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
     query = f"UPDATE user SET password = '{change_password.new}' WHERE username = '{session.user.username}' AND password = '{change_password.old}'"
     async with get_db() as db:
         await db.execute_sql(query)
-        hacked_user = User.get(username=SQLI2_USERNAME)
-        if hmac.compare_digest(hacked_user.password, change_password.new):
+        hacked_user: User = User.get(username=SQLI2_USERNAME)
+        if timing_safe_compare(hacked_user.password, change_password.new):
             return Passphrases.sqli2.value
 
     return "Successfully changed password"

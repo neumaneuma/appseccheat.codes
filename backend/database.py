@@ -20,7 +20,7 @@ class Database:
             # reset/instantiate db
             db.drop_tables([User, Session])
             db.create_tables([User, Session])
-            User.create(username="administrator", password="password123")
+            User.create(username="administrator", password=secrets.token_hex(16))
             User.create(username=SQLI2_USERNAME, password=secrets.token_hex(16))
 
         cls._instance = db

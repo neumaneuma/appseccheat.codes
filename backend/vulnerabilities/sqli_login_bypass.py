@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from backend.database import get_db
+from backend.database import User, get_db
+from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
@@ -15,12 +16,11 @@ class Credentials(BaseModel):
 
 @router.post("login/", response_model=str)
 async def login(credentials: Credentials) -> str:
-    query = f"SELECT * FROM user WHERE username = '{credentials.username}' AND password = '{credentials.password}'"
+    query = f"SELECT * FROM user WHERE username = '{credentials.username}'"
     async with get_db() as db:
         result = await db.execute_sql(query)
-        result = await result.fetchall()
+        user: User | None = await result.fetchall()
+        if user and timing_safe_compare(user.password, credentials.password):
+            return Passphrases.sqli1.value
 
-    if not result:
-        raise HTTPException(status_code=403, detail="Failure")
-
-    return Passphrases.sqli1.value
+    raise HTTPException(status_code=403, detail="Failure")

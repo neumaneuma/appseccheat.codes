@@ -1,105 +1,66 @@
-import uuid
+import secrets
 
-from flask import Blueprint, request, session
-from sqlalchemy import text
+from fastapi import APIRouter, HTTPException, Request
+from peewee import DoesNotExist
+from pydantic import BaseModel
 
-from .. import database
-from . import PATCHES_PREFIX
+from backend.database import SQLI2_USERNAME, Session, User, get_db
+from backend.helper import timing_safe_compare
+from backend.passphrases import Passphrases
+from backend.patches import PATCHES
 
-bp = Blueprint("patches_sqli2", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli2")
-username_to_exploit = "username_to_exploit_for_sqli2"
-user_id_for_registered_account = "user_id_for_registered_account_for_sqli2"
+router = APIRouter(prefix=f"/{PATCHES}/sqli2/")
 
-
-@bp.route("/get_username/", methods=["GET"])
-def get_username_to_exploit():
-    connection = database.get_connection()
-    transaction = connection.begin()
-    username = str(uuid.uuid4()).replace("-", "")
-    password = str(uuid.uuid4()).replace("-", "")
-
-    try:
-        query = text("INSERT INTO sqli2_users (username, password) VALUES (:username, :password)")
-        connection.execute(query, username=username, password=password)
-        transaction.commit()
-    except Exception:
-        transaction.rollback()
-        return ("Failed to generate username", 400)
-
-    session.pop(username_to_exploit, None)
-    session[username_to_exploit] = username
-    return username
+SESSION_IDENTIFIER = "sid"
 
 
-@bp.route("/register/", methods=["POST"])
-def register():
-    connection = database.get_connection()
-    transaction = connection.begin()
-    username = request.form.get("username")
-    password = request.form.get("password")
-    if not username or not password:
-        return ("Failure: fields can not be empty", 401)
-
-    try:
-        query = text("INSERT INTO sqli2_users (username, password) VALUES (:username, :password)")
-        connection.execute(query, username=username, password=password)
-        transaction.commit()
-    except Exception:
-        transaction.rollback()
-        return ("Failed to create user", 400)
-
-    query = text("SELECT id FROM sqli2_users WHERE username = :username AND password = :password")
-    results = connection.execute(query, username=username, password=password)
-    user_id = results.fetchone()
-
-    session.pop(user_id_for_registered_account, None)
-    session[user_id_for_registered_account] = str(user_id[0])
-    return ("Success (1/2)", 200)
+class Credentials(BaseModel):
+    username: str
+    password: str
 
 
-@bp.route("/change_password/", methods=["POST"])
-def change_password():
-    connection = database.get_connection()
-    if username_to_exploit not in session or user_id_for_registered_account not in session:
-        return (
-            "Session cookies are not found or have been modified. Either include them in the request or restart challenge.",
-            400,
-        )
-    original_username = session[username_to_exploit]
-    user_id = session[user_id_for_registered_account]
-    old_password = request.form.get("old_password")
-    new_password = request.form.get("new_password1")
+class ChangePassword(BaseModel):
+    old: str
+    new: str
+    new_verify: str
 
-    query = text("SELECT username, password FROM sqli2_users WHERE id = :id")
-    results = connection.execute(query, id=user_id)
-    values = results.fetchone()
-    username_from_database = values[0]
-    password_from_database = values[1]
 
-    if not old_password or not new_password:
-        return ("Failure: fields can not be empty", 401)
-    if password_from_database != old_password:
-        return ("Failure: incorrect current password", 401)
-    if new_password != request.form.get("new_password2"):
-        return ("Failure: passwords do not match", 400)
+@router.post("register/", response_model=str)
+async def register(request: Request, credentials: Credentials) -> str:
+    if len(credentials.username.strip()) == 0 or len(credentials.password.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Fields cannot be empty")
 
-    transaction = connection.begin()
-    try:
-        query = text("UPDATE sqli2_users SET password = :new_password WHERE username = :username AND password = :old_password")
+    async with get_db() as _:
+        user = User.create(username=credentials.username, password=credentials.password)
+        session = Session.create(cookie=secrets.token_hex(16), user=user)
+    request.session[SESSION_IDENTIFIER] = str(session.session_id)
+    return "Successfully registered"
 
-        connection.execute(
-            query,
-            new_password=new_password,
-            username=username_from_database,
-            old_password=old_password,
-        )
-        transaction.commit()
-    except Exception:
-        transaction.rollback()
-        return ("Failed to change password", 400)
 
-    query = text("SELECT id FROM sqli2_users WHERE username = :username AND password = :password")
-    results = connection.execute(query, username=original_username, password=new_password)
-    change_password_successful = results.fetchone()
+@router.post("change_password/", response_model=str)
+async def change_password(request: Request, change_password: ChangePassword) -> str:
+    if SESSION_IDENTIFIER not in request.session:
+        raise HTTPException(status_code=403, detail="Unauthorized")
 
-    return ("Success (2/2)", 200) if change_password_successful else ("Failure", 400)
+    if len(change_password.old.strip()) == 0 or len(change_password.new.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Fields cannot be empty")
+
+    if change_password.new != change_password.new_verify:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+
+    session = request.session[SESSION_IDENTIFIER]
+    async with get_db() as _:
+        try:
+            session: Session = Session.get(cookie=session)
+        except DoesNotExist as err:
+            raise HTTPException(status_code=403, detail="Unauthorized") from err
+
+    async with get_db() as _:
+        User.update(password=change_password.new).where(
+            User.username == session.user.username, User.password == change_password.old
+        ).execute()
+        hacked_user: User = User.get(username=SQLI2_USERNAME)
+        if timing_safe_compare(hacked_user.password, change_password.new):
+            return Passphrases.sqli2.value
+
+    return "Successfully changed password"

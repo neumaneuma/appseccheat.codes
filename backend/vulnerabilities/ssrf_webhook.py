@@ -4,8 +4,10 @@ import requests
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
+from ssrf.internal_api.admin_panel import simulate_reset_admin_password
 
 router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf1/")
 LOG = logging.getLogger(__name__)
@@ -28,6 +30,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     if should_reveal_second_hint(user_supplied_url.url):
         return SECOND_HINT
 
+    # how to make this an actual SSRF?
     if not is_valid_internal_url(user_supplied_url.url):
         raise HTTPException(
             status_code=400,
@@ -38,7 +41,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
         r = requests.post(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        if did_successfully_reset_admin_password(user_supplied_url.url):
+        if timing_safe_compare(response_body, simulate_reset_admin_password()):
             return Passphrases.ssrf1.value
         elif did_access_internal_api(user_supplied_url.url):
             return response_body

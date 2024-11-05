@@ -1,22 +1,24 @@
-from flask import Blueprint, request
-from sqlalchemy import text
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-from .. import database
-from . import PATCHES_PREFIX
+from backend.database import User, get_db
+from backend.helper import timing_safe_compare
+from backend.passphrases import Passphrases
+from backend.patches import PATCHES
 
-bp = Blueprint("patches_sqli1", __name__, url_prefix=f"{PATCHES_PREFIX}/sqli1")
+router = APIRouter(prefix=f"/{PATCHES}/sqli1/")
 
 
-@bp.route("/login/", methods=["POST"])
-def login():
-    connection = database.get_connection()
-    username = request.form.get("username")
-    password = request.form.get("password")
-    if not username or not password:
-        return ("Failure: fields can not be empty", 401)
+class Credentials(BaseModel):
+    username: str
+    password: str
 
-    query = text("SELECT * FROM sqli1_users WHERE password = :password AND username = :username")
-    results = connection.execute(query, password=password, username=username)
-    user_valid = results.fetchone()
 
-    return ("Success", 200) if user_valid else ("Failure", 401)
+@router.post("login/", response_model=str)
+async def login(credentials: Credentials) -> str:
+    async with get_db() as _:
+        user: User | None = User.get(username=credentials.username)
+        if user and timing_safe_compare(user.password, credentials.password):
+            return Passphrases.sqli1.value
+
+    raise HTTPException(status_code=403, detail="Failure")

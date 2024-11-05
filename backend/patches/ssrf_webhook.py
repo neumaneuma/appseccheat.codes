@@ -1,51 +1,62 @@
-import ipaddress
 import logging
-from urllib.parse import urlparse
 
-import dns.message
-import dns.query
-import dns.rdatatype
 import requests
-from flask import Blueprint, request
+import safehttpx
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-from .. import secrets
-from . import PATCHES_PREFIX
+from backend.helper import timing_safe_compare
+from backend.passphrases import Passphrases
+from backend.vulnerabilities import VULNERABILITIES
+from ssrf.internal_api.admin_panel import simulate_reset_admin_password
 
-bp = Blueprint("patches_ssrf1", __name__, url_prefix=f"{PATCHES_PREFIX}/ssrf1")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf1/")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
-DNS_RESOLVER = "1.1.1.1"
-# DNS_RESOLVER = "8.8.8.8"
-# DNS_RESOLVER = "9.9.9.9"
 
 
-@bp.route("/submit_webhook/", methods=["POST"])
-def submit_webhook():
-    custom_url = request.form.get("custom_url")
-    if not custom_url:
-        return ("Failure: fields can not be empty", 400)
+class UserSuppliedUrl(BaseModel):
+    url: str
 
-    LOG.debug(f"User supplied URL: {custom_url}")
-    if not input_is_permitted_through_blocklist(custom_url):
-        return (f"Failure: supplied url is invalid ({custom_url})", 400)
+
+@router.post("submit_webhook/", response_model=str)
+async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
+    if not user_supplied_url.url:
+        raise HTTPException(status_code=400, detail="Fields can not be empty")
+
+    LOG.debug(f"User supplied URL: {user_supplied_url.url}")
+    if should_reveal_first_hint(user_supplied_url.url):
+        return FIRST_HINT
+    if should_reveal_second_hint(user_supplied_url.url):
+        return SECOND_HINT
+
+    # how to make this an actual SSRF?
+    if not is_valid_internal_url(user_supplied_url.url):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
+        )
 
     try:
-        r = requests.post(custom_url, timeout=TIMEOUT)
+        r = safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        return (
-            (
-                f"{response_body}\n\nSuccess - passphrase: {secrets.PASSPHRASE['ssrf1']}",
-                200,
+        if timing_safe_compare(response_body, simulate_reset_admin_password()):
+            return Passphrases.ssrf1.value
+        elif did_access_internal_api(user_supplied_url.url):
+            return response_body
+        else:
+            raise HTTPException(
+                status_code=400, detail=f"{response_body}...\n\nFailure"
             )
-            if did_successfully_reset_admin_password(custom_url)
-            else (f"{response_body}...\n\nFailure", 400)
-        )
     except requests.exceptions.RequestException as e:
         LOG.debug("Request exception: " + str(e))
-        return ("Failure: " + str(e), 400)
+        raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e
 
+
+FIRST_HINT = "Docker container in use - use internal_api as hostname to access admin functionality."
+SECOND_HINT = "Incorrect port. Use 12301 instead."
 
 INTERNAL_API_NO_PORT = "http://internal_api"
 
@@ -62,58 +73,29 @@ INTERNAL_API_WITH_PATH = INTERNAL_API_WITH_SLASH + "reset_admin_password"
 INTERNAL_API_WITH_PATH_AND_SLASH = INTERNAL_API_WITH_PATH + "/"
 
 
-# This is what a blocklist implementation should look like
-def input_is_permitted_through_blocklist(url):
-    # Attempt to see if url is a valid ip address first in order to avoid performing a dns look up if possible
-    ip = attempt_ip_address_parse(url)
-    if ip is not None:
-        is_global = ip.is_global
-        LOG.debug(f"IP address successfully parsed on first attempt: {ip}. Returning {is_global} for is url valid")
-        return is_global
-
-    parsed_url = urlparse(url)
-    if is_invalid_scheme(parsed_url.scheme):
-        LOG.debug(f"Invalid schema: {parsed_url.scheme}")
-        return False
-
-    # If urlparse is unable to correctly parse the url, then everything will be in the path
-    hostname = parsed_url.hostname if parsed_url.hostname is not None else parsed_url.path
-    dns_ip = get_ip_address_from_dns(hostname)
-    LOG.debug(f"Response from DNS: {dns_ip}")
-
-    ip = attempt_ip_address_parse(dns_ip)
-    if ip is None:
-        LOG.debug("Unable to parse the IP address from the DNS response")
-        return False
-
-    is_global = ip.is_global
-    LOG.debug(f"Returning {is_global} for is url valid. Is private: {ip.is_private}")
-    return is_global
+VALID_INTERNAL_URLS = [
+    INTERNAL_API,
+    INTERNAL_API_WITH_SLASH,
+    INTERNAL_API_WITH_PATH,
+    INTERNAL_API_WITH_PATH_AND_SLASH,
+]
 
 
-def attempt_ip_address_parse(address):
-    try:
-        ip_addr = ipaddress.ip_address(address)
-        return ip_addr
-    except ValueError:
-        return None
+def should_reveal_first_hint(url: str) -> bool:
+    return url.startswith("http://127.0.0.1") or url.startswith("http://localhost")
 
 
-def is_invalid_scheme(scheme):
-    return not (scheme == "https" or scheme == "http" or scheme == "")
+def should_reveal_second_hint(url: str) -> bool:
+    return url.startswith(INTERNAL_API_NO_PORT) and not url.startswith(INTERNAL_API)
 
 
-def get_ip_address_from_dns(qname):
-    try:
-        q = dns.message.make_query(qname, dns.rdatatype.A)
-        r = dns.query.tls(q, DNS_RESOLVER, timeout=TIMEOUT)
-        if len(r.answer) > 0:
-            return str(r.answer[0][0])
-    except Exception as e:
-        LOG.debug("Original address: " + qname)
-        LOG.debug(e)
-    return qname
+def is_valid_internal_url(url: str) -> bool:
+    return url in VALID_INTERNAL_URLS
 
 
-def did_successfully_reset_admin_password(url):
+def did_successfully_reset_admin_password(url: str) -> bool:
     return url == INTERNAL_API_WITH_PATH or url == INTERNAL_API_WITH_PATH_AND_SLASH
+
+
+def did_access_internal_api(url: str) -> bool:
+    return url == INTERNAL_API_WITH_SLASH
