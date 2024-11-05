@@ -10,5 +10,5 @@ dependencies = [
     "requests==2.32.3",
     "peewee==3.17.7",
     "mypy==1.13.0", # run mypy manually with `mypy .`
-    "safehttpx>=0.1.1",
+    "safehttpx==0.1.1",
 ]
