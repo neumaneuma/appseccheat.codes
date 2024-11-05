@@ -5,7 +5,7 @@ import safehttpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from backend.helper import timing_safe_compare
+from backend.helper import allowed_to_continue_for_ssrf_challenge, timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.patches import PATCHES
 
@@ -28,12 +28,13 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if should_reveal_first_hint(user_supplied_url.url):
         return FIRST_HINT
 
-    if not is_valid_internal_url(user_supplied_url.url):
+    if not await allowed_to_continue_for_ssrf_challenge(
+        user_supplied_url.url, is_valid_internal_url
+    ):
         raise HTTPException(
             status_code=400,
             detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
         )
-
     try:
         r = await safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]

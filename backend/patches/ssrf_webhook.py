@@ -5,7 +5,7 @@ import safehttpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from backend.helper import timing_safe_compare
+from backend.helper import allowed_to_continue_for_ssrf_challenge, timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 from ssrf.internal_api.admin_panel import simulate_reset_admin_password
@@ -31,8 +31,9 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     if should_reveal_second_hint(user_supplied_url.url):
         return SECOND_HINT
 
-    # how to make this an actual SSRF?
-    if not is_valid_internal_url(user_supplied_url.url):
+    if not await allowed_to_continue_for_ssrf_challenge(
+        user_supplied_url.url, is_valid_internal_url
+    ):
         raise HTTPException(
             status_code=400,
             detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
