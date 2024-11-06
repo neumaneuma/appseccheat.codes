@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from passphrases import Passphrases
 from pydantic import BaseModel
 
 from backend.helper import timing_safe_compare
+
+from .passphrases import Passphrases
 
 app = FastAPI()
 
@@ -26,5 +27,4 @@ async def submission(flag: Flag) -> dict[str, bool | str]:
         case _:
             return {"result": False, "message": "Invalid challenge"}
 
-    # Compare secrets using hmac.compare_digest to prevent timing attacks.
     return {"result": timing_safe_compare(flag.secret, expected)}
