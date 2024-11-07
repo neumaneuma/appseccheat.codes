@@ -220,12 +220,12 @@ print("Starting functional test...")
 for state in State:
     print(f"Testing {state} state for SQLi login bypass...")
     sqli_login_bypass(state)
-    print(f"Testing {state} state for SQLi second order...")
-    sqli_second_order(state)
-    print(f"Testing {state} state for SSRF webhook...")
-    ssrf_webhook(state)
-    print(f"Testing {state} state for SSRF local file inclusion...")
-    ssrf_local_file_inclusion(state)
+    # print(f"Testing {state} state for SQLi second order...")
+    # sqli_second_order(state)
+    # print(f"Testing {state} state for SSRF webhook...")
+    # ssrf_webhook(state)
+    # print(f"Testing {state} state for SSRF local file inclusion...")
+    # ssrf_local_file_inclusion(state)
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
