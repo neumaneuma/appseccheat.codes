@@ -1,65 +1,30 @@
-version: "3.7"
-
 services:
-  db:
-    restart: always
-    image: mysql:8.0.26
-    secrets:
-      - db-password
-    environment:
-      - MYSQL_DATABASE=appsecdb
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
-    cap_add:
-      - SYS_NICE  # CAP_SYS_NICE
-    volumes:
-      - db-data:/var/lib/mysql
-    networks:
-      - backend
-
-  web:
-    restart: always
+  backend:
     build:
-      context: ./webapp
-    expose:
-      - 8000
-    command: [ "/usr/local/bin/gunicorn", "--log-level=debug", "-w", "3", "-b", ":8000", "wsgi" ]
-    env_file: ./webapp/.env
-    secrets:
-      - db-password
-    networks:
-      - frontend
-      - backend
+      context: backend
+    ports:
+      - "12300:12300"
+    environment:
+      - DEV_MODE=${DEV_MODE:-true}
+    command: sh -c 'fastapi $${DEV_MODE:+dev} main.py'
+    volumes:
+      - backend/:/app
 
   internal_api:
     build:
-      context: ./ssrf/internal_api
-    environment:
-      - FLASK_APP=wsgi.py
-    expose:
-      - 12301
-    command: [ "/usr/local/bin/gunicorn", "--log-level=debug", "-w", "3", "-b", ":12301", "wsgi" ]
-    networks:
-      - frontend
-    volumes:
-      - ./ssrf/internal_api/:/app
-
-  nginx:
-    restart: always
-    build:
-      context: ./nginx
+      context: internal_api
     ports:
-      - 80:80
-      - 443:443
-    networks:
-      - frontend
+      - "12301:12301"
+    environment:
+      - DEV_MODE=${DEV_MODE:-true}
+    command: sh -c 'fastapi $${DEV_MODE:+dev} main.py'
     volumes:
-      - /etc/keys/:/etc/keys/
+      - internal_api/:/app
 
-volumes:
-  db-data:
-secrets:
-  db-password:
-    file: ./webapp/dbpwd.txt
-networks:
-  frontend:
-  backend:
+  db:
+    image: postgres:17.0
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
