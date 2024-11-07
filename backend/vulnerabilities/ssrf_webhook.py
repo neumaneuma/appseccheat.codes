@@ -9,7 +9,7 @@ from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 from internal_api.main import simulate_reset_admin_password
 
-router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf1/")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf1")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
@@ -19,7 +19,7 @@ class UserSuppliedUrl(BaseModel):
     url: str
 
 
-@router.post("submit_webhook/", response_model=str)
+@router.post("/submit_webhook/", response_model=str)
 async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")

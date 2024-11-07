@@ -7,8 +7,6 @@ from backend.patches.sqli_login_bypass import router as sqli_login_bypass_patche
 from backend.patches.sqli_second_order import router as sqli_second_order_patched_router
 from backend.patches.ssrf_lfi import router as ssrf_lfi_patched_router
 from backend.patches.ssrf_webhook import router as ssrf_webhook_patched_router
-
-# Import all modules with routes
 from backend.vulnerabilities.sqli_login_bypass import (
     router as sqli_login_bypass_vulnerable_router,
 )

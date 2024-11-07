@@ -9,7 +9,7 @@ from backend.helper import allowed_to_continue_for_ssrf_challenge, timing_safe_c
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
-router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf2/")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf2")
 LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
@@ -19,7 +19,7 @@ class UserSuppliedUrl(BaseModel):
     url: str
 
 
-@router.post("submit_api_url/", response_model=str)
+@router.post("/submit_api_url/", response_model=str)
 async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")

@@ -9,7 +9,7 @@ from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
-router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli2/")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli2")
 
 SESSION_IDENTIFIER = "sid"
 
@@ -25,7 +25,7 @@ class ChangePassword(BaseModel):
     new_verify: str
 
 
-@router.post("register/", response_model=str)
+@router.post("/register/", response_model=str)
 async def register(request: Request, credentials: Credentials) -> str:
     if len(credentials.username.strip()) == 0 or len(credentials.password.strip()) == 0:
         raise HTTPException(status_code=400, detail="Fields cannot be empty")
@@ -37,7 +37,7 @@ async def register(request: Request, credentials: Credentials) -> str:
     return "Successfully registered"
 
 
-@router.post("change_password/", response_model=str)
+@router.post("/change_password/", response_model=str)
 async def change_password(request: Request, change_password: ChangePassword) -> str:
     if SESSION_IDENTIFIER not in request.session:
         raise HTTPException(status_code=403, detail="Unauthorized")

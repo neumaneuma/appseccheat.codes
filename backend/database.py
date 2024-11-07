@@ -1,4 +1,3 @@
-import secrets
 import uuid
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -18,10 +17,10 @@ class Database:
                 "postgres", user="postgres", password="postgres", host="db", port=5432
             )
             # reset/instantiate db
-            db.drop_tables([User, Session])
-            db.create_tables([User, Session])
-            User.create(username="administrator", password=secrets.token_hex(16))
-            User.create(username=SQLI2_USERNAME, password=secrets.token_hex(16))
+            # db.drop_tables([User, Session])
+            # db.create_tables([User, Session])
+            # User.create(username="administrator", password=secrets.token_hex(16))
+            # User.create(username=SQLI2_USERNAME, password=secrets.token_hex(16))
 
         cls._instance = db
         return cls._instance

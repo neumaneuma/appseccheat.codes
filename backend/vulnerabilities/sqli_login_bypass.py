@@ -6,7 +6,7 @@ from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
-router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli1/")
+router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli1")
 
 
 class Credentials(BaseModel):
@@ -14,7 +14,7 @@ class Credentials(BaseModel):
     password: str
 
 
-@router.post("login/", response_model=str)
+@router.post("/login/", response_model=str)
 async def login(credentials: Credentials) -> str:
     query = f"SELECT * FROM user WHERE username = '{credentials.username}'"
     async with get_db() as db:
