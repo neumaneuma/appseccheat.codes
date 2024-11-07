@@ -48,14 +48,14 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
     if change_password.new != change_password.new_verify:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
-    session = request.session[SESSION_IDENTIFIER]
+    cookie = request.session[SESSION_IDENTIFIER]
     async with get_db() as _:
         try:
-            session: Session = Session.get(cookie=session)
+            cookie = Session.get(cookie=cookie)
         except DoesNotExist as err:
             raise HTTPException(status_code=403, detail="Unauthorized") from err
 
-    query = f"UPDATE user SET password = '{change_password.new}' WHERE username = '{session.user.username}' AND password = '{change_password.old}'"
+    query = f"UPDATE user SET password = '{change_password.new}' WHERE username = '{cookie.user.username}' AND password = '{change_password.old}'"
     async with get_db() as db:
         await db.execute_sql(query)
         hacked_user: User = User.get(username=SQLI2_USERNAME)

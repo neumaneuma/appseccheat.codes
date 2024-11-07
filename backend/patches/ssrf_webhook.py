@@ -43,7 +43,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
         r = safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        if timing_safe_compare(response_body, simulate_reset_admin_password()):
+        if timing_safe_compare(response_body, await simulate_reset_admin_password()):
             return Passphrases.ssrf1.value
         elif did_access_internal_api(user_supplied_url.url):
             return response_body

@@ -53,7 +53,7 @@ class Session(Model):
 @asynccontextmanager
 async def get_db() -> AsyncGenerator[PostgresqlDatabase, None]:
     try:
-        await db.connect()
+        db.connect()
         yield db
     finally:
-        await db.close()
+        db.close()
