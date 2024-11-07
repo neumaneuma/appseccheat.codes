@@ -8,7 +8,7 @@ services:
       - DEV_MODE=${DEV_MODE:-true}
     command: sh -c 'fastapi $${DEV_MODE:+dev} main.py'
     volumes:
-      - backend/:/app
+      - ./backend:/app
 
   internal_api:
     build:
@@ -19,7 +19,7 @@ services:
       - DEV_MODE=${DEV_MODE:-true}
     command: sh -c 'fastapi $${DEV_MODE:+dev} main.py'
     volumes:
-      - internal_api/:/app
+      - ./internal_api:/app
 
   db:
     image: postgres:17.0

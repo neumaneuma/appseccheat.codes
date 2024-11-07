@@ -127,8 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-flask/venv
-serenade.js
-serenade.py
-.vscode
-webapp/dbpwd.txt
+
+
+uv.lock
