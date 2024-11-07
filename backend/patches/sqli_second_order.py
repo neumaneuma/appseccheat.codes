@@ -48,10 +48,10 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
     if change_password.new != change_password.new_verify:
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
-    session = request.session[SESSION_IDENTIFIER]
+    cookie = request.session[SESSION_IDENTIFIER]
     async with get_db() as _:
         try:
-            session: Session = Session.get(cookie=session)
+            session = Session.get(cookie=cookie)
         except DoesNotExist as err:
             raise HTTPException(status_code=403, detail="Unauthorized") from err
 

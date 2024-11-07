@@ -18,7 +18,7 @@ class Credentials(BaseModel):
 async def login(credentials: Credentials) -> str:
     async with get_db() as _:
         user: User | None = User.get(username=credentials.username)
-        if user and timing_safe_compare(user.password, credentials.password):
+        if user and timing_safe_compare(str(user.password), credentials.password):
             return Passphrases.sqli1.value
 
     raise HTTPException(status_code=403, detail="Failure")

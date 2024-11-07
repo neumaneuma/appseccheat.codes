@@ -11,15 +11,15 @@ app = FastAPI()
 
 
 @app.get("/reset_admin_password/")
-async def simulate_reset_admin_password():
+async def simulate_reset_admin_password() -> str:
     return f"Administrator password reset to: {PASSWORD_RESET}"
 
 
 @app.get("get_cat_coin_price_v2/")
-async def get_cat_coin_price_v2():
+async def get_cat_coin_price_v2() -> str:
     return f"Price at {datetime.now().time()} - ${random.random() * 100}"
 
 
 @app.get("get_cat_coin_price_v1/")
-async def get_cat_coin_price_v1():
+async def get_cat_coin_price_v1() -> str:
     return f"Price at {datetime.now().time()} - ${random.random() * 100}"

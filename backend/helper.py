@@ -2,10 +2,15 @@ import hmac
 from collections.abc import Callable
 
 import safehttpx
+from peewee import CharField
 
 
-def timing_safe_compare(a: str, b: str) -> bool:
+def timing_safe_compare(a: str | CharField, b: str | CharField) -> bool:
     """Compare secrets using hmac.compare_digest to prevent timing analysis"""
+    if isinstance(a, CharField):
+        a = str(a)
+    if isinstance(b, CharField):
+        b = str(b)
     return hmac.compare_digest(a.encode(), b.encode())
 
 

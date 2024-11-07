@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from backend.helper import allowed_to_continue_for_ssrf_challenge, timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
-from ssrf.internal_api.main import simulate_reset_admin_password
+from internal_api.main import simulate_reset_admin_password
 
 router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf1/")
 LOG = logging.getLogger(__name__)
