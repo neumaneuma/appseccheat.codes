@@ -48,20 +48,20 @@ class SSRF:
     class Webhook:
         class Vulnerabilities:
             submit_webhook_url: str = (
-                f"{url_prefix}/vulnerabilities/ssrf1/submit_webhook/",
+                f"{url_prefix}/vulnerabilities/ssrf1/submit_webhook/"
             )
 
         class Patches:
-            submit_webhook_url: str = (f"{url_prefix}/patches/ssrf1/submit_webhook/",)
+            submit_webhook_url: str = f"{url_prefix}/patches/ssrf1/submit_webhook/"
 
     class LocalFileInclusion:
         class Vulnerabilities:
             submit_api_url_url: str = (
-                f"{url_prefix}/vulnerabilities/ssrf2/submit_api_url/",
+                f"{url_prefix}/vulnerabilities/ssrf2/submit_api_url/"
             )
 
         class Patches:
-            submit_api_url_url: str = (f"{url_prefix}/patches/ssrf2/submit_api_url/",)
+            submit_api_url_url: str = f"{url_prefix}/patches/ssrf2/submit_api_url/"
 
 
 # def convert_to_hex_representation(s):
