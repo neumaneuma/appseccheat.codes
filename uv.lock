@@ -29,7 +29,6 @@ version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
-    { name = "fastapi-cli" },
     { name = "mypy" },
     { name = "peewee" },
     { name = "pre-commit" },
@@ -42,7 +41,6 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.4" },
-    { name = "fastapi-cli", specifier = ">=0.0.5" },
     { name = "mypy", specifier = "==1.13.0" },
     { name = "peewee", specifier = "==3.17.7" },
     { name = "pre-commit", specifier = "==4.0.1" },

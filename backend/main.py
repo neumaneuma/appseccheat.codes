@@ -13,6 +13,11 @@ class Flag(BaseModel):
     challenge: str
 
 
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {"message": "Hello, World from the backend!"}
+
+
 @app.post("/submission")
 async def submission(flag: Flag) -> dict[str, bool | str]:
     match flag.challenge:

@@ -6,9 +6,9 @@ services:
       - "12300:12300"
     environment:
       - DEV_MODE=${DEV_MODE:-true}
-    command: sh -c 'fastapi $${DEV_MODE:+dev} main.py'
+    command: sh -c 'fastapi $${DEV_MODE:+dev} --port 12300 main.py'
     volumes:
-      - ./backend:/app
+      - ./backend:/backend
 
   internal_api:
     build:
@@ -17,7 +17,7 @@ services:
       - "12301:12301"
     environment:
       - DEV_MODE=${DEV_MODE:-true}
-    command: sh -c 'fastapi $${DEV_MODE:+dev} main.py'
+    command: sh -c 'fastapi $${DEV_MODE:+dev} --port 12301 main.py'
     volumes:
       - ./internal_api:/app
 

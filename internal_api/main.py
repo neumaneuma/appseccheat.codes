@@ -10,6 +10,11 @@ PASSWORD_RESET = (
 app = FastAPI()
 
 
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {"message": "Hello, World from the internal API!"}
+
+
 @app.get("/reset_admin_password/")
 async def simulate_reset_admin_password() -> str:
     return f"Administrator password reset to: {PASSWORD_RESET}"
