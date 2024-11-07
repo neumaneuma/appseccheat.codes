@@ -2,10 +2,34 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from backend.helper import timing_safe_compare
+from backend.passphrases import Passphrases
+from backend.patches.sqli_login_bypass import router as sqli_login_bypass_patched_router
+from backend.patches.sqli_second_order import router as sqli_second_order_patched_router
+from backend.patches.ssrf_lfi import router as ssrf_lfi_patched_router
+from backend.patches.ssrf_webhook import router as ssrf_webhook_patched_router
 
-from .passphrases import Passphrases
+# Import all modules with routes
+from backend.vulnerabilities.sqli_login_bypass import (
+    router as sqli_login_bypass_vulnerable_router,
+)
+from backend.vulnerabilities.sqli_second_order import (
+    router as sqli_second_order_vulnerable_router,
+)
+from backend.vulnerabilities.ssrf_lfi import router as ssrf_lfi_vulnerable_router
+from backend.vulnerabilities.ssrf_webhook import (
+    router as ssrf_webhook_vulnerable_router,
+)
 
 app = FastAPI()
+
+app.include_router(sqli_login_bypass_vulnerable_router)
+app.include_router(sqli_second_order_vulnerable_router)
+app.include_router(ssrf_webhook_vulnerable_router)
+app.include_router(ssrf_lfi_vulnerable_router)
+app.include_router(sqli_login_bypass_patched_router)
+app.include_router(sqli_second_order_patched_router)
+app.include_router(ssrf_webhook_patched_router)
+app.include_router(ssrf_lfi_patched_router)
 
 
 class Flag(BaseModel):
