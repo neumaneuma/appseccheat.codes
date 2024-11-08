@@ -12,7 +12,7 @@ db = PostgresqlDatabase(
 
 
 class User(Model):
-    user_id = UUIDField(primary_key=True, default=uuid.uuid4())
+    user_id = UUIDField(primary_key=True, default=uuid.uuid4)
     username = CharField()
     password = CharField()
 
@@ -22,7 +22,7 @@ class User(Model):
 
 
 class Session(Model):
-    session_id = UUIDField(primary_key=True, default=uuid.uuid4())
+    session_id = UUIDField(primary_key=True, default=uuid.uuid4)
     cookie = CharField()
     user = ForeignKeyField(User)
 
