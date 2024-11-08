@@ -1,1 +1,1 @@
-To run functional tests: `python3 backend/tests/driver.py`
+To run functional tests: `python3 -m backend.tests.driver`

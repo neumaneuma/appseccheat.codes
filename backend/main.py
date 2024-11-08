@@ -40,6 +40,11 @@ async def root() -> dict[str, str]:
     return {"message": "Hello, World from the backend!"}
 
 
+@app.post("/")
+async def asd(flag: Flag) -> dict[str, bool | str]:
+    return {"result": False, "message": "Invalid challenge"}
+
+
 @app.post("/submission")
 async def submission(flag: Flag) -> dict[str, bool | str]:
     match flag.challenge:

@@ -4,6 +4,8 @@ from enum import Enum
 
 import requests
 
+from backend.passphrases import Passphrases
+
 url_prefix = "http://127.0.0.1:12300"
 verify = False
 
@@ -103,6 +105,18 @@ def check_status_code(
     ), f"{url}\nExpected status code: {expected_status_code}\nActual_status_code: {actual_status_code}"
 
 
+def test_submissions() -> None:
+    # r = requests.post(f"{url_prefix}/", json={"secret": "test", "challenge": "test"})
+    # check_status_code(200, r.status_code, f"{url_prefix}/")
+    # return
+
+    for challenge in Passphrases:
+        url = f"{url_prefix}/submission"
+        data = {"secret": challenge.value, "challenge": challenge.name}
+        r = requests.post(url, json=data, verify=verify)
+        check_status_code(200, r.status_code, url)
+
+
 def sqli_login_bypass(state: State) -> None:
     username = "administrator"
     password = "' OR 'a' = 'a"
@@ -116,7 +130,7 @@ def sqli_login_bypass(state: State) -> None:
         case _:
             raise ValueError(f"Invalid state: {state}")
 
-    r = requests.post(url, data=data, verify=verify)
+    r = requests.post(url, json=data, verify=verify)
     check_status_code(status_code, r.status_code, url)
 
 
@@ -135,7 +149,7 @@ def sqli_second_order(state: State) -> None:
 
     username = "batman-- "
     data = {"username": username, "password": password}
-    r = requests.post(url, data=data, verify=verify)
+    r = requests.post(url, json=data, verify=verify)
     check_status_code(status_code, r.status_code, url)
 
     match state:
@@ -151,7 +165,7 @@ def sqli_second_order(state: State) -> None:
             raise ValueError(f"Invalid state: {state}")
 
     data = {"old": password, "new": password, "new_verify": password}
-    r = requests.post(url, data=data, cookies=r.cookies, verify=verify)
+    r = requests.post(url, json=data, cookies=r.cookies, verify=verify)
     check_status_code(status_code, r.status_code, url)
 
 
@@ -182,7 +196,7 @@ def ssrf_webhook(state: State) -> None:
 
     for custom_url, status_code in custom_urls.items():
         data = {"custom_url": custom_url}
-        r = requests.post(url, data=data, verify=verify)
+        r = requests.post(url, json=data, verify=verify)
         check_status_code(status_code, r.status_code, f"{url}({custom_url})")
 
 
@@ -211,15 +225,20 @@ def ssrf_local_file_inclusion(state: State) -> None:
 
     for custom_url, status_code in custom_urls.items():
         data = {"custom_url": custom_url}
-        r = requests.post(url, data=data, verify=verify)
+        r = requests.post(url, json=data, verify=verify)
         check_status_code(status_code, r.status_code, f"{url}({custom_url})")
 
 
 start_time = round(time.time() * 1000)
 print("Starting functional test...")
+
+print("Testing submissions...")
+test_submissions()
+
 for state in State:
     print(f"Testing {state} state for SQLi login bypass...")
     sqli_login_bypass(state)
+
     # print(f"Testing {state} state for SQLi second order...")
     # sqli_second_order(state)
     # print(f"Testing {state} state for SSRF webhook...")
