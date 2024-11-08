@@ -13,4 +13,5 @@ dependencies = [
     "safehttpx==0.1.1",
     "types-requests==2.32.0.20241016",
     "types-peewee==3.17.7.20241017",
+    "psycopg2-binary==2.9.10",
 ]
