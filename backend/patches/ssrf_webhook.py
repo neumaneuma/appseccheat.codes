@@ -5,10 +5,13 @@ import safehttpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from backend.helper import allowed_to_continue_for_ssrf_challenge, timing_safe_compare
+from backend.helper import (
+    allowed_to_continue_for_ssrf_challenge,
+    get_ssrf_webhook_expected_response,
+    timing_safe_compare,
+)
 from backend.passphrases import Passphrases
 from backend.patches import PATCHES
-from internal_api.main import simulate_reset_admin_password
 
 router = APIRouter(prefix=f"/{PATCHES}/ssrf1")
 LOG = logging.getLogger(__name__)
@@ -43,7 +46,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
         r = safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:1000]
 
-        if timing_safe_compare(response_body, await simulate_reset_admin_password()):
+        if timing_safe_compare(response_body, get_ssrf_webhook_expected_response()):
             return Passphrases.ssrf1.value
         elif did_access_internal_api(user_supplied_url.url):
             return response_body
