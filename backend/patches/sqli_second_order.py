@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Request
 from peewee import DoesNotExist
 from pydantic import BaseModel
 
-from backend.database import SQLI2_USERNAME, Session, User, get_db
+from backend.database import SQLI2_USERNAME, Session, User
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.patches import PATCHES
@@ -30,9 +30,8 @@ async def register(request: Request, credentials: Credentials) -> str:
     if len(credentials.username.strip()) == 0 or len(credentials.password.strip()) == 0:
         raise HTTPException(status_code=400, detail="Fields cannot be empty")
 
-    async with get_db() as _:
-        user = User.create(username=credentials.username, password=credentials.password)
-        session = Session.create(cookie=secrets.token_hex(16), user=user)
+    user = User.create(username=credentials.username, password=credentials.password)
+    session = Session.create(cookie=secrets.token_hex(16), user=user)
     request.session[SESSION_IDENTIFIER] = str(session.session_id)
     return "Successfully registered"
 
@@ -49,18 +48,16 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
     cookie = request.session[SESSION_IDENTIFIER]
-    async with get_db() as _:
-        try:
-            session = Session.get(cookie=cookie)
-        except DoesNotExist as err:
-            raise HTTPException(status_code=403, detail="Unauthorized") from err
+    try:
+        session = Session.get(cookie=cookie)
+    except DoesNotExist as err:
+        raise HTTPException(status_code=403, detail="Unauthorized") from err
 
-    async with get_db() as _:
-        User.update(password=change_password.new).where(
-            User.username == session.user.username, User.password == change_password.old
-        ).execute()
-        hacked_user: User = User.get(username=SQLI2_USERNAME)
-        if timing_safe_compare(hacked_user.password, change_password.new):
-            return Passphrases.sqli2.value
+    User.update(password=change_password.new).where(
+        User.username == session.user.username, User.password == change_password.old
+    ).execute()
+    hacked_user: User = User.get(username=SQLI2_USERNAME)
+    if timing_safe_compare(hacked_user.password, change_password.new):
+        return Passphrases.sqli2.value
 
     return "Successfully changed password"

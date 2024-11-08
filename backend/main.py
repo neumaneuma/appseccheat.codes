@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from backend.database import seed_db
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.patches.sqli_login_bypass import router as sqli_login_bypass_patched_router
@@ -18,8 +19,8 @@ from backend.vulnerabilities.ssrf_webhook import (
     router as ssrf_webhook_vulnerable_router,
 )
 
+# Initialize app
 app = FastAPI()
-
 app.include_router(sqli_login_bypass_vulnerable_router)
 app.include_router(sqli_second_order_vulnerable_router)
 app.include_router(ssrf_webhook_vulnerable_router)
@@ -28,6 +29,7 @@ app.include_router(sqli_login_bypass_patched_router)
 app.include_router(sqli_second_order_patched_router)
 app.include_router(ssrf_webhook_patched_router)
 app.include_router(ssrf_lfi_patched_router)
+seed_db()
 
 
 class Flag(BaseModel):
@@ -38,11 +40,6 @@ class Flag(BaseModel):
 @app.get("/")
 async def root() -> dict[str, str]:
     return {"message": "Hello, World from the backend!"}
-
-
-@app.post("/")
-async def asd(flag: Flag) -> dict[str, bool | str]:
-    return {"result": False, "message": "Invalid challenge"}
 
 
 @app.post("/submission")
