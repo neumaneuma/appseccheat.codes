@@ -7,6 +7,9 @@ services:
     environment:
       - DEV_MODE=${DEV_MODE:-true}
     command: sh -c 'fastapi $${DEV_MODE:+dev} --port 12300 main.py'
+    depends_on:
+      - db
+      - internal_api
     volumes:
       - ./backend:/backend
 
