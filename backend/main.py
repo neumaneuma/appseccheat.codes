@@ -49,12 +49,6 @@ async def root() -> str:
     return "Hello, World from the backend!"
 
 
-@app.get("/reset")
-async def reset() -> str:
-    reset_db()
-    return "Database reset"
-
-
 @app.post("/submission")
 async def submission(flag: Flag) -> dict[str, bool | str]:
     match flag.challenge:

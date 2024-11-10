@@ -117,34 +117,24 @@ def check_response(
     assert (
         type(expected_response) is type(actual_response)
     ), f"Expected and actual response types do not match. Expected: {type(expected_response)}, Actual: {type(actual_response)}"
-    failed = (
-        expected_status_code != actual_status_code
-        or expected_response != actual_response
+    success = (
+        expected_status_code == actual_status_code
+        and expected_response == actual_response
     )
-    if failed:
-        msg = f"FAILED {appended_custom_msg}"
-        if expected_status_code != actual_status_code:
-            msg += f"\n\tExpected status code: {expected_status_code}\n\tActual_status_code: {actual_status_code}"
-        if expected_response != actual_response:
-            msg += f"\n\tExpected response: {expected_response}\n\tActual response: {actual_response}"
-        if url:
-            msg += f"\n\tURL: {url}"
-        print(msg)
-        return False
+    if success:
+        msg = f"\tPASSED {appended_custom_msg}"
     else:
-        print(f"PASSED {appended_custom_msg}")
-        return True
+        msg = f"\tFAILED {appended_custom_msg}"
+        if expected_status_code != actual_status_code:
+            msg += f"\n\t- Expected status code: {expected_status_code}\n\t- Actual_status_code: {actual_status_code}"
+        if expected_response != actual_response:
+            msg += f"\n\t- Expected response: {expected_response}\n\t- Actual response: {actual_response}"
 
+    if url:
+        msg += f"\n\t- URL: {url}"
 
-def reset_db(appended_custom_msg: str = "") -> bool:
-    r = requests.get(f"{url_prefix}/reset", verify=verify)
-    return check_response(
-        expected_status_code=200,
-        actual_status_code=r.status_code,
-        expected_response="Database reset",
-        actual_response=r.json(),
-        appended_custom_msg=appended_custom_msg,
-    )
+    print(msg)
+    return success
 
 
 def test_submission(challenge: Passphrases) -> bool:
@@ -183,9 +173,7 @@ def sqli_login_bypass(state: State) -> bool:
         actual_status_code=r.status_code,
         expected_response=expected_response,
         actual_response=r.json(),
-        appended_custom_msg="(1/2)",
     )
-    assert reset_db(appended_custom_msg="(2/2)"), "Failed to reset database"
     return response
 
 
@@ -212,7 +200,7 @@ def sqli_second_order(state: State) -> bool:
         actual_status_code=r.status_code,
         expected_response=expected_response,
         actual_response=r.json(),
-        appended_custom_msg="(1/3)",
+        appended_custom_msg="(1/2)",
     )
 
     match state:
@@ -234,14 +222,13 @@ def sqli_second_order(state: State) -> bool:
         actual_status_code=r.status_code,
         expected_response=expected_response,
         actual_response=r.json(),
-        appended_custom_msg="(2/3)",
+        appended_custom_msg="(2/2)",
     )
 
-    assert reset_db(appended_custom_msg="(3/3)"), "Failed to reset database"
     return first_check and second_check
 
 
-def ssrf_webhook(state: State) -> bool:
+def ssrf_webhook(state: State) -> list[bool]:
     match state:
         case State.VULNERABLE:
             url = SSRF.Webhook.Vulnerabilities.submit_webhook_url
@@ -268,7 +255,6 @@ def ssrf_webhook(state: State) -> bool:
             response = Passphrases.ssrf1.value
 
         data = {"url": payload_url}
-        print(f"URL: {payload_url}")
         r = requests.post(url, json=data, verify=verify)
         response = check_response(
             expected_status_code=status_code,
@@ -282,7 +268,7 @@ def ssrf_webhook(state: State) -> bool:
         if not response:
             break
 
-    return all(responses)
+    return responses
 
 
 def ssrf_local_file_inclusion(state: State) -> bool:
@@ -328,28 +314,27 @@ start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-# for challenge in Passphrases:
-#     print(f"Testing submission for challenge {challenge.name}...")
-#     results.append(test_submission(challenge))
+for challenge in Passphrases:
+    print(f"Testing submission for challenge {challenge.name}...")
+    results.append(test_submission(challenge))
 
 for state in State:
-    # print(f"Testing {state.name} state for SQLi login bypass...")
-    # results.append(sqli_login_bypass(state))
+    print(f"Testing {state.name} state for SQLi login bypass...")
+    results.append(sqli_login_bypass(state))
 
-    # print(f"Testing {state.name} state for SQLi second order...")
-    # results.append(sqli_second_order(state))
-
-    if state == State.VULNERABLE:
-        continue
+    print(f"Testing {state.name} state for SQLi second order...")
+    results.append(sqli_second_order(state))
 
     print(f"Testing {state.name} state for SSRF webhook...")
-    results.append(ssrf_webhook(state))
+    results.extend(ssrf_webhook(state))
 
     # print(f"Testing {state.name} state for SSRF local file inclusion...")
-    # results.append(ssrf_local_file_inclusion(state))
+    # results.extend(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
-print(f"\n\nFinished running functional tests. Run time: {run_time} seconds")
+print(
+    f"\n\nFinished running {len(results)} functional tests. Run time: {run_time} seconds"
+)
 
 assert all(results), "There were failed tests 😭"
