@@ -19,7 +19,8 @@ class Credentials(BaseModel):
 @router.post("/login/", response_model=str)
 async def login(credentials: Credentials) -> str:
     query = f"SELECT * FROM appsec_cheat_codes_user WHERE username = '{credentials.username}' AND password = '{credentials.password}'"
-    result = db.execute_sql(query).fetchone()
+    with db:
+        result = db.execute_sql(query).fetchone()
     user = deserialize_user(result)
     if user:
         return Passphrases.sqli1.value

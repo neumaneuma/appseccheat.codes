@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from peewee import DoesNotExist
 from pydantic import BaseModel
 
-from backend.database import User
+from backend.database import User, db
 from backend.passphrases import Passphrases
 from backend.patches import PATCHES
 
@@ -17,7 +17,8 @@ class Credentials(BaseModel):
 @router.post("/login/", response_model=str)
 async def login(credentials: Credentials) -> str:
     try:
-        User.get(username=credentials.username, password=credentials.password)
+        with db:
+            User.get(username=credentials.username, password=credentials.password)
     except DoesNotExist as err:
         raise HTTPException(status_code=403, detail="Failure") from err
     else:

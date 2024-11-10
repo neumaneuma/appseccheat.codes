@@ -30,12 +30,13 @@ async def register(request: Request, credentials: Credentials) -> str:
     if len(credentials.username.strip()) == 0 or len(credentials.password.strip()) == 0:
         raise HTTPException(status_code=400, detail="Fields cannot be empty")
 
-    user = User.create(
-        username=credentials.username,
-        password=bcrypt.hashpw(credentials.password.encode(), bcrypt.gensalt()),
-    )
-    session = Session.create(cookie=secrets.token_hex(), user=user)
-    request.session[SESSION_IDENTIFIER] = str(session.session_id)
+    with db:
+        user = User.create(
+            username=credentials.username,
+            password=bcrypt.hashpw(credentials.password.encode(), bcrypt.gensalt()),
+        )
+        session = Session.create(cookie=secrets.token_hex(), user=user)
+        request.session[SESSION_IDENTIFIER] = str(session.session_id)
     return "Successfully registered"
 
 
@@ -52,12 +53,14 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
 
     cookie = request.session[SESSION_IDENTIFIER]
     try:
-        session = Session.get(cookie=cookie)
+        with db:
+            session = Session.get(cookie=cookie)
     except DoesNotExist as err:
         raise HTTPException(status_code=403, detail="Unauthorized") from err
 
     query = f"UPDATE appsec_cheat_codes_user SET password = '{change_password.new}' WHERE username = '{session.user.username}' AND password = '{change_password.old}'"
-    db.execute_sql(query)
+    with db:
+        db.execute_sql(query)
     hacked_user = deserialize_user(User.get(username=SQLI2_USERNAME))
     if hacked_user is None:
         raise ValueError("Database is not properly initialized")

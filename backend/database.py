@@ -8,7 +8,12 @@ from peewee import CharField, ForeignKeyField, Model, PostgresqlDatabase, UUIDFi
 from backend.constants import SQLI1_USERNAME, SQLI2_USERNAME
 
 db = PostgresqlDatabase(
-    "postgres", user="postgres", password="postgres", host="db", port=5432
+    "postgres",
+    user="postgres",
+    password="postgres",
+    host="db",
+    port=5432,
+    autoconnect=False,
 )
 
 
@@ -53,13 +58,14 @@ def deserialize_session(result: Any | None) -> Session | None:
 
 
 def seed_db() -> None:
-    db.drop_tables([User, Session])
-    db.create_tables([User, Session])
-    User.create(
-        username=SQLI1_USERNAME,
-        password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
-    )
-    User.create(
-        username=SQLI2_USERNAME,
-        password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
-    )
+    with db:
+        db.drop_tables([User, Session])
+        db.create_tables([User, Session])
+        User.create(
+            username=SQLI1_USERNAME,
+            password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
+        )
+        User.create(
+            username=SQLI2_USERNAME,
+            password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
+        )
