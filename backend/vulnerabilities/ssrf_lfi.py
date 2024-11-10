@@ -1,5 +1,3 @@
-import logging
-
 import requests
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -10,7 +8,6 @@ from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
 router = APIRouter(prefix=f"/{VULNERABILITIES}/ssrf2")
-LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
 
@@ -24,7 +21,6 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    LOG.debug(f"SessionUser supplied URL: {user_supplied_url.url}")
     if should_reveal_first_hint(user_supplied_url.url):
         return FIRST_HINT
 
@@ -40,18 +36,21 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
         requests_session = requests.session()
         requests_session.mount(FILE_SCHEME, local_file_adapter.LocalFileAdapter())
         r = requests_session.get(user_supplied_url.url, timeout=TIMEOUT)
-        response_body = r.text[:1000]
+        response_body = (
+            r.text if user_supplied_url.url.startswith(FILE_SCHEME) else r.json()
+        )
 
         # Read allowed files from disk
         passwd_contents = ""
         shadow_contents = ""
+
         try:
             with open("/etc/passwd") as f:
-                passwd_contents = f.read()[:1000]
+                passwd_contents = f.read()
             with open("/etc/shadow") as f:
-                shadow_contents = f.read()[:1000]
+                shadow_contents = f.read()
         except Exception as e:
-            LOG.debug(f"Error reading files: {e}")
+            raise HTTPException(status_code=400, detail=f"{e}") from e
 
         # Check if response matches either file
         if timing_safe_compare(response_body, passwd_contents) or timing_safe_compare(
@@ -65,13 +64,12 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
                 status_code=400, detail=f"{response_body}...\n\nFailure"
             )
     except requests.exceptions.RequestException as e:
-        LOG.debug("Request exception: " + str(e))
         raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e
 
 
 FILE_SCHEME = "file://"
-ALLOWED_PATHS = [f"{FILE_SCHEME}/etc/passwd", f"{FILE_SCHEME}/etc/shadow"]
-FIRST_HINT = "The scheme is correct, but that is not the right file"
+ALLOWED_PATHS = {f"{FILE_SCHEME}/etc/passwd", f"{FILE_SCHEME}/etc/shadow"}
+FIRST_HINT = "The scheme is correct, but that is not the right file."
 
 
 INTERNAL_API_NO_PORT = "http://internal_api"

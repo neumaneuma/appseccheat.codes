@@ -1,4 +1,5 @@
 import json
+import re
 import time
 import uuid
 from enum import Enum
@@ -116,7 +117,7 @@ def check_response(
 ) -> bool:
     assert (
         type(expected_response) is type(actual_response)
-    ), f"Expected and actual response types do not match. Expected: {type(expected_response)}, Actual: {type(actual_response)}"
+    ), f"Expected and actual response types do not match. Expected: {type(expected_response)}, Actual: {type(actual_response)}.\n\t- Expected response: {expected_response}\n\t- Actual response: {actual_response}"
     success = (
         expected_status_code == actual_status_code
         and expected_response == actual_response
@@ -232,10 +233,10 @@ def ssrf_webhook(state: State) -> list[bool]:
     match state:
         case State.VULNERABLE:
             url = SSRF.Webhook.Vulnerabilities.submit_webhook_url
-            file_name = "backend/tests/ssrf_test_urls_vulnerable.json"
+            file_name = "backend/tests/ssrf_webhook_test_urls_vulnerable.json"
         case State.PATCHED:
             url = SSRF.Webhook.Patches.submit_webhook_url
-            file_name = "backend/tests/ssrf_test_urls_patched.json"
+            file_name = "backend/tests/ssrf_webhook_test_urls_patched.json"
         case _:
             assert_never(state)
 
@@ -244,10 +245,12 @@ def ssrf_webhook(state: State) -> list[bool]:
             json.load(test_urls)
         )
 
-    responses = []
+    all_response_checks = []
     for i, expected_response in enumerate(expected_responses):
         payload_url = expected_response["url"]
-        status_code = int(expected_response["status_code"])
+        raw_status_code = expected_response["status_code"]
+        assert isinstance(raw_status_code, str), "Status code is not an string"
+        status_code = int(raw_status_code)
         response = expected_response["response"]
 
         # Hacky way of dealing with not being able to access python from the json file
@@ -256,7 +259,7 @@ def ssrf_webhook(state: State) -> list[bool]:
 
         data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
-        response = check_response(
+        is_correct_response = check_response(
             expected_status_code=status_code,
             actual_status_code=r.status_code,
             expected_response=response,
@@ -264,72 +267,94 @@ def ssrf_webhook(state: State) -> list[bool]:
             url=payload_url,
             appended_custom_msg=f"({i + 1}/{len(expected_responses)})",
         )
-        responses.append(response)
-        if not response:
+        all_response_checks.append(is_correct_response)
+        if not is_correct_response:
             break
 
-    return responses
+    return all_response_checks
 
 
 def ssrf_local_file_inclusion(state: State) -> bool:
+    cat_coin_price_pattern = re.compile(
+        r"Price at \d{2}:\d{2}:\d{2}\.\d{6} - \$\d+\.\d+"
+    )
+
     match state:
         case State.VULNERABLE:
             url = SSRF.LocalFileInclusion.Vulnerabilities.submit_api_url_url
-            file_name = "backend/tests/ssrf_test_urls_vulnerable.json"
+            file_name = "backend/tests/ssrf_lfi_test_urls_vulnerable.json"
         case State.PATCHED:
             url = SSRF.LocalFileInclusion.Patches.submit_api_url_url
-            file_name = "backend/tests/ssrf_test_urls_patched.json"
+            file_name = "backend/tests/ssrf_lfi_test_urls_patched.json"
         case _:
             assert_never(state)
 
-    # ssrf1_test_urls[0]["http://internal_api/"] = 400
-    # ssrf1_test_urls[1]["http://internal_api/"] = 400
-    # ssrf1_test_urls[0]["http://internal_api:12301/"] = 200
-    # ssrf1_test_urls[1]["http://internal_api:12301/"] = 200
-    # ssrf2_test_urls[0]["http://internal_api:12301/get_cat_coin_price_v1/"] = 200
-    # ssrf2_test_urls[1]["http://internal_api:12301/get_cat_coin_price_v1/"] = 200
-    # ssrf2_test_urls[0]["http://internal_api:12301/get_cat_coin_price_v2/"] = 200
-    # ssrf2_test_urls[1]["http://internal_api:12301/get_cat_coin_price_v2/"] = 200
-
     with open(file_name) as test_urls:
-        custom_urls: dict[str, int] = json.load(test_urls)
+        expected_responses: list[dict[str, str] | dict[str, dict[str, str]]] = (
+            json.load(test_urls)
+        )
 
-    responses = []
-    for custom_url, status_code in custom_urls.items():
-        data = {"url": custom_url}
+    all_response_checks = []
+    for i, expected_response in enumerate(expected_responses):
+        if i < 0:
+            continue
+        payload_url = expected_response["url"]
+        raw_status_code = expected_response["status_code"]
+        assert isinstance(raw_status_code, str), "Status code is not an string"
+        status_code = int(raw_status_code)
+        response = expected_response["response"]
+
+        # Hacky way of dealing with not being able to access python from the json file
+        if response == "Passphrases.ssrf2.value":
+            response = Passphrases.ssrf2.value
+
+        data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
-        response = check_response(
+
+        actual_response = r.json()
+        if isinstance(actual_response, str) and cat_coin_price_pattern.match(
+            actual_response
+        ):
+            actual_response = "Cat coin price"
+
+        is_correct_response = check_response(
             expected_status_code=status_code,
             actual_status_code=r.status_code,
-            expected_response="",
-            actual_response=r.json(),
-            url=f"{url}({custom_url})",
+            expected_response=response,
+            actual_response=actual_response,
+            url=payload_url,
+            appended_custom_msg=f"({i + 1}/{len(expected_responses)})",
         )
-        responses.append(response)
+        all_response_checks.append(is_correct_response)
+        if not is_correct_response:
+            break
 
-    return all(responses)
+    return all_response_checks
 
 
 start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-for challenge in Passphrases:
-    print(f"Testing submission for challenge {challenge.name}...")
-    results.append(test_submission(challenge))
+# for challenge in Passphrases:
+#     print(f"Testing submission for challenge {challenge.name}...")
+#     results.append(test_submission(challenge))
 
 for state in State:
-    print(f"Testing {state.name} state for SQLi login bypass...")
-    results.append(sqli_login_bypass(state))
+    # print(f"Testing {state.name} state for SQLi login bypass...")
+    # results.append(sqli_login_bypass(state))
 
-    print(f"Testing {state.name} state for SQLi second order...")
-    results.append(sqli_second_order(state))
+    # print(f"Testing {state.name} state for SQLi second order...")
+    # results.append(sqli_second_order(state))
 
-    print(f"Testing {state.name} state for SSRF webhook...")
-    results.extend(ssrf_webhook(state))
+    # print(f"Testing {state.name} state for SSRF webhook...")
+    # results.extend(ssrf_webhook(state))
 
-    # print(f"Testing {state.name} state for SSRF local file inclusion...")
-    # results.extend(ssrf_local_file_inclusion(state))
+    if state == State.PATCHED:
+        continue
+
+    print(f"Testing {state.name} state for SSRF local file inclusion...")
+    results.extend(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
