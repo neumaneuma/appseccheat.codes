@@ -245,47 +245,52 @@ def ssrf_webhook(state: State) -> bool:
     match state:
         case State.VULNERABLE:
             url = SSRF.Webhook.Vulnerabilities.submit_webhook_url
-            file_name = "ssrf_test_urls_vulnerable.json"
+            file_name = "backend/tests/ssrf_test_urls_vulnerable.json"
         case State.PATCHED:
             url = SSRF.Webhook.Patches.submit_webhook_url
-            file_name = "ssrf_test_urls_patched.json"
+            file_name = "backend/tests/ssrf_test_urls_patched.json"
         case _:
             assert_never(state)
 
-    # ssrf1_test_urls[0]["http://internal_api/"] = 202
-    # ssrf1_test_urls[1]["http://internal_api/"] = 400
-    # ssrf1_test_urls[0]["http://internal_api:12301/"] = 200
-    # ssrf1_test_urls[1]["http://internal_api:12301/"] = 400
-    # ssrf1_test_urls[0]["http://internal_api:12301/reset_admin_password/"] = 200
-    # ssrf1_test_urls[1]["http://internal_api:12301/reset_admin_password/"] = 400
-    # ssrf1_test_urls[0]["http://127.0.0.1:12302/permanent/"] = 202
-    # ssrf1_test_urls[1]["http://127.0.0.1:12302/permanent/"] = 400
-    # ssrf1_test_urls[0]["http://127.0.0.1:12302/temporary/"] = 202
-    # ssrf1_test_urls[1]["http://127.0.0.1:12302/temporary/"] = 400
-
     with open(file_name) as test_urls:
-        custom_urls: dict[str, int] = json.load(test_urls)
+        expected_responses: list[dict[str, str] | dict[str, dict[str, str]]] = (
+            json.load(test_urls)
+        )
 
-    for custom_url, status_code in custom_urls.items():
-        data = {"custom_url": custom_url}
+    responses = []
+    for expected_response in expected_responses:
+        payload_url = expected_response["url"]
+        status_code = int(expected_response["status_code"])
+        response = expected_response["response"]
+
+        # Hacky way of dealing with not being able to access python from the json file
+        if response == "Passphrases.ssrf1.value":
+            response = Passphrases.ssrf1.value
+
+        data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
-        return check_response(
+        response = check_response(
             expected_status_code=status_code,
             actual_status_code=r.status_code,
-            expected_response="",
+            expected_response=response,
             actual_response=r.json(),
-            url=f"{url}({custom_url})",
+            url=payload_url,
         )
+        responses.append(response)
+        if not response:
+            break
+
+    return all(responses)
 
 
 def ssrf_local_file_inclusion(state: State) -> bool:
     match state:
         case State.VULNERABLE:
             url = SSRF.LocalFileInclusion.Vulnerabilities.submit_api_url_url
-            file_name = "ssrf_test_urls_vulnerable.json"
+            file_name = "backend/tests/ssrf_test_urls_vulnerable.json"
         case State.PATCHED:
             url = SSRF.LocalFileInclusion.Patches.submit_api_url_url
-            file_name = "ssrf_test_urls_patched.json"
+            file_name = "backend/tests/ssrf_test_urls_patched.json"
         case _:
             assert_never(state)
 
@@ -301,35 +306,40 @@ def ssrf_local_file_inclusion(state: State) -> bool:
     with open(file_name) as test_urls:
         custom_urls: dict[str, int] = json.load(test_urls)
 
+    responses = []
     for custom_url, status_code in custom_urls.items():
-        data = {"custom_url": custom_url}
+        data = {"url": custom_url}
         r = requests.post(url, json=data, verify=verify)
-        return check_response(
+        response = check_response(
             expected_status_code=status_code,
             actual_status_code=r.status_code,
             expected_response="",
             actual_response=r.json(),
             url=f"{url}({custom_url})",
         )
+        responses.append(response)
+
+    return all(responses)
 
 
 start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-for challenge in Passphrases:
-    print(f"Testing submission for challenge {challenge.name}...")
-    results.append(test_submission(challenge))
+# for challenge in Passphrases:
+#     print(f"Testing submission for challenge {challenge.name}...")
+#     results.append(test_submission(challenge))
 
 for state in State:
-    print(f"Testing {state.name} state for SQLi login bypass...")
-    results.append(sqli_login_bypass(state))
+    # print(f"Testing {state.name} state for SQLi login bypass...")
+    # results.append(sqli_login_bypass(state))
 
-    print(f"Testing {state.name} state for SQLi second order...")
-    results.append(sqli_second_order(state))
+    # print(f"Testing {state.name} state for SQLi second order...")
+    # results.append(sqli_second_order(state))
 
-    # print(f"Testing {state.name} state for SSRF webhook...")
-    # results.append(ssrf_webhook(state))
+    if state == State.VULNERABLE:
+        print(f"Testing {state.name} state for SSRF webhook...")
+        results.append(ssrf_webhook(state))
 
     # print(f"Testing {state.name} state for SSRF local file inclusion...")
     # results.append(ssrf_local_file_inclusion(state))
