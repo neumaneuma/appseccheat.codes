@@ -1,60 +1,83 @@
 [
   {
     "url": "http://localhost:22/",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://localhost:22/)"
+    }
   },
   {
     "url": "http://127.0.0.1:3389/",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://127.0.0.1:3389/)"
+    }
   },
   {
     "url": "http://localhost",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://localhost)"
+    }
   },
   {
     "url": "http://127.0.0.1",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://127.0.0.1)"
+    }
   },
   {
     "url": "http://internal_api",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12301 instead."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api)"
+    }
   },
   {
     "url": "http://internal_api:8080",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12301 instead."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:8080)"
+    }
   },
   {
     "url": "http://internal_api:12300",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12301 instead."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12300)"
+    }
   },
   {
     "url": "http://internal_api:12301",
-    "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12301)"
+    }
   },
   {
     "url": "http://internal_api:12301/",
-    "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12301/)"
+    }
   },
   {
     "url": "http://internal_api:12301/not_right_endpoint",
-    "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
-  },
-  {
-    "url": "http://internal_api:12301/reset_admin_password/",
     "status_code": "400",
     "response": {
-      "detail": "Failure: Hostname internal_api failed validation"
+      "detail": "Failure: supplied url is invalid (http://internal_api:12301/not_right_endpoint)"
     }
+  },
+  {
+    "url": "http://internal_api:12301/get_cat_coin_price_v1",
+    "status_code": "200",
+    "response": "Cat coin price"
+  },
+  {
+    "url": "http://internal_api:12301/get_cat_coin_price_v2",
+    "status_code": "200",
+    "response": "Cat coin price"
   },
   {
     "url": "http://0000127.0.0.1",
@@ -72,24 +95,25 @@
   },
   {
     "url": "file://etc/passwd",
-    "status_code": "400",
-    "response": {
-      "detail": "Failure: supplied url is invalid (file://etc/passwd)"
-    }
+    "status_code": "200",
+    "response": "The scheme is correct, but that is not the right file."
   },
   {
     "url": "file://\\/\\/etc/passwd",
+    "status_code": "200",
+    "response": "The scheme is correct, but that is not the right file."
+  },
+  {
+    "url": "file:///etc/passwd",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (file://\\/\\/etc/passwd)"
+      "detail": "Failure: supplied url is invalid (file:///etc/passwd)"
     }
   },
   {
     "url": "file://etc/shadow",
-    "status_code": "400",
-    "response": {
-      "detail": "Failure: supplied url is invalid (file://etc/shadow)"
-    }
+    "status_code": "200",
+    "response": "The scheme is correct, but that is not the right file."
   },
   {
     "url": "file:///etc/shadow",
@@ -100,10 +124,8 @@
   },
   {
     "url": "file://\\/\\/etc/shadow",
-    "status_code": "400",
-    "response": {
-      "detail": "Failure: supplied url is invalid (file://\\/\\/etc/shadow)"
-    }
+    "status_code": "200",
+    "response": "The scheme is correct, but that is not the right file."
   },
   {
     "url": "ftp://apple.com:11211/",
@@ -206,12 +228,16 @@
   {
     "url": "http://0/",
     "status_code": "400",
-    "response": { "detail": "Failure: supplied url is invalid (http://0/)" }
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://0/)"
+    }
   },
   {
     "url": "http://127.1/",
     "status_code": "400",
-    "response": { "detail": "Failure: supplied url is invalid (http://127.1/)" }
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://127.1/)"
+    }
   },
   {
     "url": "http://169.254.169.254.xip.io/",

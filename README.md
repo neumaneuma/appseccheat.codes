@@ -33,6 +33,7 @@ db_1   | 2021-03-22T22:37:00.973213Z 0 [System] [MY-010931] [Server] /usr/sbin/m
 TODO:
 
 - vue3
+  - ssrf lfi challenge should be radio button ui for selecting the url
 - updated css
 - ssrf1
 - ssrf2

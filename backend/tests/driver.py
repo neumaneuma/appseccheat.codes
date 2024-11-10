@@ -296,8 +296,6 @@ def ssrf_local_file_inclusion(state: State) -> bool:
 
     all_response_checks = []
     for i, expected_response in enumerate(expected_responses):
-        if i < 0:
-            continue
         payload_url = expected_response["url"]
         raw_status_code = expected_response["status_code"]
         assert isinstance(raw_status_code, str), "Status code is not an string"
@@ -336,22 +334,19 @@ start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-# for challenge in Passphrases:
-#     print(f"Testing submission for challenge {challenge.name}...")
-#     results.append(test_submission(challenge))
+for challenge in Passphrases:
+    print(f"Testing submission for challenge {challenge.name}...")
+    results.append(test_submission(challenge))
 
 for state in State:
-    # print(f"Testing {state.name} state for SQLi login bypass...")
-    # results.append(sqli_login_bypass(state))
+    print(f"Testing {state.name} state for SQLi login bypass...")
+    results.append(sqli_login_bypass(state))
 
-    # print(f"Testing {state.name} state for SQLi second order...")
-    # results.append(sqli_second_order(state))
+    print(f"Testing {state.name} state for SQLi second order...")
+    results.append(sqli_second_order(state))
 
-    # print(f"Testing {state.name} state for SSRF webhook...")
-    # results.extend(ssrf_webhook(state))
-
-    if state == State.PATCHED:
-        continue
+    print(f"Testing {state.name} state for SSRF webhook...")
+    results.extend(ssrf_webhook(state))
 
     print(f"Testing {state.name} state for SSRF local file inclusion...")
     results.extend(ssrf_local_file_inclusion(state))

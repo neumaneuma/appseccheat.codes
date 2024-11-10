@@ -1,4 +1,4 @@
-import safehttpx
+import requests
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -31,7 +31,15 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
         )
     try:
-        r = await safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
+        if user_supplied_url.url not in {
+            INTERNAL_API_WITH_PATH_V1,
+            INTERNAL_API_WITH_PATH_V2,
+        }:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
+            )
+        r = requests.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.json()
 
         # Read allowed files from disk
@@ -62,7 +70,7 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
 
 FILE_SCHEME = "file://"
 ALLOWED_PATHS = [f"{FILE_SCHEME}/etc/passwd", f"{FILE_SCHEME}/etc/shadow"]
-FIRST_HINT = "The scheme is correct, but that is not the right file"
+FIRST_HINT = "The scheme is correct, but that is not the right file."
 
 
 INTERNAL_API_NO_PORT = "http://internal_api"
