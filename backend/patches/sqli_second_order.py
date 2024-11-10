@@ -5,14 +5,13 @@ from fastapi import APIRouter, HTTPException, Request
 from peewee import DoesNotExist
 from pydantic import BaseModel
 
+from backend.constants import SESSION_IDENTIFIER
 from backend.database import SQLI2_USERNAME, Session, User, deserialize_user
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.patches import PATCHES
 
 router = APIRouter(prefix=f"/{PATCHES}/sqli2")
-
-SESSION_IDENTIFIER = "sid"
 
 
 class Credentials(BaseModel):

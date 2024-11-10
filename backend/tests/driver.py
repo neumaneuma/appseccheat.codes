@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 from enum import Enum
 
 import requests
@@ -98,16 +99,20 @@ class State(Enum):
 
 
 def check_status_code(
-    expected_status_code: int, actual_status_code: int, url: str | None = None
+    expected_status_code: int,
+    actual_status_code: int,
+    *,
+    url: str = "",
+    appended_custom_msg: str = "",
 ) -> bool:
     if expected_status_code != actual_status_code:
-        msg = f"FAILED\n\tExpected status code: {expected_status_code}\n\tActual_status_code: {actual_status_code}"
+        msg = f"FAILED {appended_custom_msg}\n\tExpected status code: {expected_status_code}\n\tActual_status_code: {actual_status_code}"
         if url:
             msg += f"\n\tFAILED URL: {url}"
         print(msg)
         return False
     else:
-        print("PASSED")
+        print(f"PASSED {appended_custom_msg}")
         return True
 
 
@@ -136,7 +141,7 @@ def sqli_login_bypass(state: State) -> bool:
 
 
 def sqli_second_order(state: State) -> bool:
-    password = "test"
+    password = str(uuid.uuid4())
 
     match state:
         case State.VULNERABLE:
@@ -151,7 +156,9 @@ def sqli_second_order(state: State) -> bool:
     username = "batman-- "
     data = {"username": username, "password": password}
     r = requests.post(url, json=data, verify=verify)
-    first_check = check_status_code(status_code, r.status_code)
+    first_check = check_status_code(
+        status_code, r.status_code, appended_custom_msg="(1/2)"
+    )
 
     match state:
         case State.VULNERABLE:
@@ -167,7 +174,9 @@ def sqli_second_order(state: State) -> bool:
 
     data = {"old": password, "new": password, "new_verify": password}
     r = requests.post(url, json=data, cookies=r.cookies, verify=verify)
-    second_check = check_status_code(status_code, r.status_code)
+    second_check = check_status_code(
+        status_code, r.status_code, appended_custom_msg="(2/2)"
+    )
 
     return first_check and second_check
 
@@ -200,7 +209,7 @@ def ssrf_webhook(state: State) -> bool:
     for custom_url, status_code in custom_urls.items():
         data = {"custom_url": custom_url}
         r = requests.post(url, json=data, verify=verify)
-        return check_status_code(status_code, r.status_code, f"{url}({custom_url})")
+        return check_status_code(status_code, r.status_code, url=f"{url}({custom_url})")
 
 
 def ssrf_local_file_inclusion(state: State) -> bool:
@@ -229,7 +238,7 @@ def ssrf_local_file_inclusion(state: State) -> bool:
     for custom_url, status_code in custom_urls.items():
         data = {"custom_url": custom_url}
         r = requests.post(url, json=data, verify=verify)
-        return check_status_code(status_code, r.status_code, f"{url}({custom_url})")
+        return check_status_code(status_code, r.status_code, url=f"{url}({custom_url})")
 
 
 start_time = round(time.time() * 1000)
@@ -258,4 +267,4 @@ stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
 print(f"\n\nFinished running functional tests. Run time: {run_time} seconds")
 
-assert all(results), "Some submissions failed!"
+assert all(results), "There were failed tests 😭"

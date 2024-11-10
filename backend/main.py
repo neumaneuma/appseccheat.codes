@@ -1,6 +1,10 @@
+import secrets
+
 from fastapi import FastAPI
 from pydantic import BaseModel
+from starlette.middleware.sessions import SessionMiddleware
 
+from backend.constants import SESSION_IDENTIFIER
 from backend.database import seed_db
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
@@ -21,6 +25,9 @@ from backend.vulnerabilities.ssrf_webhook import (
 
 # Initialize app
 app = FastAPI()
+app.add_middleware(
+    SessionMiddleware, secret_key=secrets.token_hex(), session_cookie=SESSION_IDENTIFIER
+)
 app.include_router(sqli_login_bypass_vulnerable_router)
 app.include_router(sqli_second_order_vulnerable_router)
 app.include_router(ssrf_webhook_vulnerable_router)

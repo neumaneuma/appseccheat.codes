@@ -5,14 +5,13 @@ from fastapi import APIRouter, HTTPException, Request
 from peewee import DoesNotExist
 from pydantic import BaseModel
 
+from backend.constants import SESSION_IDENTIFIER
 from backend.database import SQLI2_USERNAME, Session, User, db, deserialize_user
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
 router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli2")
-
-SESSION_IDENTIFIER = "sid"
 
 
 class Credentials(BaseModel):
@@ -53,11 +52,11 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
 
     cookie = request.session[SESSION_IDENTIFIER]
     try:
-        cookie = Session.get(cookie=cookie)
+        session = Session.get(cookie=cookie)
     except DoesNotExist as err:
         raise HTTPException(status_code=403, detail="Unauthorized") from err
 
-    query = f"UPDATE appsec_cheat_codes_user SET password = '{change_password.new}' WHERE username = '{cookie.user.username}' AND password = '{change_password.old}'"
+    query = f"UPDATE appsec_cheat_codes_user SET password = '{change_password.new}' WHERE username = '{session.user.username}' AND password = '{change_password.old}'"
     db.execute_sql(query)
     hacked_user = deserialize_user(User.get(username=SQLI2_USERNAME))
     if hacked_user is None:

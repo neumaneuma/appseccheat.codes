@@ -15,4 +15,5 @@ dependencies = [
     "types-peewee==3.17.7.20241017",
     "psycopg2-binary==2.9.10",
     "bcrypt==4.2.0",
+    "itsdangerous>=2.2.0",
 ]

@@ -29,3 +29,11 @@ db_1   | 2021-03-22T22:37:00.973213Z 0 [System] [MY-010931] [Server] /usr/sbin/m
 ## Setting up dev environment
 
 - To run functional tests: `python3 -m backend.tests.driver`
+
+TODO:
+
+- vue3
+- updated css
+- ssrf1
+- ssrf2
+- docker race condition after deleting all containers
