@@ -1,6 +1,3 @@
-import logging
-
-import requests
 import safehttpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -14,7 +11,6 @@ from backend.passphrases import Passphrases
 from backend.patches import PATCHES
 
 router = APIRouter(prefix=f"/{PATCHES}/ssrf1")
-LOG = logging.getLogger(__name__)
 
 TIMEOUT = 0.25
 
@@ -28,11 +24,12 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    LOG.debug(f"SessionUser supplied URL: {user_supplied_url.url}")
     if should_reveal_first_hint(user_supplied_url.url):
         return FIRST_HINT
     if should_reveal_second_hint(user_supplied_url.url):
         return SECOND_HINT
+    if should_reveal_third_hint(user_supplied_url.url):
+        return THIRD_HINT
 
     if not await allowed_to_continue_for_ssrf_challenge(
         user_supplied_url.url, is_valid_internal_url
@@ -43,24 +40,22 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
         )
 
     try:
-        r = safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
-        response_body = r.text[:1000]
+        r = await safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
+        response_body = r.json()
 
         if timing_safe_compare(response_body, get_ssrf_webhook_expected_response()):
             return Passphrases.ssrf1.value
-        elif did_access_internal_api(user_supplied_url.url):
-            return response_body
         else:
             raise HTTPException(
                 status_code=400, detail=f"{response_body}...\n\nFailure"
             )
-    except requests.exceptions.RequestException as e:
-        LOG.debug("Request exception: " + str(e))
-        raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"Failure: {e}") from e
 
 
 FIRST_HINT = "Docker container in use - use internal_api as hostname to access admin functionality."
 SECOND_HINT = "Incorrect port. Use 12301 instead."
+THIRD_HINT = "Use the /reset_admin_password endpoint to reset the admin password!"
 
 INTERNAL_API_NO_PORT = "http://internal_api"
 
@@ -91,6 +86,13 @@ def should_reveal_first_hint(url: str) -> bool:
 
 def should_reveal_second_hint(url: str) -> bool:
     return url.startswith(INTERNAL_API_NO_PORT) and not url.startswith(INTERNAL_API)
+
+
+def should_reveal_third_hint(url: str) -> bool:
+    return url.startswith(INTERNAL_API) and url not in {
+        INTERNAL_API_WITH_PATH,
+        INTERNAL_API_WITH_PATH_AND_SLASH,
+    }
 
 
 def is_valid_internal_url(url: str) -> bool:

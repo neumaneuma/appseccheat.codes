@@ -258,7 +258,7 @@ def ssrf_webhook(state: State) -> bool:
         )
 
     responses = []
-    for expected_response in expected_responses:
+    for i, expected_response in enumerate(expected_responses):
         payload_url = expected_response["url"]
         status_code = int(expected_response["status_code"])
         response = expected_response["response"]
@@ -268,6 +268,7 @@ def ssrf_webhook(state: State) -> bool:
             response = Passphrases.ssrf1.value
 
         data = {"url": payload_url}
+        print(f"URL: {payload_url}")
         r = requests.post(url, json=data, verify=verify)
         response = check_response(
             expected_status_code=status_code,
@@ -275,6 +276,7 @@ def ssrf_webhook(state: State) -> bool:
             expected_response=response,
             actual_response=r.json(),
             url=payload_url,
+            appended_custom_msg=f"({i + 1}/{len(expected_responses)})",
         )
         responses.append(response)
         if not response:
@@ -338,8 +340,10 @@ for state in State:
     # results.append(sqli_second_order(state))
 
     if state == State.VULNERABLE:
-        print(f"Testing {state.name} state for SSRF webhook...")
-        results.append(ssrf_webhook(state))
+        continue
+
+    print(f"Testing {state.name} state for SSRF webhook...")
+    results.append(ssrf_webhook(state))
 
     # print(f"Testing {state.name} state for SSRF local file inclusion...")
     # results.append(ssrf_local_file_inclusion(state))
