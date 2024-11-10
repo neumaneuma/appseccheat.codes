@@ -24,6 +24,8 @@ services:
     volumes:
       - ./internal_api:/app
 
+# if i delete the containers there appears to be a race condition where backend
+# fails to start because the db container isn't ready yet
   db:
     image: postgres:17.0
     restart: always

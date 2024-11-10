@@ -1,10 +1,11 @@
 import secrets
 
+import bcrypt
 from fastapi import APIRouter, HTTPException, Request
 from peewee import DoesNotExist
 from pydantic import BaseModel
 
-from backend.database import SQLI2_USERNAME, Session, User, db
+from backend.database import SQLI2_USERNAME, Session, User, db, deserialize_user
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
@@ -30,8 +31,11 @@ async def register(request: Request, credentials: Credentials) -> str:
     if len(credentials.username.strip()) == 0 or len(credentials.password.strip()) == 0:
         raise HTTPException(status_code=400, detail="Fields cannot be empty")
 
-    user = User.create(username=credentials.username, password=credentials.password)
-    session = Session.create(cookie=secrets.token_hex(16), user=user)
+    user = User.create(
+        username=credentials.username,
+        password=bcrypt.hashpw(credentials.password.encode(), bcrypt.gensalt()),
+    )
+    session = Session.create(cookie=secrets.token_hex(), user=user)
     request.session[SESSION_IDENTIFIER] = str(session.session_id)
     return "Successfully registered"
 
@@ -53,9 +57,11 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
     except DoesNotExist as err:
         raise HTTPException(status_code=403, detail="Unauthorized") from err
 
-    query = f"UPDATE user SET password = '{change_password.new}' WHERE username = '{cookie.user.username}' AND password = '{change_password.old}'"
+    query = f"UPDATE appsec_cheat_codes_user SET password = '{change_password.new}' WHERE username = '{cookie.user.username}' AND password = '{change_password.old}'"
     db.execute_sql(query)
-    hacked_user: User = User.get(username=SQLI2_USERNAME)
+    hacked_user = deserialize_user(User.get(username=SQLI2_USERNAME))
+    if hacked_user is None:
+        raise ValueError("Database is not properly initialized")
     if timing_safe_compare(hacked_user.password, change_password.new):
         return Passphrases.sqli2.value
 

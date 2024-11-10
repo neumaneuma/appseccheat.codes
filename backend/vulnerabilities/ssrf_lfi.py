@@ -24,7 +24,7 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    LOG.debug(f"User supplied URL: {user_supplied_url.url}")
+    LOG.debug(f"SessionUser supplied URL: {user_supplied_url.url}")
     if should_reveal_first_hint(user_supplied_url.url):
         return FIRST_HINT
 

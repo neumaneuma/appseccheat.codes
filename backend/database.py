@@ -1,6 +1,8 @@
 import secrets
 import uuid
+from typing import Any
 
+import bcrypt
 from peewee import CharField, ForeignKeyField, Model, PostgresqlDatabase, UUIDField
 
 SQLI2_USERNAME = "batman"
@@ -18,7 +20,7 @@ class User(Model):
 
     class Meta:
         database = db
-        table_name = "user"
+        table_name = "appsec_cheat_codes_user"
 
 
 class Session(Model):
@@ -31,8 +33,34 @@ class Session(Model):
         table_name = "session"
 
 
+def deserialize_user(result: Any | None) -> User | None:
+    if result is None:
+        return None
+    user = User()
+    user.user_id = result[0]
+    user.username = result[1]
+    user.password = result[2]
+    return user
+
+
+def deserialize_session(result: Any | None) -> Session | None:
+    if result is None:
+        return None
+    session = Session()
+    session.session_id = result[0]
+    session.cookie = result[1]
+    session.user = result[2]
+    return session
+
+
 def seed_db() -> None:
     db.drop_tables([User, Session])
     db.create_tables([User, Session])
-    User.create(username="administrator", password=secrets.token_hex(16))
-    User.create(username=SQLI2_USERNAME, password=secrets.token_hex(16))
+    User.create(
+        username="administrator",
+        password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
+    )
+    User.create(
+        username=SQLI2_USERNAME,
+        password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
+    )

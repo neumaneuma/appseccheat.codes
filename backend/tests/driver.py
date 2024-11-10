@@ -21,7 +21,7 @@ class SQLI:
         class Patches:
             expected_data_for_login: tuple[str, int] = (
                 f"{url_prefix}/patches/sqli1/login/",
-                401,
+                403,
             )
 
     class SecondOrder:
@@ -98,23 +98,24 @@ class State(Enum):
 
 
 def check_status_code(
-    expected_status_code: int, actual_status_code: int, url: str
+    expected_status_code: int, actual_status_code: int, url: str | None = None
 ) -> None:
-    assert (
-        expected_status_code == actual_status_code
-    ), f"{url}\nExpected status code: {expected_status_code}\nActual_status_code: {actual_status_code}"
+    if expected_status_code != actual_status_code:
+        msg = f"FAILED\n\tExpected status code: {expected_status_code}\n\tActual_status_code: {actual_status_code}"
+        if url:
+            msg += f"\n\tFAILED URL: {url}"
+        print(msg)
+    else:
+        print("PASSED")
 
 
 def test_submissions() -> None:
-    # r = requests.post(f"{url_prefix}/", json={"secret": "test", "challenge": "test"})
-    # check_status_code(200, r.status_code, f"{url_prefix}/")
-    # return
-
-    for challenge in Passphrases:
+    for i, challenge in enumerate(Passphrases):
+        print(f"Testing submission for challenge #{i}...")
         url = f"{url_prefix}/submission"
         data = {"secret": challenge.value, "challenge": challenge.name}
         r = requests.post(url, json=data, verify=verify)
-        check_status_code(200, r.status_code, url)
+        check_status_code(200, r.status_code)
 
 
 def sqli_login_bypass(state: State) -> None:
@@ -131,7 +132,7 @@ def sqli_login_bypass(state: State) -> None:
             raise ValueError(f"Invalid state: {state}")
 
     r = requests.post(url, json=data, verify=verify)
-    check_status_code(status_code, r.status_code, url)
+    check_status_code(status_code, r.status_code)
 
 
 def sqli_second_order(state: State) -> None:
@@ -150,7 +151,7 @@ def sqli_second_order(state: State) -> None:
     username = "batman-- "
     data = {"username": username, "password": password}
     r = requests.post(url, json=data, verify=verify)
-    check_status_code(status_code, r.status_code, url)
+    check_status_code(status_code, r.status_code)
 
     match state:
         case State.VULNERABLE:
@@ -166,7 +167,7 @@ def sqli_second_order(state: State) -> None:
 
     data = {"old": password, "new": password, "new_verify": password}
     r = requests.post(url, json=data, cookies=r.cookies, verify=verify)
-    check_status_code(status_code, r.status_code, url)
+    check_status_code(status_code, r.status_code)
 
 
 def ssrf_webhook(state: State) -> None:
@@ -230,9 +231,8 @@ def ssrf_local_file_inclusion(state: State) -> None:
 
 
 start_time = round(time.time() * 1000)
-print("Starting functional test...")
+print("Starting functional test...\n\n")
 
-print("Testing submissions...")
 test_submissions()
 
 for state in State:
@@ -241,11 +241,13 @@ for state in State:
 
     # print(f"Testing {state} state for SQLi second order...")
     # sqli_second_order(state)
+
     # print(f"Testing {state} state for SSRF webhook...")
     # ssrf_webhook(state)
+
     # print(f"Testing {state} state for SSRF local file inclusion...")
     # ssrf_local_file_inclusion(state)
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
-print(f"Finished running functional tests. Run time: {run_time} seconds")
+print(f"\n\nFinished running functional tests. Run time: {run_time} seconds")

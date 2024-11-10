@@ -5,13 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "mypy==1.13.0", # run mypy manually with `mypy .`
     "pre-commit==4.0.1",
     "fastapi[standard]==0.115.4",
     "requests==2.32.3",
     "peewee==3.17.7",
-    "mypy==1.13.0", # run mypy manually with `mypy .`
     "safehttpx==0.1.1",
     "types-requests==2.32.0.20241016",
     "types-peewee==3.17.7.20241017",
     "psycopg2-binary==2.9.10",
+    "bcrypt==4.2.0",
 ]
