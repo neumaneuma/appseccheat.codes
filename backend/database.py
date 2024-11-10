@@ -2,7 +2,6 @@ import secrets
 import uuid
 from typing import Any
 
-import bcrypt
 from peewee import CharField, ForeignKeyField, Model, PostgresqlDatabase, UUIDField
 
 from backend.constants import SQLI1_USERNAME, SQLI2_USERNAME
@@ -61,11 +60,5 @@ def reset_db() -> None:
     with db:
         db.drop_tables([User, Session])
         db.create_tables([User, Session])
-        User.create(
-            username=SQLI1_USERNAME,
-            password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
-        )
-        User.create(
-            username=SQLI2_USERNAME,
-            password=bcrypt.hashpw(secrets.token_hex().encode(), bcrypt.gensalt()),
-        )
+        User.create(username=SQLI1_USERNAME, password=secrets.token_hex())
+        User.create(username=SQLI2_USERNAME, password=secrets.token_hex())

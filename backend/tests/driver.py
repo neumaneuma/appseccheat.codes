@@ -109,8 +109,8 @@ def check_response(
     *,
     expected_status_code: int,
     actual_status_code: int,
-    expected_response: str | dict[str, bool | str],
-    actual_response: str | dict[str, bool | str],
+    expected_response: str | dict[str, bool] | dict[str, str],
+    actual_response: str | dict[str, bool] | dict[str, str],
     url: str = "",
     appended_custom_msg: str = "",
 ) -> bool:
@@ -160,6 +160,7 @@ def test_submission(challenge: Passphrases) -> bool:
 
 
 def sqli_login_bypass(state: State) -> bool:
+    expected_response: str | dict[str, str]
     username = "administrator"
     password = "' OR 'a' = 'a"
     data = {"username": username, "password": password}
@@ -203,7 +204,7 @@ def sqli_second_order(state: State) -> bool:
         case _:
             assert_never(state)
 
-    username = "batman-- "
+    username = "batman';-- "
     data = {"username": username, "password": password}
     r = requests.post(url, json=data, verify=verify)
     first_check = check_response(
@@ -321,17 +322,16 @@ for challenge in Passphrases:
     results.append(test_submission(challenge))
 
 for state in State:
-    print(f"Testing {state} state for SQLi login bypass...")
+    print(f"Testing {state.name} state for SQLi login bypass...")
     results.append(sqli_login_bypass(state))
 
-    print(f"Testing {state} state for SQLi second order...")
-    if state == State.PATCHED:
-        results.append(sqli_second_order(state))
+    print(f"Testing {state.name} state for SQLi second order...")
+    results.append(sqli_second_order(state))
 
-    # print(f"Testing {state} state for SSRF webhook...")
+    # print(f"Testing {state.name} state for SSRF webhook...")
     # results.append(ssrf_webhook(state))
 
-    # print(f"Testing {state} state for SSRF local file inclusion...")
+    # print(f"Testing {state.name} state for SSRF local file inclusion...")
     # results.append(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)

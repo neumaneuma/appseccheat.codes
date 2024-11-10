@@ -37,3 +37,7 @@ TODO:
 - ssrf1
 - ssrf2
 - docker race condition after deleting all containers
+- have exploits send flags to stdout or something, and pipe it to functional test somehow to be able to test in prod
+- make sqli2 username dynamic to avoid any potential race conditions. will require a post endpoint to generate the username that vue calls, should also populate the db with the new username
+- is my impl of db login vulnerable to timing attacks?
+- why doesn't bcrypt work?
