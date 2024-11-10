@@ -6,7 +6,7 @@ from peewee import DoesNotExist
 from pydantic import BaseModel
 
 from backend.constants import SESSION_IDENTIFIER
-from backend.database import SQLI2_USERNAME, Session, User, db, deserialize_user
+from backend.database import SQLI2_USERNAME, Session, User, db
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.patches import PATCHES
@@ -35,8 +35,8 @@ async def register(request: Request, credentials: Credentials) -> str:
             username=credentials.username,
             password=bcrypt.hashpw(credentials.password.encode(), bcrypt.gensalt()),
         )
-        session = Session.create(cookie=secrets.token_hex(), user=user)
-        request.session[SESSION_IDENTIFIER] = str(session.session_id)
+        session: Session = Session.create(cookie=secrets.token_hex(), user=user)
+        request.session[SESSION_IDENTIFIER] = session.cookie
     return "Successfully registered"
 
 
@@ -62,9 +62,11 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
         User.update(password=change_password.new).where(
             User.username == session.user.username, User.password == change_password.old
         ).execute()
-    hacked_user = deserialize_user(User.get(username=SQLI2_USERNAME))
-    if hacked_user is None:
-        raise ValueError("Database is not properly initialized")
+        try:
+            hacked_user = User.get(username=SQLI2_USERNAME)
+        except DoesNotExist as err:
+            raise HTTPException(status_code=403, detail="Unauthorized") from err
+
     if timing_safe_compare(hacked_user.password, change_password.new):
         return Passphrases.sqli2.value
 

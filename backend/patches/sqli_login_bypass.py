@@ -20,6 +20,6 @@ async def login(credentials: Credentials) -> str:
         with db:
             User.get(username=credentials.username, password=credentials.password)
     except DoesNotExist as err:
-        raise HTTPException(status_code=403, detail="Failure") from err
+        raise HTTPException(status_code=403, detail="Login failed") from err
     else:
         return Passphrases.sqli1.value

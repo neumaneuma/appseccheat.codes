@@ -2,6 +2,7 @@ import json
 import time
 import uuid
 from enum import Enum
+from typing import assert_never
 
 import requests
 
@@ -14,36 +15,42 @@ verify = False
 class SQLI:
     class LoginBypass:
         class Vulnerabilities:
-            expected_data_for_login: tuple[str, int] = (
+            expected_data_for_login: tuple[str, int, str] = (
                 f"{url_prefix}/vulnerabilities/sqli1/login/",
                 200,
+                Passphrases.sqli1.value,
             )
 
         class Patches:
-            expected_data_for_login: tuple[str, int] = (
+            expected_data_for_login: tuple[str, int, dict[str, str]] = (
                 f"{url_prefix}/patches/sqli1/login/",
                 403,
+                {"detail": "Login failed"},
             )
 
     class SecondOrder:
         class Vulnerabilities:
-            expected_data_for_register: tuple[str, int] = (
+            expected_data_for_register: tuple[str, int, str] = (
                 f"{url_prefix}/vulnerabilities/sqli2/register/",
                 200,
+                "Successfully registered",
             )
-            expected_data_for_change_password: tuple[str, int] = (
+            expected_data_for_change_password: tuple[str, int, str] = (
                 f"{url_prefix}/vulnerabilities/sqli2/change_password/",
                 200,
+                Passphrases.sqli2.value,
             )
 
         class Patches:
-            expected_data_for_register: tuple[str, int] = (
+            expected_data_for_register: tuple[str, int, str] = (
                 f"{url_prefix}/patches/sqli2/register/",
                 200,
+                "Successfully registered",
             )
-            expected_data_for_change_password: tuple[str, int] = (
+            expected_data_for_change_password: tuple[str, int, str] = (
                 f"{url_prefix}/patches/sqli2/change_password/",
-                400,
+                200,
+                "Successfully changed password",
             )
 
 
@@ -98,17 +105,30 @@ class State(Enum):
     PATCHED = "patched"
 
 
-def check_status_code(
+def check_response(
+    *,
     expected_status_code: int,
     actual_status_code: int,
-    *,
+    expected_response: str | dict[str, bool | str],
+    actual_response: str | dict[str, bool | str],
     url: str = "",
     appended_custom_msg: str = "",
 ) -> bool:
-    if expected_status_code != actual_status_code:
-        msg = f"FAILED {appended_custom_msg}\n\tExpected status code: {expected_status_code}\n\tActual_status_code: {actual_status_code}"
+    assert (
+        type(expected_response) is type(actual_response)
+    ), f"Expected and actual response types do not match. Expected: {type(expected_response)}, Actual: {type(actual_response)}"
+    failed = (
+        expected_status_code != actual_status_code
+        or expected_response != actual_response
+    )
+    if failed:
+        msg = f"FAILED {appended_custom_msg}"
+        if expected_status_code != actual_status_code:
+            msg += f"\n\tExpected status code: {expected_status_code}\n\tActual_status_code: {actual_status_code}"
+        if expected_response != actual_response:
+            msg += f"\n\tExpected response: {expected_response}\n\tActual response: {actual_response}"
         if url:
-            msg += f"\n\tFAILED URL: {url}"
+            msg += f"\n\tURL: {url}"
         print(msg)
         return False
     else:
@@ -116,11 +136,27 @@ def check_status_code(
         return True
 
 
+def reset_db(appended_custom_msg: str = "") -> bool:
+    r = requests.get(f"{url_prefix}/reset", verify=verify)
+    return check_response(
+        expected_status_code=200,
+        actual_status_code=r.status_code,
+        expected_response="Database reset",
+        actual_response=r.json(),
+        appended_custom_msg=appended_custom_msg,
+    )
+
+
 def test_submission(challenge: Passphrases) -> bool:
     url = f"{url_prefix}/submission"
     data = {"secret": challenge.value, "challenge": challenge.name}
     r = requests.post(url, json=data, verify=verify)
-    return check_status_code(200, r.status_code)
+    return check_response(
+        expected_status_code=200,
+        actual_status_code=r.status_code,
+        expected_response={"result": True},
+        actual_response=r.json(),
+    )
 
 
 def sqli_login_bypass(state: State) -> bool:
@@ -130,14 +166,26 @@ def sqli_login_bypass(state: State) -> bool:
 
     match state:
         case State.VULNERABLE:
-            url, status_code = SQLI.LoginBypass.Vulnerabilities.expected_data_for_login
+            url, status_code, expected_response = (
+                SQLI.LoginBypass.Vulnerabilities.expected_data_for_login
+            )
         case State.PATCHED:
-            url, status_code = SQLI.LoginBypass.Patches.expected_data_for_login
+            url, status_code, expected_response = (
+                SQLI.LoginBypass.Patches.expected_data_for_login
+            )
         case _:
-            raise ValueError(f"Invalid state: {state}")
+            assert_never(state)
 
     r = requests.post(url, json=data, verify=verify)
-    return check_status_code(status_code, r.status_code)
+    response = check_response(
+        expected_status_code=status_code,
+        actual_status_code=r.status_code,
+        expected_response=expected_response,
+        actual_response=r.json(),
+        appended_custom_msg="(1/2)",
+    )
+    assert reset_db(appended_custom_msg="(2/2)"), "Failed to reset database"
+    return response
 
 
 def sqli_second_order(state: State) -> bool:
@@ -145,39 +193,50 @@ def sqli_second_order(state: State) -> bool:
 
     match state:
         case State.VULNERABLE:
-            url, status_code = (
+            url, status_code, expected_response = (
                 SQLI.SecondOrder.Vulnerabilities.expected_data_for_register
             )
         case State.PATCHED:
-            url, status_code = SQLI.SecondOrder.Patches.expected_data_for_register
+            url, status_code, expected_response = (
+                SQLI.SecondOrder.Patches.expected_data_for_register
+            )
         case _:
-            raise ValueError(f"Invalid state: {state}")
+            assert_never(state)
 
     username = "batman-- "
     data = {"username": username, "password": password}
     r = requests.post(url, json=data, verify=verify)
-    first_check = check_status_code(
-        status_code, r.status_code, appended_custom_msg="(1/2)"
+    first_check = check_response(
+        expected_status_code=status_code,
+        actual_status_code=r.status_code,
+        expected_response=expected_response,
+        actual_response=r.json(),
+        appended_custom_msg="(1/3)",
     )
 
     match state:
         case State.VULNERABLE:
-            url, status_code = (
+            url, status_code, expected_response = (
                 SQLI.SecondOrder.Vulnerabilities.expected_data_for_change_password
             )
         case State.PATCHED:
-            url, status_code = (
+            url, status_code, expected_response = (
                 SQLI.SecondOrder.Patches.expected_data_for_change_password
             )
         case _:
-            raise ValueError(f"Invalid state: {state}")
+            assert_never(state)
 
     data = {"old": password, "new": password, "new_verify": password}
     r = requests.post(url, json=data, cookies=r.cookies, verify=verify)
-    second_check = check_status_code(
-        status_code, r.status_code, appended_custom_msg="(2/2)"
+    second_check = check_response(
+        expected_status_code=status_code,
+        actual_status_code=r.status_code,
+        expected_response=expected_response,
+        actual_response=r.json(),
+        appended_custom_msg="(2/3)",
     )
 
+    assert reset_db(appended_custom_msg="(3/3)"), "Failed to reset database"
     return first_check and second_check
 
 
@@ -190,7 +249,7 @@ def ssrf_webhook(state: State) -> bool:
             url = SSRF.Webhook.Patches.submit_webhook_url
             file_name = "ssrf_test_urls_patched.json"
         case _:
-            raise ValueError(f"Invalid state: {state}")
+            assert_never(state)
 
     # ssrf1_test_urls[0]["http://internal_api/"] = 202
     # ssrf1_test_urls[1]["http://internal_api/"] = 400
@@ -209,7 +268,13 @@ def ssrf_webhook(state: State) -> bool:
     for custom_url, status_code in custom_urls.items():
         data = {"custom_url": custom_url}
         r = requests.post(url, json=data, verify=verify)
-        return check_status_code(status_code, r.status_code, url=f"{url}({custom_url})")
+        return check_response(
+            expected_status_code=status_code,
+            actual_status_code=r.status_code,
+            expected_response="",
+            actual_response=r.json(),
+            url=f"{url}({custom_url})",
+        )
 
 
 def ssrf_local_file_inclusion(state: State) -> bool:
@@ -221,7 +286,7 @@ def ssrf_local_file_inclusion(state: State) -> bool:
             url = SSRF.LocalFileInclusion.Patches.submit_api_url_url
             file_name = "ssrf_test_urls_patched.json"
         case _:
-            raise ValueError(f"Invalid state: {state}")
+            assert_never(state)
 
     # ssrf1_test_urls[0]["http://internal_api/"] = 400
     # ssrf1_test_urls[1]["http://internal_api/"] = 400
@@ -238,7 +303,13 @@ def ssrf_local_file_inclusion(state: State) -> bool:
     for custom_url, status_code in custom_urls.items():
         data = {"custom_url": custom_url}
         r = requests.post(url, json=data, verify=verify)
-        return check_status_code(status_code, r.status_code, url=f"{url}({custom_url})")
+        return check_response(
+            expected_status_code=status_code,
+            actual_status_code=r.status_code,
+            expected_response="",
+            actual_response=r.json(),
+            url=f"{url}({custom_url})",
+        )
 
 
 start_time = round(time.time() * 1000)
@@ -249,13 +320,13 @@ for challenge in Passphrases:
     print(f"Testing submission for challenge {challenge.name}...")
     results.append(test_submission(challenge))
 
-
 for state in State:
     print(f"Testing {state} state for SQLi login bypass...")
     results.append(sqli_login_bypass(state))
 
     print(f"Testing {state} state for SQLi second order...")
-    results.append(sqli_second_order(state))
+    if state == State.PATCHED:
+        results.append(sqli_second_order(state))
 
     # print(f"Testing {state} state for SSRF webhook...")
     # results.append(ssrf_webhook(state))

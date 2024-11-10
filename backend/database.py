@@ -57,7 +57,7 @@ def deserialize_session(result: Any | None) -> Session | None:
     return session
 
 
-def seed_db() -> None:
+def reset_db() -> None:
     with db:
         db.drop_tables([User, Session])
         db.create_tables([User, Session])

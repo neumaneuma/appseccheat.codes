@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
 
 from backend.constants import SESSION_IDENTIFIER
-from backend.database import seed_db
+from backend.database import reset_db
 from backend.helper import timing_safe_compare
 from backend.passphrases import Passphrases
 from backend.patches.sqli_login_bypass import router as sqli_login_bypass_patched_router
@@ -36,7 +36,7 @@ app.include_router(sqli_login_bypass_patched_router)
 app.include_router(sqli_second_order_patched_router)
 app.include_router(ssrf_webhook_patched_router)
 app.include_router(ssrf_lfi_patched_router)
-seed_db()
+reset_db()
 
 
 class Flag(BaseModel):
@@ -45,8 +45,14 @@ class Flag(BaseModel):
 
 
 @app.get("/")
-async def root() -> dict[str, str]:
-    return {"message": "Hello, World from the backend!"}
+async def root() -> str:
+    return "Hello, World from the backend!"
+
+
+@app.get("/reset")
+async def reset() -> str:
+    reset_db()
+    return "Database reset"
 
 
 @app.post("/submission")

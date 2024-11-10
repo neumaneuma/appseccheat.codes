@@ -25,4 +25,4 @@ async def login(credentials: Credentials) -> str:
     if user:
         return Passphrases.sqli1.value
 
-    raise HTTPException(status_code=403, detail="Failure")
+    raise HTTPException(status_code=403, detail="Login failed")
