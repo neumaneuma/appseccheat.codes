@@ -59,11 +59,8 @@ async def change_password(request: Request, change_password: ChangePassword) -> 
             raise HTTPException(status_code=403, detail="Unauthorized") from err
 
         query = f"UPDATE appsec_cheat_codes_user SET password = '{change_password.new}' WHERE username = '{session.user.username}' AND password = '{change_password.old}'"
-        print(f"$$$ 5a query: {query}")
         db.execute_sql(query)
         hacked_user = User.get(username=SQLI2_USERNAME)
-        print(f"$$$ 5c hacked_user.password: {hacked_user.password}")
-        print(f"$$$ 5d change_password.new: {change_password.new}")
 
     if timing_safe_compare(hacked_user.password, change_password.new):
         return Passphrases.sqli2.value

@@ -40,4 +40,4 @@ TODO:
 - have exploits send flags to stdout or something, and pipe it to functional test somehow to be able to test in prod
 - make sqli2 username dynamic to avoid any potential race conditions. will require a post endpoint to generate the username that vue calls, should also populate the db with the new username
 - is my impl of db login vulnerable to timing attacks?
-- why doesn't bcrypt work?
+- why doesn't bcrypt work? probably have to use BlobField? https://docs.peewee-orm.com/en/latest/peewee/models.html#field-types-table
