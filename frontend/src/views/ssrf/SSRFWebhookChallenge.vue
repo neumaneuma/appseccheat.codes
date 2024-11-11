@@ -2,6 +2,9 @@
   <div class="container mx-auto px-4 py-8">
     <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #3: SSRF bypass webhook</h2>
 
+    <SSRFIntroduction class="my-8" />
+    <SSRFNews class="my-8" />
+
     <p class="my-8">
       This web server has a functionality built for webhooks. However, you can abuse this functionality to access an internal admin API.
       The only thing you know is that the internal API can be accessed through
@@ -61,6 +64,8 @@ import { ref } from 'vue'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
+import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
+import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 
 const customUrl = ref('')
 const webhookResponse = ref('')

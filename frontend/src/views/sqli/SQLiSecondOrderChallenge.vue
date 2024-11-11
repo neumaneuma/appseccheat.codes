@@ -1,7 +1,8 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #2: SQLi second order</h2>
-
+    <SQLiIntroduction />
+    <SQLiNews />
     <div class="grid md:grid-cols-2 gap-8 mt-8">
       <!-- Registration Form -->
       <div class="w-full">
@@ -157,6 +158,8 @@ import { ref, computed } from 'vue'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
+import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
+import SQLiNews from '@/views/sqli/SQLiNews.vue'
 
 // Register form state
 const registerForm = ref({

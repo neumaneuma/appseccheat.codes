@@ -1,7 +1,8 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #1: SQLi login bypass</h2>
-
+    <SQLiIntroduction />
+    <SQLiNews />
     <p class="my-8">
       You know there is a user with the username
       <span class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to figure out how to login as
@@ -70,6 +71,8 @@ import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import { SQLI_LOGIN_BYPASS_API_VULNERABLE_URL } from '@/constants'
+import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
+import SQLiNews from '@/views/sqli/SQLiNews.vue'
 
 const username = ref('')
 const password = ref('')

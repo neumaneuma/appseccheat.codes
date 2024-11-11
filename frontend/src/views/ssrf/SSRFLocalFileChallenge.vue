@@ -2,6 +2,9 @@
   <div class="container mx-auto px-4 py-8">
     <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #4: SSRF local file inclusion</h2>
 
+    <SSRFIntroduction class="my-8" />
+    <SSRFNews class="my-8" />
+
     <p class="my-8">
       Catcoin is the hot new crypto currency that everyone is talking about. The following form is for a financial web app
       that will allow you to pick the API that is used to query the current price of catcoin.
@@ -94,6 +97,8 @@ import { ref, computed } from 'vue'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
+import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
+import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
