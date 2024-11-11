@@ -32,10 +32,3 @@ repos:
     hooks:
     -   id: prettier
         types_or: [javascript, jsx, ts, tsx, json, css, markdown]
-
-# -   repo: https://github.com/darold/pgFormatter
-#     rev: v5.5
-#     hooks:
-#     -   id: pgformatter
-#         args: [--spaces=4, --type-case=lower, --keyword-case=upper]
-#         types: [sql]
