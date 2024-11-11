@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SQLiLoginBypassChallenge from '@/views/sqli/SQLiLoginBypassChallenge.vue'
-import SQLiSecondOrderChallenge from '@/views/sqli/SQLiSecondOrderChallenge.vue'
-import SSRFWebhookChallenge from '@/views/ssrf/SSRFWebhookChallenge.vue'
-import SSRFLocalFileChallenge from '@/views/ssrf/SSRFLocalFileChallenge.vue'
+import SQLiLoginBypassChallenge from '../views/sqli/SQLiLoginBypassChallenge.vue'
+import SQLiSecondOrderChallenge from '../views/sqli/SQLiSecondOrderChallenge.vue'
+import SSRFWebhookChallenge from '../views/ssrf/SSRFWebhookChallenge.vue'
+import SSRFLocalFileChallenge from '../views/ssrf/SSRFLocalFileChallenge.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

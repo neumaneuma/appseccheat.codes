@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import type { LoadingState } from '@/types'
+import type { LoadingState } from '../types'
 
 export function useApiState() {
   const state = ref<LoadingState>({
