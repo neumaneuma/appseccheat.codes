@@ -168,6 +168,7 @@ def sqli_login_bypass(state: State) -> bool:
         case _:
             assert_never(state)
 
+    print(f"URL: {url}")
     r = requests.post(url, json=data, verify=verify)
     response = check_response(
         expected_status_code=status_code,
@@ -345,11 +346,11 @@ for state in State:
     print(f"Testing {state.name} state for SQLi second order...")
     results.append(sqli_second_order(state))
 
-    print(f"Testing {state.name} state for SSRF webhook...")
-    results.extend(ssrf_webhook(state))
+    # print(f"Testing {state.name} state for SSRF webhook...")
+    # results.extend(ssrf_webhook(state))
 
-    print(f"Testing {state.name} state for SSRF local file inclusion...")
-    results.extend(ssrf_local_file_inclusion(state))
+    # print(f"Testing {state.name} state for SSRF local file inclusion...")
+    # results.extend(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000

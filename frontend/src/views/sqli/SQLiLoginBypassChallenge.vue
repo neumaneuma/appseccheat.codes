@@ -69,6 +69,7 @@ import { ref } from 'vue'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
+import { SQLI_LOGIN_BYPASS_API_VULNERABLE_URL } from '@/constants'
 
 const username = ref('')
 const password = ref('')
@@ -77,7 +78,7 @@ const { state: apiState, handleApiCall } = useApiState()
 const submitLogin = async () => {
   await handleApiCall(
     async () => {
-      const response = await fetch('/vulnerabilities/sqli1/login/', {
+      const response = await fetch(SQLI_LOGIN_BYPASS_API_VULNERABLE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

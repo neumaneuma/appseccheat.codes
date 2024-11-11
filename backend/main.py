@@ -1,6 +1,7 @@
 import secrets
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -27,6 +28,15 @@ from backend.vulnerabilities.ssrf_webhook import (
 app = FastAPI()
 app.add_middleware(
     SessionMiddleware, secret_key=secrets.token_hex(), session_cookie=SESSION_IDENTIFIER
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*"
+    ],  # TODO change this to the docker url? or maybe appsecheat.codes
+    allow_credentials=True,
+    allow_methods=["POST", "GET"],
+    allow_headers=["*"],  # TODO change this to only the required headers
 )
 app.include_router(sqli_login_bypass_vulnerable_router)
 app.include_router(sqli_second_order_vulnerable_router)
