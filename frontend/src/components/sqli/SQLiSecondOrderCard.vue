@@ -1,16 +1,16 @@
 <template>
-  <div class="relative group text-center w-72 rounded-xl overflow-hidden shadow-xl transform transition hover:-translate-y-0.5">
+  <div class="card">
     <router-link to="/vulnerabilities/sqli2">
-      <div class="bg-indigo-700 h-60"></div>
-      <div class="h-48">
-        <div class="px-3 pt-4">
-          <div class="font-bold text-xl mb-2">SQLi: second order</div>
-          <p class="text-gray-700 text-base">
+      <div class="card-banner"></div>
+      <div class="card-content">
+        <div class="card-body">
+          <div class="card-title">SQLi: second order</div>
+          <p class="card-text">
             Sometimes the injection doesn't happen right away
           </p>
         </div>
-        <div class="absolute bottom-4 inset-x-2">
-          <p class="group-hover:underline uppercase inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+        <div class="card-footer">
+          <p class="challenge-button">
             Start challenge #2
           </p>
         </div>
@@ -18,3 +18,66 @@
     </router-link>
   </div>
 </template>
+
+<style scoped>
+.card {
+  position: relative;
+  width: 18rem; /* 72 * 0.25 = 18rem */
+  text-align: center;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-0.125rem);
+}
+
+.card-banner {
+  height: 15rem;
+  background-color: rgb(67, 56, 202); /* indigo-700 */
+}
+
+.card-content {
+  height: 12rem;
+  position: relative;
+}
+
+.card-body {
+  padding: 1rem 0.75rem;
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  color: rgb(55, 65, 81);
+  font-size: 1rem;
+}
+
+.card-footer {
+  position: absolute;
+  bottom: 1rem;
+  left: 0.5rem;
+  right: 0.5rem;
+}
+
+.challenge-button {
+  display: inline-block;
+  text-transform: uppercase;
+  background-color: rgb(229, 231, 235);
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(55, 65, 81);
+}
+
+.card:hover .challenge-button {
+  text-decoration: underline;
+}
+</style>

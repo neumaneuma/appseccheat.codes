@@ -1,15 +1,15 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #1: SQLi login bypass</h2>
+  <div class="challenge-container">
+    <h2 class="challenge-title">Challenge #1: SQLi login bypass</h2>
     <SQLiIntroduction />
     <SQLiNews />
-    <p class="my-8">
+    <p class="challenge-description">
       You know there is a user with the username
-      <span class="bg-gray-200 p-1 font-mono w-max">administrator</span>. Try to figure out how to login as
-      <span class="bg-gray-200 p-1 font-mono w-max">administrator</span> without knowing what their password is!
+      <span class="code-block">administrator</span>. Try to figure out how to login as
+      <span class="code-block">administrator</span> without knowing what their password is!
     </p>
 
-    <div class="w-full max-w-xs">
+    <div class="form-container">
       <AlertMessage
         v-if="apiState.error"
         :message="apiState.error"
@@ -21,39 +21,39 @@
         type="success"
       />
 
-      <form @submit.prevent="submitLogin" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+      <form @submit.prevent="submitLogin" class="login-form">
+        <div class="form-group">
+          <label class="form-label" for="username">
             Username
           </label>
           <input
             v-model="username"
             :disabled="apiState.isLoading"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="form-input"
             name="username"
             id="username"
             type="text"
             placeholder="Username"
           >
         </div>
-        <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+        <div class="form-group">
+          <label class="form-label" for="password">
             Password
           </label>
           <input
             v-model="password"
             :disabled="apiState.isLoading"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            class="form-input"
             name="password"
             id="password"
             type="password"
             placeholder="******************"
           >
         </div>
-        <div class="flex items-center justify-between">
+        <div class="form-actions">
           <button
             :disabled="apiState.isLoading"
-            class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+            class="submit-button"
             type="submit"
           >
             <LoadingSpinner v-if="apiState.isLoading" />
@@ -103,3 +103,97 @@ const submitLogin = async () => {
   )
 }
 </script>
+
+<style scoped>
+.challenge-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.challenge-title {
+  margin-top: 1.5rem;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  color: rgb(17, 24, 39);
+}
+
+.challenge-description {
+  margin: 2rem 0;
+}
+
+.code-block {
+  background-color: rgb(229, 231, 235);
+  padding: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.login-form {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  padding: 1.5rem 2rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  color: rgb(55, 65, 81);
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.25rem;
+  color: rgb(55, 65, 81);
+  line-height: 1.25;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.submit-button {
+  background-color: rgb(107, 114, 128);
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: rgb(156, 163, 175);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>

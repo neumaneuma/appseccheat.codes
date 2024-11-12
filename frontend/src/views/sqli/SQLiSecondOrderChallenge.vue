@@ -1,12 +1,12 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #2: SQLi second order</h2>
+  <div class="challenge-container">
+    <h2 class="challenge-title">Challenge #2: SQLi second order</h2>
     <SQLiIntroduction />
     <SQLiNews />
-    <div class="grid md:grid-cols-2 gap-8 mt-8">
+    <div class="forms-grid">
       <!-- Registration Form -->
-      <div class="w-full">
-        <h3 class="text-xl font-bold mb-4">Register New Account</h3>
+      <div class="form-section">
+        <h3 class="section-title">Register New Account</h3>
         <AlertMessage
           v-if="registerState.error"
           :message="registerState.error"
@@ -18,47 +18,47 @@
           type="success"
         />
 
-        <form @submit.prevent="submitRegister" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+        <form @submit.prevent="submitRegister" class="form">
+          <div class="form-group">
+            <label class="form-label" for="username">
               Username
             </label>
             <input
               v-model="registerForm.username"
               :disabled="registerState.isLoading"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              :class="{ 'border-red-500': registerFormErrors.username }"
+              class="form-input"
+              :class="{ 'input-error': registerFormErrors.username }"
               name="username"
               id="username"
               type="text"
               placeholder="Username"
             >
-            <p v-if="registerFormErrors.username" class="text-red-500 text-xs italic mt-1">
+            <p v-if="registerFormErrors.username" class="error-message">
               {{ registerFormErrors.username }}
             </p>
           </div>
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+          <div class="form-group">
+            <label class="form-label" for="password">
               Password
             </label>
             <input
               v-model="registerForm.password"
               :disabled="registerState.isLoading"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              :class="{ 'border-red-500': registerFormErrors.password }"
+              class="form-input"
+              :class="{ 'input-error': registerFormErrors.password }"
               name="password"
               id="password"
               type="password"
               placeholder="******************"
             >
-            <p v-if="registerFormErrors.password" class="text-red-500 text-xs italic mt-1">
+            <p v-if="registerFormErrors.password" class="error-message">
               {{ registerFormErrors.password }}
             </p>
           </div>
-          <div class="flex items-center justify-between">
+          <div class="form-actions">
             <button
               :disabled="registerState.isLoading || !isRegisterFormValid"
-              class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+              class="submit-button"
               type="submit"
             >
               <LoadingSpinner v-if="registerState.isLoading" />
@@ -69,8 +69,8 @@
       </div>
 
       <!-- Change Password Form -->
-      <div class="w-full">
-        <h3 class="text-xl font-bold mb-4">Change Password</h3>
+      <div class="form-section">
+        <h3 class="section-title">Change Password</h3>
         <AlertMessage
           v-if="changePasswordState.error"
           :message="changePasswordState.error"
@@ -82,65 +82,65 @@
           type="success"
         />
 
-        <form @submit.prevent="submitChangePassword" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="old-password">
+        <form @submit.prevent="submitChangePassword" class="form">
+          <div class="form-group">
+            <label class="form-label" for="old-password">
               Old Password
             </label>
             <input
               v-model="passwordForm.oldPassword"
               :disabled="changePasswordState.isLoading"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              :class="{ 'border-red-500': passwordFormErrors.oldPassword }"
+              class="form-input"
+              :class="{ 'input-error': passwordFormErrors.oldPassword }"
               name="old-password"
               id="old-password"
               type="password"
               placeholder="Old Password"
             >
-            <p v-if="passwordFormErrors.oldPassword" class="text-red-500 text-xs italic mt-1">
+            <p v-if="passwordFormErrors.oldPassword" class="error-message">
               {{ passwordFormErrors.oldPassword }}
             </p>
           </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="new-password">
+          <div class="form-group">
+            <label class="form-label" for="new-password">
               New Password
             </label>
             <input
               v-model="passwordForm.newPassword"
               :disabled="changePasswordState.isLoading"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              :class="{ 'border-red-500': passwordFormErrors.newPassword }"
+              class="form-input"
+              :class="{ 'input-error': passwordFormErrors.newPassword }"
               name="new-password"
               id="new-password"
               type="password"
               placeholder="New Password"
             >
-            <p v-if="passwordFormErrors.newPassword" class="text-red-500 text-xs italic mt-1">
+            <p v-if="passwordFormErrors.newPassword" class="error-message">
               {{ passwordFormErrors.newPassword }}
             </p>
           </div>
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="verify-password">
+          <div class="form-group">
+            <label class="form-label" for="verify-password">
               Verify New Password
             </label>
             <input
               v-model="passwordForm.verifyPassword"
               :disabled="changePasswordState.isLoading"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              :class="{ 'border-red-500': passwordFormErrors.verifyPassword }"
+              class="form-input"
+              :class="{ 'input-error': passwordFormErrors.verifyPassword }"
               name="verify-password"
               id="verify-password"
               type="password"
               placeholder="Verify New Password"
             >
-            <p v-if="passwordFormErrors.verifyPassword" class="text-red-500 text-xs italic mt-1">
+            <p v-if="passwordFormErrors.verifyPassword" class="error-message">
               {{ passwordFormErrors.verifyPassword }}
             </p>
           </div>
-          <div class="flex items-center justify-between">
+          <div class="form-actions">
             <button
               :disabled="changePasswordState.isLoading || !isPasswordFormValid"
-              class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+              class="submit-button"
               type="submit"
             >
               <LoadingSpinner v-if="changePasswordState.isLoading" />
@@ -294,3 +294,115 @@ const submitChangePassword = async () => {
   }
 }
 </script>
+
+<style scoped>
+.challenge-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.challenge-title {
+  margin-top: 1.5rem;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  color: rgb(17, 24, 39);
+}
+
+.forms-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .forms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.form-section {
+  width: 100%;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.form {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  padding: 1.5rem 2rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  color: rgb(55, 65, 81);
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.25rem;
+  color: rgb(55, 65, 81);
+  line-height: 1.25;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.input-error {
+  border-color: rgb(239, 68, 68);
+}
+
+.error-message {
+  color: rgb(239, 68, 68);
+  font-size: 0.75rem;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.submit-button {
+  background-color: rgb(107, 114, 128);
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: rgb(156, 163, 175);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
