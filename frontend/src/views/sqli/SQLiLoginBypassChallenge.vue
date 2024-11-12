@@ -9,6 +9,7 @@
       <span class="code-block">administrator</span> without knowing what their password is!
     </p>
 
+    <ChallengeView :headers="headers" :shouldShowIntroduction="false" />
     <div class="form-container">
       <AlertMessage
         v-if="apiState.error"
@@ -73,7 +74,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import { SQLI_LOGIN_BYPASS_API_VULNERABLE_URL } from '@/constants'
 import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
 import SQLiNews from '@/views/sqli/SQLiNews.vue'
-
+import ChallengeView from '@/views/ChallengeView.vue'
 const username = ref('')
 const password = ref('')
 const { state: apiState, handleApiCall } = useApiState()

@@ -6,7 +6,7 @@
         <div class="card-body">
           <div class="card-title">SQLi: login bypass</div>
           <p class="card-text">
-            Who needs passwords when you have SQL injection?
+            Forgot your password? Who cares! You can just sign-in using a SQL injection.
           </p>
         </div>
         <div class="card-footer">
