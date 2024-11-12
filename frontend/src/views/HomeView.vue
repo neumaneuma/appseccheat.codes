@@ -1,16 +1,46 @@
 <template>
-  <div class="pt-32 text-center font-bold text-xl">
+  <div class="home-container">
     <p>
       Learn how to avoid writing
-      <span class="bg-red-200 text-red-700 p-1 font-mono">vulnerable code</span>
+      <span class="code-text code-text-danger">vulnerable code</span>
     </p>
     <p>
       Learn how to write
-      <span class="bg-green-200 text-green-700 p-1 font-mono">exploit code</span>
+      <span class="code-text code-text-success">exploit code</span>
     </p>
     <p>
       Learn how to write
-      <span class="bg-blue-200 text-blue-700 p-1 font-mono">secure code</span>
+      <span class="code-text code-text-primary">secure code</span>
     </p>
   </div>
 </template>
+
+<style scoped>
+.home-container {
+  padding-top: 8rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.code-text {
+  font-family: monospace;
+  padding: 0.25rem;
+}
+
+.code-text-danger {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.code-text-success {
+  background-color: #a7f3d0;
+  color: #047857;
+}
+
+.code-text-primary {
+  background-color: #bfdbfe;
+  color: #1d4ed8;
+}
+</style>
