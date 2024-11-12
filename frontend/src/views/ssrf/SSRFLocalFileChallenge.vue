@@ -1,27 +1,27 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h2 class="mt-6 text-4xl font-bold text-gray-900">Challenge #4: SSRF local file inclusion</h2>
+  <div class="challenge-container">
+    <h2 class="challenge-title">Challenge #4: SSRF local file inclusion</h2>
 
-    <SSRFIntroduction class="my-8" />
-    <SSRFNews class="my-8" />
+    <SSRFIntroduction class="section-spacing" />
+    <SSRFNews class="section-spacing" />
 
-    <p class="my-8">
+    <p class="section-spacing">
       Catcoin is the hot new crypto currency that everyone is talking about. The following form is for a financial web app
       that will allow you to pick the API that is used to query the current price of catcoin.
     </p>
 
-    <div class="flex gap-4 my-4">
-      <code class="bg-gray-200 p-2 text-sm rounded">http://internal_api:12301/get_cat_coin_price_v1/</code>
-      <code class="bg-gray-200 p-2 text-sm rounded">http://internal_api:12301/get_cat_coin_price_v2/</code>
+    <div class="api-urls">
+      <code class="code-block">http://internal_api:12301/get_cat_coin_price_v1/</code>
+      <code class="code-block">http://internal_api:12301/get_cat_coin_price_v2/</code>
     </div>
 
-    <p class="my-4">
+    <p class="instruction-text">
       Solve this challenge by stealing the
-      <code class="bg-gray-200 p-1">file:///etc/shadow</code> or
-      <code class="bg-gray-200 p-1">file:///etc/passwd</code> files.
+      <code class="inline-code">file:///etc/shadow</code> or
+      <code class="inline-code">file:///etc/passwd</code> files.
     </p>
 
-    <div class="w-full max-w-xs">
+    <div class="form-container">
       <AlertMessage
         v-if="apiState.error"
         :message="apiState.error"
@@ -33,30 +33,30 @@
         type="success"
       />
 
-      <form @submit.prevent="submitUrl" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="api_url">
+      <form @submit.prevent="submitUrl" class="api-form">
+        <div class="form-group">
+          <label class="form-label" for="api_url">
             Enter the API URL:
           </label>
-          <div class="space-y-2">
-            <div v-for="(url, index) in predefinedUrls" :key="index" class="flex items-center">
+          <div class="radio-group">
+            <div v-for="(url, index) in predefinedUrls" :key="index" class="radio-option">
               <input
                 type="radio"
                 :id="'url-' + index"
                 v-model="selectedUrl"
                 :value="url"
-                class="mr-2"
+                class="radio-input"
                 :disabled="apiState.isLoading"
               >
               <label :for="'url-' + index">{{ url }}</label>
             </div>
-            <div class="flex items-center">
+            <div class="radio-option">
               <input
                 type="radio"
                 id="custom-url"
                 v-model="selectedUrl"
                 value="custom"
-                class="mr-2"
+                class="radio-input"
                 :disabled="apiState.isLoading"
               >
               <label for="custom-url">Custom URL</label>
@@ -66,15 +66,15 @@
             v-if="selectedUrl === 'custom'"
             v-model="customUrl"
             :disabled="apiState.isLoading"
-            class="mt-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="url-input"
             type="text"
             placeholder="Enter custom URL"
           >
         </div>
-        <div class="flex items-center justify-between">
+        <div class="form-actions">
           <button
             :disabled="apiState.isLoading || !isValidUrl"
-            class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+            class="submit-button"
             type="submit"
           >
             <LoadingSpinner v-if="apiState.isLoading" />
@@ -84,9 +84,9 @@
       </form>
 
       <!-- Response Display -->
-      <div v-if="apiResponse" class="mt-4 p-4 bg-gray-100 rounded-md">
-        <h3 class="font-bold mb-2">Response:</h3>
-        <pre class="whitespace-pre-wrap text-sm">{{ apiResponse }}</pre>
+      <div v-if="apiResponse" class="response-container">
+        <h3 class="response-title">Response:</h3>
+        <pre class="response-content">{{ apiResponse }}</pre>
       </div>
     </div>
   </div>
@@ -149,3 +149,146 @@ const submitUrl = async () => {
   }
 }
 </script>
+
+<style scoped>
+.challenge-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.challenge-title {
+  margin-top: 1.5rem;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  color: rgb(17, 24, 39);
+}
+
+.section-spacing {
+  margin: 2rem 0;
+}
+
+.api-urls {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.code-block {
+  background-color: rgb(229, 231, 235);
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+}
+
+.inline-code {
+  background-color: rgb(229, 231, 235);
+  padding: 0.25rem;
+}
+
+.instruction-text {
+  margin: 1rem 0;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.api-form {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  padding: 1.5rem 2rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  color: rgb(55, 65, 81);
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+}
+
+.radio-input {
+  margin-right: 0.5rem;
+}
+
+.url-input {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.25rem;
+  color: rgb(55, 65, 81);
+  line-height: 1.25;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.url-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.submit-button {
+  background-color: rgb(107, 114, 128);
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: rgb(156, 163, 175);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.response-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgb(243, 244, 246);
+  border-radius: 0.375rem;
+}
+
+.response-title {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.response-content {
+  white-space: pre-wrap;
+  font-size: 0.875rem;
+}
+</style>
