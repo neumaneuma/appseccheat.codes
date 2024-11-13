@@ -1,8 +1,18 @@
 <template>
   <div class="challenge-container">
-    <h2 class="challenge-title">Challenge #2: SQLi second order</h2>
-    <SQLiIntroduction />
-    <SQLiNews />
+    <ChallengeView
+      :title="'Challenge #2: SQLi second order'"
+      :introduction="'What is SQL injection?'"
+      :shouldShowIntroduction="false"
+      :currentLink="'currentLink'"
+    >
+      <template #introduction>
+        <SQLiIntroduction />
+      </template>
+      <template #news>
+        <SQLiNews />
+      </template>
+    </ChallengeView>
     <div class="forms-grid">
       <!-- Registration Form -->
       <div class="form-section">
@@ -160,6 +170,7 @@ import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
 import SQLiNews from '@/views/sqli/SQLiNews.vue'
+import ChallengeView from '@/views/ChallengeView.vue'
 
 // Register form state
 const registerForm = ref({

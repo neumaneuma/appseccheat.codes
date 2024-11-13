@@ -1,9 +1,18 @@
 <template>
   <div class="challenge-container">
-    <h2 class="challenge-title">Challenge #3: SSRF bypass webhook</h2>
-
-    <SSRFIntroduction class="section-spacing" />
-    <SSRFNews class="section-spacing" />
+    <ChallengeView
+      :title="'Challenge #3: SSRF bypass webhook'"
+      :introduction="'What is SSRF?'"
+      :shouldShowIntroduction="false"
+      :currentLink="'currentLink'"
+    >
+      <template #introduction>
+        <SSRFIntroduction />
+      </template>
+      <template #news>
+        <SSRFNews />
+      </template>
+    </ChallengeView>
 
     <p class="section-spacing">
       This web server has a functionality built for webhooks. However, you can abuse this functionality to access an internal admin API.
@@ -66,7 +75,7 @@ import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
-
+import ChallengeView from '@/views/ChallengeView.vue'
 const customUrl = ref('')
 const webhookResponse = ref('')
 const { state: apiState, handleApiCall } = useApiState()

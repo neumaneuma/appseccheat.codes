@@ -1,8 +1,8 @@
 <template>
   <div class="challenge-container">
     <div class="challenge-header">
-      <h2 class="page-title">{{ headers.title }}</h2>
-      <!-- Hint0 component would go here -->
+      <h2 class="page-title">{{ title }}</h2>
+      <FirstHint />
 
       <p v-if="!shouldShowIntroduction">
         <a class="intro-link" :href="currentLink">Click here</a> to view challenge background again.
@@ -11,18 +11,18 @@
 
     <template v-if="shouldShowIntroduction">
       <div class="section">
-        <h3 class="section-title">{{ headers.introduction }}</h3>
-        <!-- Introduction slot -->
+        <h3 class="section-title">{{ introduction }}</h3>
+        <slot name="introduction"></slot>
       </div>
       <div class="section">
-        <h3 class="section-title">{{ headers.news }}</h3>
-        <!-- News slot -->
+        <h3 class="section-title">Heard about it in the news?</h3>
+        <slot name="news"></slot>
       </div>
     </template>
 
     <div class="section">
-      <h3 class="section-title">{{ headers.challenge }}</h3>
-      <!-- Hint1 component would go here -->
+      <h3 class="section-title">Challenge</h3>
+      <SecondHint />
 
       <!-- Hint 2 -->
       <div class="hint-container hint-error">
@@ -73,16 +73,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { toggleCollapsible } from '@/helper'
+import FirstHint from '@/views/FirstHint.vue'
+import SecondHint from '@/views/SecondHint.vue'
 
-interface Headers {
-  title: string
-  introduction: string
-  news: string
-  challenge: string
-}
 
 interface Props {
-  headers: Headers
+  title: string
+  introduction: string
   shouldShowIntroduction: boolean
   currentLink: string
   vulnerabilitySourceCode?: {
@@ -110,30 +108,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isOpen = ref(false)
 const content = ref<HTMLElement | null>(null)
-
-const toggleCollapsible = (event: Event) => {
-  const target = event.currentTarget as HTMLElement
-  const plus = target.querySelector('.plus')
-  const minus = target.querySelector('.minus')
-  const content = target.nextElementSibling as HTMLElement
-
-  plus?.classList.toggle('hidden')
-  minus?.classList.toggle('hidden')
-
-  if (target.classList.contains('rounded-full')) {
-    target.classList.remove('rounded-full')
-    target.classList.add('rounded-top')
-  } else {
-    target.classList.add('rounded-full')
-    target.classList.remove('rounded-top')
-  }
-
-  if (content.style.maxHeight) {
-    content.style.maxHeight = ''
-  } else {
-    content.style.maxHeight = `${content.scrollHeight}px`
-  }
-}
 </script>
 
 <style scoped>

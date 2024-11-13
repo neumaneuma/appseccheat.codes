@@ -1,15 +1,26 @@
 <template>
   <div class="challenge-container">
-    <h2 class="challenge-title">Challenge #1: SQLi login bypass</h2>
-    <SQLiIntroduction />
-    <SQLiNews />
+    <ChallengeView
+      :title="'Challenge #1: SQLi login bypass'"
+      :introduction="'What is SQL injection?'"
+      :shouldShowIntroduction="false"
+      :currentLink="'currentLink'"
+    >
+      <template #introduction>
+        <SQLiIntroduction />
+      </template>
+      <template #news>
+        <SQLiNews />
+      </template>
+    </ChallengeView>
+
     <p class="challenge-description">
       You know there is a user with the username
       <span class="code-block">administrator</span>. Try to figure out how to login as
       <span class="code-block">administrator</span> without knowing what their password is!
     </p>
 
-    <ChallengeView :headers="headers" :shouldShowIntroduction="false" />
+
     <div class="form-container">
       <AlertMessage
         v-if="apiState.error"
@@ -78,6 +89,7 @@ import ChallengeView from '@/views/ChallengeView.vue'
 const username = ref('')
 const password = ref('')
 const { state: apiState, handleApiCall } = useApiState()
+
 
 const submitLogin = async () => {
   await handleApiCall(

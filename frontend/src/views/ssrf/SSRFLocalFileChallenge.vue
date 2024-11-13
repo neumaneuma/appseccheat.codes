@@ -1,9 +1,18 @@
 <template>
   <div class="challenge-container">
-    <h2 class="challenge-title">Challenge #4: SSRF local file inclusion</h2>
-
-    <SSRFIntroduction class="section-spacing" />
-    <SSRFNews class="section-spacing" />
+    <ChallengeView
+      :title="'Challenge #4: SSRF local file inclusion'"
+      :introduction="'What is SSRF?'"
+      :shouldShowIntroduction="false"
+      :currentLink="'currentLink'"
+    >
+      <template #introduction>
+        <SSRFIntroduction />
+      </template>
+      <template #news>
+        <SSRFNews />
+      </template>
+    </ChallengeView>
 
     <p class="section-spacing">
       Catcoin is the hot new crypto currency that everyone is talking about. The following form is for a financial web app
@@ -99,7 +108,7 @@ import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
-
+import ChallengeView from '@/views/ChallengeView.vue'
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
   'http://internal_api:12301/get_cat_coin_price_v2/'
