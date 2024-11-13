@@ -3,7 +3,7 @@
     <ChallengeView
       :title="'Challenge #3: SSRF bypass webhook'"
       :introduction="'What is SSRF?'"
-      :shouldShowIntroduction="true"
+      :shouldShowIntroduction="shouldShowIntroduction"
     >
       <template #introduction>
         <SSRFIntroduction />
@@ -68,16 +68,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
+import { store } from '@/store'
+
 const customUrl = ref('')
 const webhookResponse = ref('')
 const { state: apiState, handleApiCall } = useApiState()
+
+function determineIfShouldShowIntroduction() {
+  const shouldShowIntroduction = !store.ssrfIntroductionSeen
+  store.ssrfIntroductionSeen = true
+  return shouldShowIntroduction
+}
+const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 
 const submitWebhook = async () => {
   try {

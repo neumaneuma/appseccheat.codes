@@ -3,7 +3,7 @@
     <ChallengeView
       :title="'Challenge #4: SSRF local file inclusion'"
       :introduction="'What is SSRF?'"
-      :shouldShowIntroduction="false"
+      :shouldShowIntroduction="shouldShowIntroduction"
     >
       <template #introduction>
         <SSRFIntroduction />
@@ -108,6 +108,8 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
 import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
+import { store } from '@/store'
+
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
   'http://internal_api:12301/get_cat_coin_price_v2/'
@@ -117,6 +119,13 @@ const selectedUrl = ref(predefinedUrls[0])
 const customUrl = ref('')
 const apiResponse = ref('')
 const { state: apiState, handleApiCall } = useApiState()
+
+function determineIfShouldShowIntroduction() {
+  const shouldShowIntroduction = !store.ssrfIntroductionSeen
+  store.ssrfIntroductionSeen = true
+  return shouldShowIntroduction
+}
+const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 
 const isValidUrl = computed(() => {
   if (selectedUrl.value === 'custom') {

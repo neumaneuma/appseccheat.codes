@@ -3,7 +3,7 @@
     <ChallengeView
       :title="'Challenge #1: SQLi login bypass'"
       :introduction="'What is SQL injection?'"
-      :shouldShowIntroduction="true"
+      :shouldShowIntroduction="shouldShowIntroduction"
     >
       <template #introduction>
         <SQLiIntroduction />
@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/shared/AlertMessage.vue'
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
@@ -85,9 +85,18 @@ import { SQLI_LOGIN_BYPASS_API_VULNERABLE_URL } from '@/constants'
 import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
 import SQLiNews from '@/views/sqli/SQLiNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
+import { store } from '@/store'
+
 const username = ref('')
 const password = ref('')
 const { state: apiState, handleApiCall } = useApiState()
+
+function determineIfShouldShowIntroduction() {
+  const shouldShowIntroduction = !store.sqliIntroductionSeen
+  store.sqliIntroductionSeen = true
+  return shouldShowIntroduction
+}
+const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 
 
 const submitLogin = async () => {
