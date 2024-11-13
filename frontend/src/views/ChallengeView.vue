@@ -24,7 +24,6 @@
       <h3 class="section-title">Challenge</h3>
       <SecondHint />
 
-      <!-- Hint 2 -->
       <div class="hint-container hint-error">
         <div class="hint-header collapsible" @click="toggleCollapsible">
           <div class="hint-title">
@@ -39,11 +38,11 @@
           </div>
         </div>
         <div class="collapsible-content" ref="content">
-          <!-- Code component would go here -->
+          <p>File truncated for brevity. <a :href="vulnerabilitySourceCode.fileLink" class="exploit-link" target="_blank">Click here</a> to view full file.</p>
+          <CodeSnippet :code="vulnerabilitySourceCode.snippet" :language="'python'" />
         </div>
       </div>
 
-      <!-- Hint 3 -->
       <div class="hint-container hint-success">
         <div class="hint-header collapsible" @click="toggleCollapsible">
           <div class="hint-title">
@@ -64,7 +63,8 @@
                        rel="noopener"
                        class="exploit-link">exploit README</a> to run the exploits locally.
           </p>
-          <!-- Code component would go here -->
+          <p>File truncated for brevity. <a :href="exploitSourceCode.fileLink" class="exploit-link" target="_blank">Click here</a> to view full file.</p>
+          <CodeSnippet :code="exploitSourceCode.snippet" :language="'python'" />
         </div>
       </div>
     </div>
@@ -76,33 +76,22 @@ import { ref, watch } from 'vue'
 import { toggleCollapsible } from '@/helper'
 import FirstHint from '@/views/FirstHint.vue'
 import SecondHint from '@/views/SecondHint.vue'
+import CodeSnippet from '@/components/shared/CodeSnippet.vue'
+
+type SourceCodeLinks = {
+  fileLink: string
+  snippet: string
+}
 
 interface Props {
   title: string
   introduction: string
   shouldShowIntroduction: boolean
-  vulnerabilitySourceCode?: {
-    link: string
-    gist: string
-  }
-  exploitSourceCode?: {
-    link: string
-    gist: string
-  }
+  vulnerabilitySourceCode: SourceCodeLinks
+  exploitSourceCode: SourceCodeLinks
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  shouldShowIntroduction: true,
-  currentLink: '',
-  vulnerabilitySourceCode: () => ({
-    link: '',
-    gist: ''
-  }),
-  exploitSourceCode: () => ({
-    link: '',
-    gist: ''
-  })
-})
+const props = defineProps<Props>()
 
 // Initialize toggleIntroduction with the prop value
 const toggleIntroduction = ref(props.shouldShowIntroduction)

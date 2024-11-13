@@ -4,6 +4,14 @@
       :title="'Challenge #2: SQLi second order'"
       :introduction="'What is SQL injection?'"
       :shouldShowIntroduction="shouldShowIntroduction"
+      :vulnerabilitySourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/sqli2.py',
+        snippet: sqliSecondOrderVulnerableSnippet
+      }"
+      :exploitSourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py',
+        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+      }"
     >
       <template #introduction>
         <SQLiIntroduction />
@@ -171,7 +179,7 @@ import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
 import SQLiNews from '@/views/sqli/SQLiNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
-
+import { sqliSecondOrderVulnerableSnippet } from '@/snippets'
 function determineIfShouldShowIntroduction() {
   const shouldShowIntroduction = !store.sqliIntroductionSeen
   store.sqliIntroductionSeen = true

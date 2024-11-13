@@ -4,6 +4,14 @@
       :title="'Challenge #3: SSRF bypass webhook'"
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="shouldShowIntroduction"
+      :vulnerabilitySourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/ssrf3.py',
+        snippet: ssrfWebhookVulnerableSnippet
+      }"
+      :exploitSourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_bypass_webhook.py',
+        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+      }"
     >
       <template #introduction>
         <SSRFIntroduction />
@@ -76,7 +84,7 @@ import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
-
+import { ssrfWebhookVulnerableSnippet } from '@/snippets'
 const customUrl = ref('')
 const webhookResponse = ref('')
 const { state: apiState, handleApiCall } = useApiState()

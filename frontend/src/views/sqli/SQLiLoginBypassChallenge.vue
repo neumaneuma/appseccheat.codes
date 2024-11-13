@@ -4,6 +4,14 @@
       :title="'Challenge #1: SQLi login bypass'"
       :introduction="'What is SQL injection?'"
       :shouldShowIntroduction="shouldShowIntroduction"
+      :vulnerabilitySourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/sqli1.py',
+        snippet: sqliLoginBypassVulnerableSnippet
+      }"
+      :exploitSourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py',
+        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+      }"
     >
       <template #introduction>
         <SQLiIntroduction />
@@ -86,7 +94,7 @@ import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
 import SQLiNews from '@/views/sqli/SQLiNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
-
+import { sqliLoginBypassVulnerableSnippet } from '@/snippets'
 const username = ref('')
 const password = ref('')
 const { state: apiState, handleApiCall } = useApiState()

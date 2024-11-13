@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -8,7 +6,6 @@ from backend.passphrases import Passphrases
 from backend.vulnerabilities import VULNERABILITIES
 
 router = APIRouter(prefix=f"/{VULNERABILITIES}/sqli1")
-LOG = logging.getLogger(__name__)
 
 
 class Credentials(BaseModel):

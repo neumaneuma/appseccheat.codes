@@ -4,6 +4,14 @@
       :title="'Challenge #4: SSRF local file inclusion'"
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="shouldShowIntroduction"
+      :vulnerabilitySourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/ssrf2.py',
+        snippet: ssrfLocalFileInclusionVulnerableSnippet
+      }"
+      :exploitSourceCode="{
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_local_file_inclusion.py',
+        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+      }"
     >
       <template #introduction>
         <SSRFIntroduction />
@@ -109,6 +117,7 @@ import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
+import { ssrfLocalFileInclusionVulnerableSnippet } from '@/snippets'
 
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
