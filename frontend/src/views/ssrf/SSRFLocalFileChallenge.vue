@@ -4,7 +4,6 @@
       :title="'Challenge #4: SSRF local file inclusion'"
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="false"
-      :currentLink="'currentLink'"
     >
       <template #introduction>
         <SSRFIntroduction />

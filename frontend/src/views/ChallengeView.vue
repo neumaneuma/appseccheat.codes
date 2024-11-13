@@ -4,12 +4,12 @@
       <h2 class="page-title">{{ title }}</h2>
       <FirstHint />
 
-      <p v-if="!shouldShowIntroduction">
-        <a class="intro-link" :href="currentLink">Click here</a> to view challenge background again.
+      <p v-if="!toggleIntroduction">
+        <a class="intro-link" @click="toggleIntroduction = true">Click here</a> to view challenge background again.
       </p>
     </div>
 
-    <template v-if="shouldShowIntroduction">
+    <template v-if="toggleIntroduction">
       <div class="section">
         <h3 class="section-title">{{ introduction }}</h3>
         <slot name="introduction"></slot>
@@ -72,17 +72,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { toggleCollapsible } from '@/helper'
 import FirstHint from '@/views/FirstHint.vue'
 import SecondHint from '@/views/SecondHint.vue'
-
 
 interface Props {
   title: string
   introduction: string
   shouldShowIntroduction: boolean
-  currentLink: string
   vulnerabilitySourceCode?: {
     link: string
     gist: string
@@ -105,6 +103,17 @@ const props = withDefaults(defineProps<Props>(), {
     gist: ''
   })
 })
+
+// Initialize toggleIntroduction with the prop value
+const toggleIntroduction = ref(props.shouldShowIntroduction)
+
+// Watch for changes to the prop and update the internal state
+watch(
+  () => props.shouldShowIntroduction,
+  (newValue) => {
+    toggleIntroduction.value = newValue
+  }
+)
 
 const isOpen = ref(false)
 const content = ref<HTMLElement | null>(null)

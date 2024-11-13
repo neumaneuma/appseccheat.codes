@@ -4,7 +4,6 @@
       :title="'Challenge #2: SQLi second order'"
       :introduction="'What is SQL injection?'"
       :shouldShowIntroduction="false"
-      :currentLink="'currentLink'"
     >
       <template #introduction>
         <SQLiIntroduction />

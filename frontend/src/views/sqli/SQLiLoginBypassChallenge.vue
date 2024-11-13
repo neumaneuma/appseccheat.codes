@@ -3,8 +3,7 @@
     <ChallengeView
       :title="'Challenge #1: SQLi login bypass'"
       :introduction="'What is SQL injection?'"
-      :shouldShowIntroduction="false"
-      :currentLink="'currentLink'"
+      :shouldShowIntroduction="true"
     >
       <template #introduction>
         <SQLiIntroduction />

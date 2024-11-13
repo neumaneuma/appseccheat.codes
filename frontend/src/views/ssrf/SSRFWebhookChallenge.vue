@@ -3,8 +3,7 @@
     <ChallengeView
       :title="'Challenge #3: SSRF bypass webhook'"
       :introduction="'What is SSRF?'"
-      :shouldShowIntroduction="false"
-      :currentLink="'currentLink'"
+      :shouldShowIntroduction="true"
     >
       <template #introduction>
         <SSRFIntroduction />
