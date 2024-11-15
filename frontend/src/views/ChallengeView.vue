@@ -4,7 +4,7 @@
       <h2 class="page-title">{{ title }}</h2>
 
       <!-- First Hint -->
-      <div class="hint-container hint-default">
+      <div class="hint-container meta-hint">
         <div class="hint-header collapsible" @click="toggleFirstHint">
           <div class="hint-title">
             <h3 class="hint-text">
@@ -51,7 +51,7 @@
       <h3 class="section-title">Challenge</h3>
 
       <!-- Second Hint -->
-      <div class="hint-container hint-warning">
+      <div class="hint-container generic-hint">
         <div class="hint-header collapsible" @click="toggleSecondHint">
           <div class="hint-title">
             <h3 class="hint-text">
@@ -74,7 +74,8 @@
         </div>
       </div>
 
-      <div class="hint-container hint-error">
+      <!-- Third Hint -->
+      <div class="hint-container vulnerability-hint">
         <div class="hint-header collapsible" @click="toggleVulnerabilityHint">
           <div class="hint-title">
             <h3 class="hint-text">
@@ -93,7 +94,8 @@
         </div>
       </div>
 
-      <div class="hint-container hint-success">
+      <!-- Fourth Hint -->
+      <div class="hint-container exploit-hint">
         <div class="hint-header collapsible" @click="toggleExploitHint">
           <div class="hint-title">
             <h3 class="hint-text">
@@ -222,17 +224,18 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 
 .hint-container {
   border-width: 1px;
+  border: 1px solid rgb(17, 24, 39);
   border-radius: 0.375rem;
   margin: 1rem 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.hint-container.hint-error {
+.hint-container.vulnerability-hint {
   border-color: rgb(127, 29, 29);
   background-color: rgb(254, 242, 242);
 }
 
-.hint-container.hint-success {
+.hint-container.exploit-hint {
   border-color: rgb(20, 83, 45);
   background-color: rgb(240, 253, 244);
 }
@@ -245,19 +248,19 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
   border-radius: 0.375rem;
 }
 
-.hint-error .hint-header {
+.vulnerability-hint .hint-header {
   background-color: rgb(254, 202, 202);
 }
 
-.hint-error .hint-header:hover {
+.vulnerability-hint .hint-header:hover {
   background-color: rgb(252, 165, 165);
 }
 
-.hint-success .hint-header {
+.exploit-hint .hint-header {
   background-color: rgb(187, 247, 208);
 }
 
-.hint-success .hint-header:hover {
+.exploit-hint .hint-header:hover {
   background-color: rgb(134, 239, 172);
 }
 
@@ -273,19 +276,19 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
   color: rgb(17, 24, 39);
 }
 
-.hint-error .hint-description {
+.vulnerability-hint .hint-description {
   color: rgb(185, 28, 28);
 }
 
-.hint-error .hint-description:hover {
+.vulnerability-hint .hint-description:hover {
   color: rgb(153, 27, 27);
 }
 
-.hint-success .hint-description {
+.exploit-hint .hint-description {
   color: rgb(22, 163, 74);
 }
 
-.hint-success .hint-description:hover {
+.exploit-hint .hint-description:hover {
   color: rgb(21, 128, 61);
 }
 
@@ -328,49 +331,42 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
   }
 }
 
-/* Styles from FirstHint.vue */
-.hint-container.hint-default {
-  border: 1px solid rgb(17, 24, 39);
-  border-radius: 0.375rem;
+.hint-container.meta-hint {
   background-color: white;
 }
 
-.hint-default .hint-header {
+.meta-hint .hint-header {
   background-color: rgb(229, 231, 235);
 }
 
-.hint-default .hint-header:hover {
+.meta-hint .hint-header:hover {
   background-color: rgb(209, 213, 219);
 }
 
-/* Styles from SecondHint.vue */
-.hint-container.hint-warning {
+.hint-container.generic-hint {
   border: 1px solid rgb(120, 113, 108);
   background-color: rgb(254, 252, 232);
 }
 
-.hint-warning .hint-header {
+.generic-hint .hint-header {
   background-color: rgb(254, 240, 138);
 }
 
-.hint-warning .hint-header:hover {
+.generic-hint .hint-header:hover {
   background-color: rgb(253, 224, 71);
 }
 
-.hint-warning .hint-description {
+.generic-hint .hint-description {
   color: rgb(161, 98, 7);
 }
 
-.hint-warning .hint-description:hover {
+.generic-hint .hint-description:hover {
   color: rgb(133, 77, 14);
 }
 
-/* Common styles for all hints */
 .content-wrapper {
-  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .link {
