@@ -76,7 +76,7 @@ import { ref, watch } from 'vue'
 import { toggleCollapsible } from '@/helper'
 import FirstHint from '@/views/FirstHint.vue'
 import SecondHint from '@/views/SecondHint.vue'
-import CodeSnippet from '@/components/shared/CodeSnippet.vue'
+import CodeSnippet from '@/components/CodeSnippet.vue'
 
 type SourceCodeLinks = {
   fileLink: string

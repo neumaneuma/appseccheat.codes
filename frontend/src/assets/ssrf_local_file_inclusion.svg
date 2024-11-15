@@ -1,0 +1,64 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  width="200"
+  height="200"
+>
+  <!-- Deputy Badge (Shield) -->
+  <path
+    d="M32 8
+       L44 14
+       L44 26
+       C44 34
+       38 40
+       32 44
+       C26 40
+       20 34
+       20 26
+       L20 14
+       Z"
+    fill="#e1e4e8"
+    stroke="#333"
+    stroke-width="2"
+  />
+
+  <!-- Badge Star -->
+  <path
+    d="M32 16
+       L34 22
+       L40 22
+       L35 26
+       L37 32
+       L32 28
+       L27 32
+       L29 26
+       L24 22
+       L30 22
+       Z"
+    fill="#333"
+  />
+
+  <!-- Confused Expression -->
+  <g transform="translate(24, 50)">
+    <!-- Question Mark -->
+    <path
+      d="M8 0
+         C12 0, 14 2, 14 5
+         C14 7, 12 8, 10 9
+         L10 11
+         M10 14 L10 15"
+      fill="none"
+      stroke="#333"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+
+    <!-- Confused Eyebrows -->
+    <path
+      d="M2 2 L6 4 M14 2 L18 0"
+      stroke="#333"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </g>
+</svg>

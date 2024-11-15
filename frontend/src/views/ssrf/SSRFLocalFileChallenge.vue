@@ -111,8 +111,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useApiState } from '@/composables/useApiState'
-import AlertMessage from '@/components/shared/AlertMessage.vue'
-import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
+import AlertMessage from '@/components/AlertMessage.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'

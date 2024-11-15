@@ -87,8 +87,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useApiState } from '@/composables/useApiState'
-import AlertMessage from '@/components/shared/AlertMessage.vue'
-import LoadingSpinner from '@/components/shared/LoadingSpinner.vue'
+import AlertMessage from '@/components/AlertMessage.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { SQLI_LOGIN_BYPASS_API_VULNERABLE_URL } from '@/constants'
 import SQLiIntroduction from '@/views/sqli/SQLiIntroduction.vue'
 import SQLiNews from '@/views/sqli/SQLiNews.vue'

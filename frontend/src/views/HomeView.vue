@@ -16,19 +16,42 @@
     </p>
   </div>
   <div class="card-grid">
-      <SQLiLoginBypassCard />
-      <SQLiSecondOrderCard />
-      <SSRFWebhookCard />
-        <SSRFLocalFileCard />
+    <ChallengeCard
+    :imagePath="sqliLoginBypassImage"
+    imageAlt="Open lock"
+    header="SQLi: login bypass"
+    description="Forget passkeys, this is how you do true passwordless login"
+    routePath="/vulnerabilities/sqli1"
+  />        <ChallengeCard
+    :imagePath="sqliSecondOrderImage"
+    imageAlt="Double agent"
+    header="SQLi: second order"
+    description="Sometimes the injection doesn't happen right away"
+    routePath="/vulnerabilities/sqli2"
+  />        <ChallengeCard
+    :imagePath="ssrfWebhookImage"
+    imageAlt="Castle with breached walls"
+    header="SSRF: webhook"
+    description="Sometimes you need to make a request to an external service"
+    routePath="/vulnerabilities/ssrf1"
+  />        <ChallengeCard
+    :imagePath="ssrfLocalFileInclusionImage"
+    imageAlt="Confused deputy"
+    header="SSRF: local file"
+    description="Sometimes you need to read a local file"
+    routePath="/vulnerabilities/ssrf2"
+  />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import SQLiLoginBypassCard from '@/components/sqli/SQLiLoginBypassCard.vue'
-import SQLiSecondOrderCard from '@/components/sqli/SQLiSecondOrderCard.vue'
-import SSRFWebhookCard from '@/components/ssrf/SSRFWebhookCard.vue'
-import SSRFLocalFileCard from '@/components/ssrf/SSRFLocalFileCard.vue'</script>
+import ChallengeCard from '@/components/ChallengeCard.vue'
+import sqliLoginBypassImage from '@/assets/sqli_login_bypass.svg'
+import sqliSecondOrderImage from '@/assets/sqli_second_order.svg'
+import ssrfWebhookImage from '@/assets/ssrf_webhook.svg'
+import ssrfLocalFileInclusionImage from '@/assets/ssrf_local_file_inclusion.svg'
+</script>
 
 <style scoped>
 .home-container {

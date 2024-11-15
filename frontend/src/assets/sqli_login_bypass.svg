@@ -1,0 +1,58 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  width="200"
+  height="200"
+>
+  <!-- Lock Body -->
+  <rect
+    x="16"
+    y="28"
+    width="32"
+    height="28"
+    rx="4"
+    ry="4"
+    fill="#e1e4e8"
+    stroke="#333"
+    stroke-width="2"
+  />
+
+  <!-- Open Shackle -->
+  <path
+    d="M32 28
+       C32 28, 32 16, 32 16
+       C32 9.373, 37.373 4, 44 4
+       S56 9.373, 56 16
+       L56 20
+       C56 20, 56 12, 56 12"
+    fill="none"
+    stroke="#333"
+    stroke-width="2"
+    transform="rotate(30, 44, 16)"
+  />
+
+  <!-- Keyhole -->
+  <ellipse
+    cx="32"
+    cy="42"
+    rx="3"
+    ry="5"
+    fill="#333"
+  />
+  <rect
+    x="30.5"
+    y="47"
+    width="3"
+    height="5"
+    fill="#333"
+  />
+
+  <!-- Shadow under shackle -->
+  <path
+    d="M32 28 C32 28, 32 16, 32 16"
+    fill="none"
+    stroke="#ccc"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+</svg>
