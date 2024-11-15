@@ -228,16 +228,15 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
   border-radius: 0.375rem;
   margin: 1rem 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 .hint-container.vulnerability-hint {
   border-color: rgb(127, 29, 29);
-  background-color: white;
 }
 
 .hint-container.exploit-hint {
   border-color: rgb(20, 83, 45);
-  background-color: white;
 }
 
 .hint-header {
@@ -331,9 +330,6 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
   }
 }
 
-.hint-container.meta-hint {
-  background-color: white;
-}
 
 .meta-hint .hint-header {
   background-color: rgb(229, 231, 235);
@@ -345,7 +341,6 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 
 .hint-container.generic-hint {
   border: 1px solid rgb(120, 113, 108);
-  background-color: rgb(254, 252, 232);
 }
 
 .generic-hint .hint-header {
