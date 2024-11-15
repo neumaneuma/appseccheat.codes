@@ -232,12 +232,12 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 
 .hint-container.vulnerability-hint {
   border-color: rgb(127, 29, 29);
-  background-color: rgb(254, 242, 242);
+  background-color: white;
 }
 
 .hint-container.exploit-hint {
   border-color: rgb(20, 83, 45);
-  background-color: rgb(240, 253, 244);
+  background-color: white;
 }
 
 .hint-header {

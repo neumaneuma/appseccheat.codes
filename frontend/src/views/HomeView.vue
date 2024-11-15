@@ -37,7 +37,7 @@
   />        <ChallengeCard
     :imagePath="ssrfLocalFileInclusionImage"
     imageAlt="Confused deputy"
-    header="SSRF: local file"
+    header="SSRF: local file inclusion"
     description="Sometimes you need to read a local file"
     routePath="/vulnerabilities/ssrf2"
   />

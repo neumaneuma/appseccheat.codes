@@ -10,7 +10,7 @@
       }"
       :exploitSourceCode="{
         fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py',
-        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+        snippet: sqliLoginBypassExploitSnippet
       }"
     >
       <template #introduction>
@@ -95,6 +95,8 @@ import SQLiNews from '@/views/sqli/SQLiNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
 import { sqliLoginBypassVulnerableSnippet } from '@/snippets'
+import { sqliLoginBypassExploitSnippet } from '@/snippets'
+
 const username = ref('')
 const password = ref('')
 const { state: apiState, handleApiCall } = useApiState()

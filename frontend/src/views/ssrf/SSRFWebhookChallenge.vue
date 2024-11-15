@@ -10,7 +10,7 @@
       }"
       :exploitSourceCode="{
         fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_bypass_webhook.py',
-        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+        snippet: ssrfWebhookExploitSnippet
       }"
     >
       <template #introduction>
@@ -85,6 +85,8 @@ import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
 import { ssrfWebhookVulnerableSnippet } from '@/snippets'
+import { ssrfWebhookExploitSnippet } from '@/snippets'
+
 const customUrl = ref('')
 const webhookResponse = ref('')
 const { state: apiState, handleApiCall } = useApiState()

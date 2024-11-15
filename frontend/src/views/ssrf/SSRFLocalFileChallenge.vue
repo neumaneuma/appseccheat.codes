@@ -10,7 +10,7 @@
       }"
       :exploitSourceCode="{
         fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_local_file_inclusion.py',
-        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+        snippet: ssrfLocalFileInclusionExploitSnippet
       }"
     >
       <template #introduction>
@@ -118,7 +118,7 @@ import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
 import { ssrfLocalFileInclusionVulnerableSnippet } from '@/snippets'
-
+import { ssrfLocalFileInclusionExploitSnippet } from '@/snippets'
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
   'http://internal_api:12301/get_cat_coin_price_v2/'

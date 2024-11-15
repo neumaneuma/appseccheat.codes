@@ -10,7 +10,7 @@
       }"
       :exploitSourceCode="{
         fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py',
-        snippet: '2cd5ffda86a9f3beee7858fd3ee21b10'
+        snippet: sqliSecondOrderExploitSnippet
       }"
     >
       <template #introduction>
@@ -180,6 +180,8 @@ import SQLiNews from '@/views/sqli/SQLiNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
 import { sqliSecondOrderVulnerableSnippet } from '@/snippets'
+import { sqliSecondOrderExploitSnippet } from '@/snippets'
+
 function determineIfShouldShowIntroduction() {
   const shouldShowIntroduction = !store.sqliIntroductionSeen
   store.sqliIntroductionSeen = true
