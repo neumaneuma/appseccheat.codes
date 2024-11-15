@@ -313,11 +313,11 @@ results = []
 #     results.append(test_submission(challenge))
 
 for state in State:
-    print(f"Testing {state.name} state for SQLi login bypass...")
-    results.append(sqli_login_bypass(state))
+    # print(f"Testing {state.name} state for SQLi login bypass...")
+    # results.append(sqli_login_bypass(state))
 
-    # print(f"Testing {state.name} state for SQLi second order...")
-    # results.append(sqli_second_order(state))
+    print(f"Testing {state.name} state for SQLi second order...")
+    results.append(sqli_second_order(state))
 
     # print(f"Testing {state.name} state for SSRF webhook...")
     # results.extend(ssrf_webhook(state))
