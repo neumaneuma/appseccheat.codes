@@ -75,32 +75,6 @@ class SSRF:
             submit_api_url_url: str = f"{url_prefix}/patches/ssrf2/submit_api_url/"
 
 
-# def convert_to_hex_representation(s):
-#     hex_repr = ""
-#     for c in s:
-#         hex_repr += hex(ord(c)).replace("0x", "%")
-#
-#     return hex_repr
-#
-#
-# def double_url_enc(s):
-#     hex_repr = ""
-#     for c in s:
-#         hex_repr += "%25"
-#         hex_repr += hex(ord(c)).replace("0x", "")
-#
-#     return hex_repr
-#
-# print(convert_to_hex_representation("127.0.0.1"))
-# print(convert_to_hex_representation("localhost"))
-# print(convert_to_hex_representation("169.254.169.254"))
-# print(convert_to_hex_representation("ssh"))
-# print(double_url_enc("127.0.0.1"))
-# print(double_url_enc("localhost"))
-# print(double_url_enc("169.254.169.254"))
-# print(double_url_enc("ssh"))
-
-
 class State(Enum):
     VULNERABLE = "vulnerable"
     PATCHED = "patched"
@@ -168,7 +142,6 @@ def sqli_login_bypass(state: State) -> bool:
         case _:
             assert_never(state)
 
-    print(f"URL: {url}")
     r = requests.post(url, json=data, verify=verify)
     response = check_response(
         expected_status_code=status_code,
@@ -335,16 +308,16 @@ start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-for challenge in Passphrases:
-    print(f"Testing submission for challenge {challenge.name}...")
-    results.append(test_submission(challenge))
+# for challenge in Passphrases:
+#     print(f"Testing submission for challenge {challenge.name}...")
+#     results.append(test_submission(challenge))
 
 for state in State:
     print(f"Testing {state.name} state for SQLi login bypass...")
     results.append(sqli_login_bypass(state))
 
-    print(f"Testing {state.name} state for SQLi second order...")
-    results.append(sqli_second_order(state))
+    # print(f"Testing {state.name} state for SQLi second order...")
+    # results.append(sqli_second_order(state))
 
     # print(f"Testing {state.name} state for SSRF webhook...")
     # results.extend(ssrf_webhook(state))

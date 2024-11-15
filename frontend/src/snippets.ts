@@ -160,3 +160,5 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             )
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e`
+
+export const sqliLoginBypassExploitSnippet = '2cd5ffda86a9f3beee7858fd3ee21b10'
