@@ -20,17 +20,21 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style scoped>
 .banner {
-  background-color: #ffffff; /* Dark blue background */
+  background-color: #ffffff;
   padding: 10px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Ensure the banner takes the full width */
+  position: fixed; /* Optional: Fix the banner to the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it stays on top of other elements */
 }
 
 .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  max-width: 1280px;
+  width: 60%;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -62,6 +66,4 @@ import { RouterLink, RouterView } from 'vue-router'
   background-color: #bfdbfe;
   color: #1d4ed8;
 }
-
-
 </style>
