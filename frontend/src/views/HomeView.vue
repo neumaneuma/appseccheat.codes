@@ -12,8 +12,13 @@
       Learn how to write
       <span class="code-text code-text-primary">secure code</span>
     </p>
+    <DashboardView />
   </div>
 </template>
+
+<script setup lang="ts">
+import DashboardView from '@/views/DashboardView.vue'
+</script>
 
 <style scoped>
 .home-container {
