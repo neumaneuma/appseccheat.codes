@@ -16,10 +16,10 @@
     </p>
   </div>
   <div class="card-grid">
-    <SQLiLoginBypassCard />
-    <SQLiSecondOrderCard />
-    <SSRFWebhookCard />
-      <SSRFLocalFileCard />
+      <SQLiLoginBypassCard />
+      <SQLiSecondOrderCard />
+      <SSRFWebhookCard />
+        <SSRFLocalFileCard />
     </div>
   </div>
 </template>
@@ -65,11 +65,10 @@ import SSRFLocalFileCard from '@/components/ssrf/SSRFLocalFileCard.vue'</script>
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  width: 100%;
-  max-width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  justify-items: center;
+  width: 80%;
   margin: 0 auto;
 }
+
 </style>
