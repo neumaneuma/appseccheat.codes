@@ -4,14 +4,14 @@
       <h2 class="page-title">{{ title }}</h2>
     </div>
 
-    <div class="section">
+    <div >
       <h3 class="section-title">How to Fix This Vulnerability</h3>
       <div class="content-wrapper">
         <slot name="solution"></slot>
       </div>
     </div>
 
-    <div class="section">
+    <div>
       <h3 class="section-title">Secure Implementation</h3>
       <div class="code-container">
         <p>File truncated for brevity. <a :href="patchedSourceCode.fileLink" class="link" target="_blank">Click here</a> to view full file.</p>
@@ -74,10 +74,6 @@ defineProps<Props>()
   font-size: 2.25rem;
   font-weight: 700;
   color: rgb(17, 24, 39);
-}
-
-.section {
-  padding-top: 1rem;
 }
 
 .section-title {

@@ -220,11 +220,6 @@ const submitUrl = async () => {
   font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 }
 
-.inline-code {
-  background-color: rgb(229, 231, 235);
-  padding: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
 
 .instruction-text {
   margin: 1rem 0;
