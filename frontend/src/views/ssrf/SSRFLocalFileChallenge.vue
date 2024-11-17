@@ -5,11 +5,11 @@
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/ssrf2.py',
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/ssrf_lfi.py',
         snippet: ssrfLocalFileInclusionVulnerableSnippet
       }"
       :exploitSourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_local_file_inclusion.py',
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_lfi.py',
         snippet: ssrfLocalFileInclusionExploitSnippet
       }"
     >

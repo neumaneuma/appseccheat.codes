@@ -26,7 +26,7 @@
 
             <p>The next logical step is to provide the diff between what the vulnerable code looks like and what the secure code looks like. This is accessible to anyone who solves the challenge, which considering the exploit is provided if you cannot figure out how to write it on your own, is literally anyone.</p>
 
-            <p>And finally, as if this wall of text wasn't long enough, there is even more to it. If you want to run the webapp locally just follow the instructions on this <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/README.md" target="_blank" rel="noopener" class="link">README</a>. Make any modifications you want. Add code, remove code, break things, figure out how to fix them. This is what I believe to be the most effective way for a developer to learn a concept: through code.</p>
+            <p>And finally, as if this wall of text wasn't long enough, there is even more to it. If you want to run the webapp locally just follow the instructions on this <a href="https://github.com/neumaneuma/appseccheat.codes/main/README.md" target="_blank" rel="noopener" class="link">README</a>. Make any modifications you want. Add code, remove code, break things, figure out how to fix them. This is what I believe to be the most effective way for a developer to learn a concept: through code.</p>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@
         </div>
         <div class="collapsible-content" ref="exploitHintContent">
           <p class="exploit-text">
-            View the <a href="https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/README.md"
+            View the <a href="https://github.com/neumaneuma/appseccheat.codes/main/exploits/README.md"
                        target="_blank"
                        rel="noopener"
                        class="exploit-link">exploit README</a> to run the exploits locally.

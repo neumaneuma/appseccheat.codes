@@ -5,7 +5,7 @@
       :introduction="'What is SQL injection?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/sqli2.py',
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/sqli_second_order.py',
         snippet: sqliSecondOrderVulnerableSnippet
       }"
       :exploitSourceCode="{

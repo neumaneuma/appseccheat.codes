@@ -5,11 +5,11 @@
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/vulnerabilities/ssrf3.py',
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/ssrf_webhook.py',
         snippet: ssrfWebhookVulnerableSnippet
       }"
       :exploitSourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_bypass_webhook.py',
+        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_webhook.py',
         snippet: ssrfWebhookExploitSnippet
       }"
     >

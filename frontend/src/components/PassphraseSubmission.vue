@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/AlertMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -55,6 +56,7 @@ const props = defineProps<{
   challengeId: string
 }>()
 
+const router = useRouter()
 const passphrase = ref('')
 const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = useApiState()
 
@@ -78,7 +80,8 @@ const submitPassphrase = async () => {
       }
 
       if (body.result) {
-        return;
+        router.push(`/solutions/${props.challengeId}`)
+        return
       }
 
       throw new Error('Incorrect passphrase')
