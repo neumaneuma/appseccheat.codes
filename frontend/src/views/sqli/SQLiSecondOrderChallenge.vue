@@ -5,12 +5,14 @@
       :introduction="'What is SQL injection?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/sqli_second_order.py',
-        snippet: sqliSecondOrderVulnerableSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/sqli_second_order.py',
+        snippet: sqliSecondOrderVulnerableSnippet,
       }"
       :exploitSourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py',
-        snippet: sqliSecondOrderExploitSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_second_order.py',
+        snippet: sqliSecondOrderExploitSnippet,
       }"
     >
       <template #introduction>
@@ -30,11 +32,7 @@
         </p>
 
         <div class="form-container">
-          <AlertMessage
-            v-if="registerState.error"
-            :message="registerState.error"
-            type="error"
-          />
+          <AlertMessage v-if="registerState.error" :message="registerState.error" type="error" />
           <AlertMessage
             v-if="registerState.success"
             :message="registerState.success"
@@ -53,7 +51,7 @@
                 id="username"
                 type="text"
                 placeholder="Username"
-              >
+              />
               <p v-if="registerFormErrors.username" class="error-message">
                 {{ registerFormErrors.username }}
               </p>
@@ -69,7 +67,7 @@
                 id="password"
                 type="password"
                 placeholder="******************"
-              >
+              />
               <p v-if="registerFormErrors.password" class="error-message">
                 {{ registerFormErrors.password }}
               </p>
@@ -92,7 +90,8 @@
       <section class="challenge-section">
         <h2 class="section-title">Change Password</h2>
         <p class="challenge-description">
-          After registering, try to change your password. Can you find a way to bypass the old password verification?
+          After registering, try to change your password. Can you find a way to bypass the old
+          password verification?
         </p>
 
         <div class="form-container">
@@ -119,7 +118,7 @@
                 id="old-password"
                 type="password"
                 placeholder="Old Password"
-              >
+              />
               <p v-if="passwordFormErrors.oldPassword" class="error-message">
                 {{ passwordFormErrors.oldPassword }}
               </p>
@@ -135,7 +134,7 @@
                 id="new-password"
                 type="password"
                 placeholder="New Password"
-              >
+              />
               <p v-if="passwordFormErrors.newPassword" class="error-message">
                 {{ passwordFormErrors.newPassword }}
               </p>
@@ -151,7 +150,7 @@
                 id="verify-password"
                 type="password"
                 placeholder="Verify New Password"
-              >
+              />
               <p v-if="passwordFormErrors.verifyPassword" class="error-message">
                 {{ passwordFormErrors.verifyPassword }}
               </p>
@@ -198,7 +197,7 @@ const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 // Register form state
 const registerForm = ref({
   username: '',
-  password: ''
+  password: '',
 })
 
 const registerFormErrors = computed(() => {
@@ -213,16 +212,18 @@ const registerFormErrors = computed(() => {
 })
 
 const isRegisterFormValid = computed(() => {
-  return Object.keys(registerFormErrors.value).length === 0 &&
+  return (
+    Object.keys(registerFormErrors.value).length === 0 &&
     registerForm.value.username.length > 0 &&
     registerForm.value.password.length > 0
+  )
 })
 
 // Password change form state
 const passwordForm = ref({
   oldPassword: '',
   newPassword: '',
-  verifyPassword: ''
+  verifyPassword: '',
 })
 
 const passwordFormErrors = computed(() => {
@@ -242,10 +243,12 @@ const passwordFormErrors = computed(() => {
 })
 
 const isPasswordFormValid = computed(() => {
-  return Object.keys(passwordFormErrors.value).length === 0 &&
+  return (
+    Object.keys(passwordFormErrors.value).length === 0 &&
     passwordForm.value.oldPassword.length > 0 &&
     passwordForm.value.newPassword.length > 0 &&
     passwordForm.value.verifyPassword.length > 0
+  )
 })
 
 // API states
@@ -256,33 +259,30 @@ const submitRegister = async () => {
   if (!isRegisterFormValid.value) return
 
   try {
-    await handleRegister(
-      async () => {
-        const response = await fetch('/vulnerabilities/sqli2/register/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: registerForm.value.username,
-            password: registerForm.value.password
-          }),
-        })
+    await handleRegister(async () => {
+      const response = await fetch('/vulnerabilities/sqli2/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: registerForm.value.username,
+          password: registerForm.value.password,
+        }),
+      })
 
-        if (!response.ok) {
-          const error = await response.json()
-          throw new Error(error.detail || 'Registration failed')
-        }
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.detail || 'Registration failed')
+      }
 
-        return response.json()
-      },
-      'Registration successful!'
-    )
+      return response.json()
+    }, 'Registration successful!')
 
     // Clear form after successful registration
     registerForm.value = {
       username: '',
-      password: ''
+      password: '',
     }
   } catch (error) {
     console.error('Error:', error)
@@ -293,35 +293,32 @@ const submitChangePassword = async () => {
   if (!isPasswordFormValid.value) return
 
   try {
-    await handleChangePassword(
-      async () => {
-        const response = await fetch('/vulnerabilities/sqli2/change_password/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            old: passwordForm.value.oldPassword,
-            new: passwordForm.value.newPassword,
-            new_verify: passwordForm.value.verifyPassword
-          }),
-        })
+    await handleChangePassword(async () => {
+      const response = await fetch('/vulnerabilities/sqli2/change_password/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          old: passwordForm.value.oldPassword,
+          new: passwordForm.value.newPassword,
+          new_verify: passwordForm.value.verifyPassword,
+        }),
+      })
 
-        if (!response.ok) {
-          const error = await response.json()
-          throw new Error(error.detail || 'Password change failed')
-        }
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.detail || 'Password change failed')
+      }
 
-        return response.json()
-      },
-      'Password changed successfully!'
-    )
+      return response.json()
+    }, 'Password changed successfully!')
 
     // Clear form after successful password change
     passwordForm.value = {
       oldPassword: '',
       newPassword: '',
-      verifyPassword: ''
+      verifyPassword: '',
     }
   } catch (error) {
     console.error('Error:', error)
@@ -330,7 +327,6 @@ const submitChangePassword = async () => {
 </script>
 
 <style scoped>
-
 .challenge-sections {
   display: flex;
   flex-direction: column;
@@ -342,8 +338,9 @@ const submitChangePassword = async () => {
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .section-title {

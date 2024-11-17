@@ -5,12 +5,14 @@
       :introduction="'What is SQL injection?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/sqli_login_bypass.py',
-        snippet: sqliLoginBypassVulnerableSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/sqli_login_bypass.py',
+        snippet: sqliLoginBypassVulnerableSnippet,
       }"
       :exploitSourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py',
-        snippet: sqliLoginBypassExploitSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/sqli_login_bypass.py',
+        snippet: sqliLoginBypassExploitSnippet,
       }"
     >
       <template #introduction>
@@ -32,11 +34,7 @@
         </p>
 
         <div class="form-container">
-          <AlertMessage
-            v-if="loginApiState.error"
-            :message="loginApiState.error"
-            type="error"
-          />
+          <AlertMessage v-if="loginApiState.error" :message="loginApiState.error" type="error" />
           <AlertMessage
             v-if="loginApiState.success"
             :message="loginApiState.success"
@@ -54,7 +52,7 @@
                 id="username"
                 type="text"
                 placeholder="Username"
-              >
+              />
             </div>
             <div class="form-group">
               <label class="form-label" for="password">Password</label>
@@ -66,14 +64,10 @@
                 id="password"
                 type="password"
                 placeholder="******************"
-              >
+              />
             </div>
             <div class="form-actions">
-              <button
-                :disabled="loginApiState.isLoading"
-                class="submit-button"
-                type="submit"
-              >
+              <button :disabled="loginApiState.isLoading" class="submit-button" type="submit">
                 <LoadingSpinner v-if="loginApiState.isLoading" />
                 <span v-else>Login</span>
               </button>
@@ -113,34 +107,29 @@ function determineIfShouldShowIntroduction() {
 const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 
 const submitLogin = async () => {
-  await handleLoginApiCall(
-    async () => {
-      const response = await fetch(SQLI_LOGIN_BYPASS_API_VULNERABLE_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value
-        }),
-      })
+  await handleLoginApiCall(async () => {
+    const response = await fetch(SQLI_LOGIN_BYPASS_API_VULNERABLE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value,
+      }),
+    })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.detail || 'Login failed')
-      }
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Login failed')
+    }
 
-      return response.json()
-    },
-    'Login successful!'
-  )
+    return response.json()
+  }, 'Login successful!')
 }
-
 </script>
 
 <style scoped>
-
 .challenge-title {
   margin-top: 1.5rem;
   font-size: 2.25rem;
@@ -156,7 +145,7 @@ const submitLogin = async () => {
 .code-block {
   background-color: rgb(229, 231, 235);
   padding: 0.15rem;
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 .challenge-sections {
@@ -170,8 +159,9 @@ const submitLogin = async () => {
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .section-title {

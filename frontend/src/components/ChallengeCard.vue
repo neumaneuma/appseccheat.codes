@@ -38,7 +38,9 @@ defineProps<CardProps>()
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 }
 
 .logo {
@@ -65,7 +67,7 @@ defineProps<CardProps>()
   text-decoration: underline transparent;
 }
 
-.card-link:hover .title{
+.card-link:hover .title {
   text-decoration: underline;
 }
 </style>

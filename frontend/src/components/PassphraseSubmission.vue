@@ -2,7 +2,8 @@
   <section class="challenge-section">
     <h2 class="section-title">Submit Challenge Passphrase</h2>
     <p class="challenge-description">
-      Once you've successfully exploited the challenge, submit the passphrase you received to complete it.
+      Once you've successfully exploited the challenge, submit the passphrase you received to
+      complete it.
     </p>
 
     <div class="form-container">
@@ -28,14 +29,10 @@
             id="passphrase"
             type="text"
             placeholder="Enter the passphrase"
-          >
+          />
         </div>
         <div class="form-actions">
-          <button
-            :disabled="passphraseApiState.isLoading"
-            class="submit-button"
-            type="submit"
-          >
+          <button :disabled="passphraseApiState.isLoading" class="submit-button" type="submit">
             <LoadingSpinner v-if="passphraseApiState.isLoading" />
             <span v-else>Submit Passphrase</span>
           </button>
@@ -61,33 +58,30 @@ const passphrase = ref('')
 const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = useApiState()
 
 const submitPassphrase = async () => {
-  await handlePassphraseApiCall(
-    async () => {
-      const response = await fetch(`http://localhost:12300/submission`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          secret: passphrase.value,
-          challenge: props.challengeId
-        }),
-      })
+  await handlePassphraseApiCall(async () => {
+    const response = await fetch(`http://localhost:12300/submission`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        secret: passphrase.value,
+        challenge: props.challengeId,
+      }),
+    })
 
-      const body = await response.json()
-      if (!response.ok) {
-        throw new Error(body.message || 'There was an error submitting the passphrase')
-      }
+    const body = await response.json()
+    if (!response.ok) {
+      throw new Error(body.message || 'There was an error submitting the passphrase')
+    }
 
-      if (body.result) {
-        router.push(`/solutions/${props.challengeId}`)
-        return
-      }
+    if (body.result) {
+      router.push(`/solutions/${props.challengeId}`)
+      return
+    }
 
-      throw new Error('Incorrect passphrase')
-    },
-    'Challenge completed successfully!'
-  )
+    throw new Error('Incorrect passphrase')
+  }, 'Challenge completed successfully!')
 }
 </script>
 
@@ -96,8 +90,9 @@ const submitPassphrase = async () => {
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .section-title {

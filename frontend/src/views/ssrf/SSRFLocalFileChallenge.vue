@@ -5,12 +5,13 @@
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/ssrf_lfi.py',
-        snippet: ssrfLocalFileInclusionVulnerableSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/ssrf_lfi.py',
+        snippet: ssrfLocalFileInclusionVulnerableSnippet,
       }"
       :exploitSourceCode="{
         fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_lfi.py',
-        snippet: ssrfLocalFileInclusionExploitSnippet
+        snippet: ssrfLocalFileInclusionExploitSnippet,
       }"
     >
       <template #introduction>
@@ -26,8 +27,9 @@
       <section class="challenge-section">
         <h2 class="section-title">API Selection Challenge</h2>
         <p class="challenge-description">
-          Catcoin is the hot new crypto currency that everyone is talking about. The following form is for a financial web app
-          that will allow you to pick the API that is used to query the current price of catcoin.
+          Catcoin is the hot new crypto currency that everyone is talking about. The following form
+          is for a financial web app that will allow you to pick the API that is used to query the
+          current price of catcoin.
         </p>
 
         <p class="instruction-text">
@@ -37,16 +39,8 @@
         </p>
 
         <div class="form-container">
-          <AlertMessage
-            v-if="apiState.error"
-            :message="apiState.error"
-            type="error"
-          />
-          <AlertMessage
-            v-if="apiState.success"
-            :message="apiState.success"
-            type="success"
-          />
+          <AlertMessage v-if="apiState.error" :message="apiState.error" type="error" />
+          <AlertMessage v-if="apiState.success" :message="apiState.success" type="success" />
 
           <form @submit.prevent="submitUrl" class="form">
             <div class="form-group">
@@ -60,7 +54,7 @@
                     :value="url"
                     class="radio-input"
                     :disabled="apiState.isLoading"
-                  >
+                  />
                   <label :for="'url-' + index">{{ url }}</label>
                 </div>
                 <div class="radio-option">
@@ -71,7 +65,7 @@
                     value="custom"
                     class="radio-input"
                     :disabled="apiState.isLoading"
-                  >
+                  />
                   <label for="custom-url">Custom URL</label>
                 </div>
               </div>
@@ -82,7 +76,7 @@
                 class="form-input"
                 type="text"
                 placeholder="Enter custom URL"
-              >
+              />
             </div>
             <div class="form-actions">
               <button
@@ -124,7 +118,7 @@ import { ssrfLocalFileInclusionExploitSnippet } from '@/snippets'
 
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
-  'http://internal_api:12301/get_cat_coin_price_v2/'
+  'http://internal_api:12301/get_cat_coin_price_v2/',
 ]
 
 const selectedUrl = ref(predefinedUrls[0])
@@ -152,25 +146,22 @@ const getEffectiveUrl = () => {
 
 const submitUrl = async () => {
   try {
-    const result = await handleApiCall(
-      async () => {
-        const response = await fetch('/vulnerabilities/ssrf2/submit_api_url/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ url: getEffectiveUrl() }),
-        })
+    const result = await handleApiCall(async () => {
+      const response = await fetch('/vulnerabilities/ssrf2/submit_api_url/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: getEffectiveUrl() }),
+      })
 
-        if (!response.ok) {
-          const error = await response.json()
-          throw new Error(error.detail || 'URL submission failed')
-        }
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.detail || 'URL submission failed')
+      }
 
-        return response.text()
-      },
-      'Request successful!'
-    )
+      return response.text()
+    }, 'Request successful!')
 
     apiResponse.value = result
   } catch (error) {
@@ -191,8 +182,9 @@ const submitUrl = async () => {
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .section-title {
@@ -217,9 +209,8 @@ const submitUrl = async () => {
 .code-block {
   background-color: rgb(229, 231, 235);
   padding: 0.15rem;
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 }
-
 
 .instruction-text {
   margin: 1rem 0;

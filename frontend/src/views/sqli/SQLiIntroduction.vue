@@ -1,16 +1,18 @@
 <template>
   <div class="sqli-intro">
     <p>
-      SQL injection is when an attacker can trick the server into running attacker-supplied SQL code against its database. For
-      example, suppose you are an
-      <a href="https://xkcd.com/327/" target="_blank" rel="noopener noreferrer" class="link">elite hacker mom</a>. You name your son
+      SQL injection is when an attacker can trick the server into running attacker-supplied SQL code
+      against its database. For example, suppose you are an
+      <a href="https://xkcd.com/327/" target="_blank" rel="noopener noreferrer" class="link"
+        >elite hacker mom</a
+      >. You name your son
       <span class="code-block">Robert'); DROP TABLE Students;--</span>
       and send him off to school.
     </p>
 
     <p>
-      If your son's school has a server that is vulnerable to SQL injection, then when they go to add your son as a student in
-      the school's database this is the SQL query that is run:
+      If your son's school has a server that is vulnerable to SQL injection, then when they go to
+      add your son as a student in the school's database this is the SQL query that is run:
     </p>
 
     <p class="code-example">
@@ -25,14 +27,16 @@
     <p class="sql-comment">Green text is a comment</p>
 
     <p>
-      The intended result is for an insert statement to be executed. However, because the school is vulnerable to SQL
-      injection, what happens is that the insert statement is executed, and then a drop statement is subsequently executed.
+      The intended result is for an insert statement to be executed. However, because the school is
+      vulnerable to SQL injection, what happens is that the insert statement is executed, and then a
+      drop statement is subsequently executed.
     </p>
 
     <p>
-      In plain English: a student named Robert gets added to the list of students at the school, and then that list of
-      students is subsequently deleted. This is how the student records are lost for the year. What would the SQL query look
-      like if the school wasn't vulnerable to SQL injection?
+      In plain English: a student named Robert gets added to the list of students at the school, and
+      then that list of students is subsequently deleted. This is how the student records are lost
+      for the year. What would the SQL query look like if the school wasn't vulnerable to SQL
+      injection?
     </p>
 
     <p class="code-example">
@@ -61,10 +65,11 @@
   text-decoration: underline;
 }
 
-.code-block, .code-example {
+.code-block,
+.code-example {
   background-color: rgb(229, 231, 235);
   padding: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 .code-example {

@@ -1,13 +1,13 @@
 <template>
-    <SolutionView
-      :patchedSourceCode="patchedSourceCode"
+  <SolutionView
+    :patchedSourceCode="patchedSourceCode"
     :title="'Solution #1: SQLi login bypass'"
     :nextChallengeLink="'/challenges/sqli2'"
   >
     <template #solution>
       <SQLiGenericDefense />
-      </template>
-    </SolutionView>
+    </template>
+  </SolutionView>
 </template>
 
 <script setup lang="ts">
@@ -16,7 +16,8 @@ import { sqliLoginBypassPatchedSnippet } from '@/snippets'
 import SQLiGenericDefense from './SQLiGenericDefense.vue'
 
 const patchedSourceCode = {
-  fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/patches/sqli_login_bypass.py',
-  snippet: sqliLoginBypassPatchedSnippet
+  fileLink:
+    'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/patches/sqli_login_bypass.py',
+  snippet: sqliLoginBypassPatchedSnippet,
 }
 </script>

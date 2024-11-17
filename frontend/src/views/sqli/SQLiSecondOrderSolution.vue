@@ -17,7 +17,8 @@ import { sqliSecondOrderPatchedSnippet } from '@/snippets'
 import SQLiGenericDefense from './SQLiGenericDefense.vue'
 
 const patchedSourceCode = {
-  fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/patches/sqli_second_order.py',
-  snippet: sqliSecondOrderPatchedSnippet
+  fileLink:
+    'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/patches/sqli_second_order.py',
+  snippet: sqliSecondOrderPatchedSnippet,
 }
 </script>

@@ -4,7 +4,7 @@
       <h2 class="page-title">{{ title }}</h2>
     </div>
 
-    <div >
+    <div>
       <h3 class="section-title">How to Fix This Vulnerability</h3>
       <div class="content-wrapper">
         <slot name="solution"></slot>
@@ -14,7 +14,11 @@
     <div>
       <h3 class="section-title">Secure Implementation</h3>
       <div class="code-container">
-        <p>File truncated for brevity. <a :href="patchedSourceCode.fileLink" class="link" target="_blank">Click here</a> to view full file.</p>
+        <p>
+          File truncated for brevity.
+          <a :href="patchedSourceCode.fileLink" class="link" target="_blank">Click here</a> to view
+          full file.
+        </p>
         <CodeSnippet :code="patchedSourceCode.snippet" :language="'python'" />
       </div>
     </div>
@@ -27,11 +31,7 @@
       >
         ← Previous Challenge
       </RouterLink>
-      <RouterLink
-        v-if="nextChallengeLink"
-        :to="nextChallengeLink"
-        class="nav-button next"
-      >
+      <RouterLink v-if="nextChallengeLink" :to="nextChallengeLink" class="nav-button next">
         Next Challenge →
       </RouterLink>
     </div>

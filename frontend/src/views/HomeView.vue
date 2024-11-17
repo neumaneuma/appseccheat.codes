@@ -1,46 +1,49 @@
 <template>
   <div>
-  <div class="home-container">
-    <p>
-      Learn how to avoid
-      <span class="code-text code-text-vulnerable">vulnerable code</span>
-    </p>
-    <p>
-      Learn what
-      <span class="code-text code-text-exploit">exploit code</span>
-      looks like
-    </p>
-    <p>
-      Learn how to write
-      <span class="code-text code-text-secure">secure code</span>
-    </p>
-  </div>
-  <div class="card-grid">
-    <ChallengeCard
-    :imagePath="sqliLoginBypassImage"
-    imageAlt="Open lock"
-    header="SQLi: login bypass"
-    description="Forget passkeys, this is how you do true passwordless login"
-    routePath="/challenges/sqli1"
-  />        <ChallengeCard
-    :imagePath="sqliSecondOrderImage"
-    imageAlt="Double agent"
-    header="SQLi: second order"
-    description="Sometimes the injection doesn't happen right away"
-    routePath="/challenges/sqli2"
-  />        <ChallengeCard
-    :imagePath="ssrfWebhookImage"
-    imageAlt="Castle with breached walls"
-    header="SSRF: webhook"
-    description="Sometimes you need to make a request to an external service"
-    routePath="/challenges/ssrf1"
-  />        <ChallengeCard
-    :imagePath="ssrfLocalFileInclusionImage"
-    imageAlt="Confused deputy"
-    header="SSRF: local file inclusion"
-    description="Sometimes you need to read a local file"
-    routePath="/challenges/ssrf2"
-  />
+    <div class="home-container">
+      <p>
+        Learn how to avoid
+        <span class="code-text code-text-vulnerable">vulnerable code</span>
+      </p>
+      <p>
+        Learn what
+        <span class="code-text code-text-exploit">exploit code</span>
+        looks like
+      </p>
+      <p>
+        Learn how to write
+        <span class="code-text code-text-secure">secure code</span>
+      </p>
+    </div>
+    <div class="card-grid">
+      <ChallengeCard
+        :imagePath="sqliLoginBypassImage"
+        imageAlt="Open lock"
+        header="SQLi: login bypass"
+        description="Forget passkeys, this is how you do true passwordless login"
+        routePath="/challenges/sqli1"
+      />
+      <ChallengeCard
+        :imagePath="sqliSecondOrderImage"
+        imageAlt="Double agent"
+        header="SQLi: second order"
+        description="Sometimes the injection doesn't happen right away"
+        routePath="/challenges/sqli2"
+      />
+      <ChallengeCard
+        :imagePath="ssrfWebhookImage"
+        imageAlt="Castle with breached walls"
+        header="SSRF: webhook"
+        description="Sometimes you need to make a request to an external service"
+        routePath="/challenges/ssrf1"
+      />
+      <ChallengeCard
+        :imagePath="ssrfLocalFileInclusionImage"
+        imageAlt="Confused deputy"
+        header="SSRF: local file inclusion"
+        description="Sometimes you need to read a local file"
+        routePath="/challenges/ssrf2"
+      />
     </div>
   </div>
 </template>
@@ -93,5 +96,4 @@ import ssrfLocalFileInclusionImage from '@/assets/ssrf_local_file_inclusion.svg'
   width: 80%;
   margin: 0 auto;
 }
-
 </style>

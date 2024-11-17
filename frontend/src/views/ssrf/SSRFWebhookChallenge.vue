@@ -5,12 +5,14 @@
       :introduction="'What is SSRF?'"
       :shouldShowIntroduction="shouldShowIntroduction"
       :vulnerabilitySourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/ssrf_webhook.py',
-        snippet: ssrfWebhookVulnerableSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/vulnerabilities/ssrf_webhook.py',
+        snippet: ssrfWebhookVulnerableSnippet,
       }"
       :exploitSourceCode="{
-        fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_webhook.py',
-        snippet: ssrfWebhookExploitSnippet
+        fileLink:
+          'https://github.com/neumaneuma/appseccheat.codes/blob/main/exploits/ssrf_webhook.py',
+        snippet: ssrfWebhookExploitSnippet,
       }"
     >
       <template #introduction>
@@ -26,22 +28,15 @@
       <section class="challenge-section">
         <h2 class="section-title">Webhook Challenge</h2>
         <p class="challenge-description">
-          This web server has a functionality built for webhooks. However, you can abuse this functionality to access an internal admin API.
-          The only thing you know is that the internal API can be accessed through
+          This web server has a functionality built for webhooks. However, you can abuse this
+          functionality to access an internal admin API. The only thing you know is that the
+          internal API can be accessed through
           <span class="code-block">http://internal_api</span>
         </p>
 
         <div class="form-container">
-          <AlertMessage
-            v-if="apiState.error"
-            :message="apiState.error"
-            type="error"
-          />
-          <AlertMessage
-            v-if="apiState.success"
-            :message="apiState.success"
-            type="success"
-          />
+          <AlertMessage v-if="apiState.error" :message="apiState.error" type="error" />
+          <AlertMessage v-if="apiState.success" :message="apiState.success" type="success" />
 
           <form @submit.prevent="submitWebhook" class="form">
             <div class="form-group">
@@ -56,14 +51,10 @@
                 id="custom_url"
                 type="text"
                 placeholder="http://example.com/webhook"
-              >
+              />
             </div>
             <div class="form-actions">
-              <button
-                :disabled="apiState.isLoading"
-                class="submit-button"
-                type="submit"
-              >
+              <button :disabled="apiState.isLoading" class="submit-button" type="submit">
                 <LoadingSpinner v-if="apiState.isLoading" />
                 <span v-else>Submit</span>
               </button>
@@ -109,25 +100,22 @@ const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 
 const submitWebhook = async () => {
   try {
-    const result = await handleApiCall(
-      async () => {
-        const response = await fetch('/vulnerabilities/ssrf1/submit_webhook/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ url: customUrl.value }),
-        })
+    const result = await handleApiCall(async () => {
+      const response = await fetch('/vulnerabilities/ssrf1/submit_webhook/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: customUrl.value }),
+      })
 
-        if (!response.ok) {
-          const error = await response.json()
-          throw new Error(error.detail || 'Webhook submission failed')
-        }
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.detail || 'Webhook submission failed')
+      }
 
-        return response.text()
-      },
-      'Webhook submitted successfully!'
-    )
+      return response.text()
+    }, 'Webhook submitted successfully!')
 
     webhookResponse.value = result
   } catch (error) {
@@ -148,8 +136,9 @@ const submitWebhook = async () => {
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .section-title {
@@ -167,7 +156,7 @@ const submitWebhook = async () => {
 .code-block {
   background-color: rgb(229, 231, 235);
   padding: 0.15rem;
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 .form-container {

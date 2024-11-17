@@ -16,7 +16,8 @@ import { ssrfLocalFileInclusionPatchedSnippet } from '@/snippets'
 import SSRFGenericDefense from './SSRFGenericDefense.vue'
 
 const patchedSourceCode = {
-  fileLink: 'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/patches/ssrf_local_file_inclusion.py',
-  snippet: ssrfLocalFileInclusionPatchedSnippet
+  fileLink:
+    'https://github.com/neumaneuma/appseccheat.codes/blob/main/backend/patches/ssrf_local_file_inclusion.py',
+  snippet: ssrfLocalFileInclusionPatchedSnippet,
 }
 </script>
