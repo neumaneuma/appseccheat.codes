@@ -11,8 +11,12 @@
       </div>
     </div>
 
-    <div>
-      <h3 class="section-title">Secure Implementation</h3>
+    <div class="hint-container solution-hint">
+      <div class="hint-header">
+        <div class="hint-title">
+          <h3 class="hint-text">Secure Implementation</h3>
+        </div>
+      </div>
       <div class="code-container">
         <p>
           File truncated for brevity.
@@ -83,20 +87,48 @@ defineProps<Props>()
   margin-bottom: 1rem;
 }
 
+.hint-container {
+  border-width: 1px;
+  border: 1px solid rgb(37, 99, 235); /* blue-600 */
+  border-radius: 0.375rem;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.hint-container.solution-hint {
+  border-color: rgb(37, 99, 235); /* blue-600 */
+}
+
+.hint-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  height: 3rem;
+  border-radius: 0.375rem;
+  background-color: rgb(219, 234, 254); /* blue-100 */
+}
+
+.hint-title {
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+}
+
+.hint-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgb(37, 99, 235); /* blue-600 */
+}
+
 .content-wrapper {
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 2rem;
 }
 
 .code-container {
-  background-color: white;
-  border: 1px solid rgb(17, 24, 39);
-  border-radius: 0.375rem;
   padding: 1rem;
-  margin: 1rem 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .link {
