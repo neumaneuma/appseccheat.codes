@@ -78,8 +78,7 @@
         </div>
       </section>
 
-      <!-- Passphrase Section -->
-      <PassphraseSubmission challenge-id="ssrf-webhook" />
+      <PassphraseSubmission challenge-id="ssrf1" />
     </div>
   </div>
 </template>

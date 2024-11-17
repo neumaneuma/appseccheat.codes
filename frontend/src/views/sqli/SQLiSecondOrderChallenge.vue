@@ -170,8 +170,7 @@
         </div>
       </section>
 
-      <!-- Passphrase Section -->
-      <PassphraseSubmission challenge-id="sqli-second-order" />
+      <PassphraseSubmission challenge-id="sqli2" />
     </div>
   </div>
 </template>

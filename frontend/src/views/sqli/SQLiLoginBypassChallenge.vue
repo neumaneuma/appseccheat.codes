@@ -82,7 +82,7 @@
         </div>
       </section>
 
-      <PassphraseSubmission challenge-id="sqli-login-bypass" />
+      <PassphraseSubmission challenge-id="sqli1" />
     </div>
   </div>
 </template>
@@ -103,9 +103,7 @@ import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
 
 const username = ref('')
 const password = ref('')
-const passphrase = ref('')
 const { state: loginApiState, handleApiCall: handleLoginApiCall } = useApiState()
-const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = useApiState()
 
 function determineIfShouldShowIntroduction() {
   const shouldShowIntroduction = !store.sqliIntroductionSeen

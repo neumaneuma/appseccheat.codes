@@ -104,8 +104,7 @@
         </div>
       </section>
 
-      <!-- Passphrase Section -->
-      <PassphraseSubmission challenge-id="ssrf-local-file" />
+      <PassphraseSubmission challenge-id="ssrf2" />
     </div>
   </div>
 </template>

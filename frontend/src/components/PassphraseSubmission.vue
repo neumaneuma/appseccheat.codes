@@ -61,7 +61,7 @@ const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = us
 const submitPassphrase = async () => {
   await handlePassphraseApiCall(
     async () => {
-      const response = await fetch(`/submission`, {
+      const response = await fetch(`http://localhost:12300/submission`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,12 +72,16 @@ const submitPassphrase = async () => {
         }),
       })
 
+      const body = await response.json()
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.detail || 'Invalid passphrase')
+        throw new Error(body.message || 'There was an error submitting the passphrase')
       }
 
-      return response.json()
+      if (body.result) {
+        return;
+      }
+
+      throw new Error('Incorrect passphrase')
     },
     'Challenge completed successfully!'
   )
