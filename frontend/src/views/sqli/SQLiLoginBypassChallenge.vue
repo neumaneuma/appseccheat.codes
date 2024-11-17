@@ -21,65 +21,112 @@
       </template>
     </ChallengeView>
 
-    <p class="challenge-description">
-      You know there is a user with the username
-      <span class="code-block">administrator</span>. Try to figure out how to login as
-      <span class="code-block">administrator</span> without knowing what their password is!
-    </p>
+    <div class="challenge-sections">
+      <!-- Login Form Section -->
+      <section class="challenge-section">
+        <h2 class="section-title">Login Challenge</h2>
+        <p class="challenge-description">
+          You know there is a user with the username
+          <span class="code-block">administrator</span>. Try to figure out how to login as
+          <span class="code-block">administrator</span> without knowing what their password is!
+        </p>
 
+        <div class="form-container">
+          <AlertMessage
+            v-if="loginApiState.error"
+            :message="loginApiState.error"
+            type="error"
+          />
+          <AlertMessage
+            v-if="loginApiState.success"
+            :message="loginApiState.success"
+            type="success"
+          />
 
-    <div class="form-container">
-      <AlertMessage
-        v-if="apiState.error"
-        :message="apiState.error"
-        type="error"
-      />
-      <AlertMessage
-        v-if="apiState.success"
-        :message="apiState.success"
-        type="success"
-      />
+          <form @submit.prevent="submitLogin" class="form">
+            <div class="form-group">
+              <label class="form-label" for="username">Username</label>
+              <input
+                v-model="username"
+                :disabled="loginApiState.isLoading"
+                class="form-input"
+                name="username"
+                id="username"
+                type="text"
+                placeholder="Username"
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <input
+                v-model="password"
+                :disabled="loginApiState.isLoading"
+                class="form-input"
+                name="password"
+                id="password"
+                type="password"
+                placeholder="******************"
+              >
+            </div>
+            <div class="form-actions">
+              <button
+                :disabled="loginApiState.isLoading"
+                class="submit-button"
+                type="submit"
+              >
+                <LoadingSpinner v-if="loginApiState.isLoading" />
+                <span v-else>Login</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
 
-      <form @submit.prevent="submitLogin" class="login-form">
-        <div class="form-group">
-          <label class="form-label" for="username">
-            Username
-          </label>
-          <input
-            v-model="username"
-            :disabled="apiState.isLoading"
-            class="form-input"
-            name="username"
-            id="username"
-            type="text"
-            placeholder="Username"
-          >
+      <!-- Passphrase Section -->
+      <section class="challenge-section">
+        <h2 class="section-title">Submit Challenge Passphrase</h2>
+        <p class="challenge-description">
+          Once you've successfully exploited the login form, submit the passphrase you received to complete the challenge.
+        </p>
+
+        <div class="form-container">
+          <AlertMessage
+            v-if="passphraseApiState.error"
+            :message="passphraseApiState.error"
+            type="error"
+          />
+          <AlertMessage
+            v-if="passphraseApiState.success"
+            :message="passphraseApiState.success"
+            type="success"
+          />
+
+          <form @submit.prevent="submitPassphrase" class="form">
+            <div class="form-group">
+              <label class="form-label" for="passphrase">Challenge Passphrase</label>
+              <input
+                v-model="passphrase"
+                :disabled="passphraseApiState.isLoading"
+                class="form-input"
+                name="passphrase"
+                id="passphrase"
+                type="text"
+                placeholder="Enter the passphrase"
+              >
+            </div>
+            <div class="form-actions">
+              <button
+                :disabled="passphraseApiState.isLoading"
+                class="submit-button"
+                type="submit"
+              >
+                <LoadingSpinner v-if="passphraseApiState.isLoading" />
+                <span v-else>Submit Passphrase</span>
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="password">
-            Password
-          </label>
-          <input
-            v-model="password"
-            :disabled="apiState.isLoading"
-            class="form-input"
-            name="password"
-            id="password"
-            type="password"
-            placeholder="******************"
-          >
-        </div>
-        <div class="form-actions">
-          <button
-            :disabled="apiState.isLoading"
-            class="submit-button"
-            type="submit"
-          >
-            <LoadingSpinner v-if="apiState.isLoading" />
-            <span v-else>Login</span>
-          </button>
-        </div>
-      </form>
+      </section>
     </div>
   </div>
 </template>
@@ -99,7 +146,9 @@ import { sqliLoginBypassExploitSnippet } from '@/snippets'
 
 const username = ref('')
 const password = ref('')
-const { state: apiState, handleApiCall } = useApiState()
+const passphrase = ref('')
+const { state: loginApiState, handleApiCall: handleLoginApiCall } = useApiState()
+const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = useApiState()
 
 function determineIfShouldShowIntroduction() {
   const shouldShowIntroduction = !store.sqliIntroductionSeen
@@ -108,9 +157,8 @@ function determineIfShouldShowIntroduction() {
 }
 const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 
-
 const submitLogin = async () => {
-  await handleApiCall(
+  await handleLoginApiCall(
     async () => {
       const response = await fetch(SQLI_LOGIN_BYPASS_API_VULNERABLE_URL, {
         method: 'POST',
@@ -131,6 +179,30 @@ const submitLogin = async () => {
       return response.json()
     },
     'Login successful!'
+  )
+}
+
+const submitPassphrase = async () => {
+  await handlePassphraseApiCall(
+    async () => {
+      const response = await fetch('/api/challenges/sqli-login-bypass/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          passphrase: passphrase.value
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.detail || 'Invalid passphrase')
+      }
+
+      return response.json()
+    },
+    'Challenge completed successfully!'
   )
 }
 </script>
@@ -156,21 +228,45 @@ const submitLogin = async () => {
 
 .code-block {
   background-color: rgb(229, 231, 235);
-  padding: 0.25rem;
+  padding: 0.05rem;
   font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.challenge-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.challenge-section {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgb(17, 24, 39);
+  margin-bottom: 1rem;
+}
+
+.form {
+  background-color: rgb(249, 250, 251);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(229, 231, 235);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-container {
   width: 100%;
-  max-width: 20rem;
-}
-
-.login-form {
-  background-color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border-radius: 0.375rem;
-  padding: 1.5rem 2rem 2rem;
-  margin-bottom: 1rem;
+  max-width: 100%;
+  margin: 1.5rem auto;
 }
 
 .form-group {
@@ -181,50 +277,82 @@ const submitLogin = async () => {
   display: block;
   color: rgb(55, 65, 81);
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
 }
 
 .form-input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(229, 231, 235);
-  border-radius: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
   color: rgb(55, 65, 81);
   line-height: 1.25;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-in-out;
+  background-color: rgb(249, 250, 251);
+  box-sizing: border-box;
+}
+
+.form-input:hover {
+  border-color: rgb(156, 163, 175);
 }
 
 .form-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background-color: white;
 }
 
 .form-actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  margin-top: 2rem;
 }
 
 .submit-button {
-  background-color: rgb(107, 114, 128);
+  background-color: rgb(59, 130, 246);
   color: white;
-  font-weight: 700;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  border: none;
+  cursor: pointer;
+  min-width: 8rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: rgb(156, 163, 175);
+  background-color: rgb(37, 99, 235);
+  transform: translateY(-1px);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .submit-button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
 .submit-button:disabled {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: not-allowed;
+  background-color: rgb(156, 163, 175);
+}
+
+@media (min-width: 768px) {
+  .challenge-sections {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .challenge-section {
+    flex: 1;
+    min-width: 0;
+  }
 }
 </style>

@@ -332,11 +332,11 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 
 
 .meta-hint .hint-header {
-  background-color: rgb(229, 231, 235);
+  background-color: rgb(203, 205, 209);
 }
 
 .meta-hint .hint-header:hover {
-  background-color: rgb(209, 213, 219);
+  background-color: rgb(173, 176, 182);
 }
 
 .hint-container.generic-hint {
