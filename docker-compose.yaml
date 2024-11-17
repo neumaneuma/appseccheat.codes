@@ -4,9 +4,7 @@ services:
       context: backend
     ports:
       - "12300:12300"
-    environment:
-      - DEV_MODE=${DEV_MODE:-true}
-    command: sh -c 'fastapi $${DEV_MODE:+dev} --host 0.0.0.0 --port 12300 main.py'
+    command: sh -c 'fastapi dev --host 0.0.0.0 --port 12300 main.py'
     depends_on:
       - db
       - internal_api
@@ -18,9 +16,7 @@ services:
       context: internal_api
     ports:
       - "12301:12301"
-    environment:
-      - DEV_MODE=${DEV_MODE:-true}
-    command: sh -c 'fastapi $${DEV_MODE:+dev} --host 0.0.0.0 --port 12301 main.py'
+    command: sh -c 'fastapi dev --host 0.0.0.0 --port 12301 main.py'
     volumes:
       - ./internal_api:/app
 

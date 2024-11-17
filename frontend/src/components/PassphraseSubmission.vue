@@ -61,13 +61,14 @@ const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = us
 const submitPassphrase = async () => {
   await handlePassphraseApiCall(
     async () => {
-      const response = await fetch(`/api/challenges/${props.challengeId}/verify`, {
+      const response = await fetch(`/submission`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          passphrase: passphrase.value
+          secret: passphrase.value,
+          challenge: props.challengeId
         }),
       })
 

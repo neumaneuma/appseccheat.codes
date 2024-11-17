@@ -308,22 +308,22 @@ start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-# for challenge in Passphrases:
-#     print(f"Testing submission for challenge {challenge.name}...")
-#     results.append(test_submission(challenge))
+for challenge in Passphrases:
+    print(f"Testing submission for challenge {challenge.name}...")
+    results.append(test_submission(challenge))
 
 for state in State:
-    # print(f"Testing {state.name} state for SQLi login bypass...")
-    # results.append(sqli_login_bypass(state))
+    print(f"Testing {state.name} state for SQLi login bypass...")
+    results.append(sqli_login_bypass(state))
 
     print(f"Testing {state.name} state for SQLi second order...")
     results.append(sqli_second_order(state))
 
-    # print(f"Testing {state.name} state for SSRF webhook...")
-    # results.extend(ssrf_webhook(state))
+    print(f"Testing {state.name} state for SSRF webhook...")
+    results.extend(ssrf_webhook(state))
 
-    # print(f"Testing {state.name} state for SSRF local file inclusion...")
-    # results.extend(ssrf_local_file_inclusion(state))
+    print(f"Testing {state.name} state for SSRF local file inclusion...")
+    results.extend(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000

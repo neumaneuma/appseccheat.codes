@@ -139,29 +139,6 @@ const submitLogin = async () => {
   )
 }
 
-const submitPassphrase = async () => {
-  await handlePassphraseApiCall(
-    async () => {
-      const response = await fetch('/api/challenges/sqli-login-bypass/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          passphrase: passphrase.value
-        }),
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.detail || 'Invalid passphrase')
-      }
-
-      return response.json()
-    },
-    'Challenge completed successfully!'
-  )
-}
 </script>
 
 <style scoped>
