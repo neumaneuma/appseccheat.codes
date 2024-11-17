@@ -1,8 +1,9 @@
 <template>
   <SolutionView
     :patchedSourceCode="patchedSourceCode"
-    :previousChallengeLink="'/challenge/sqli-second-order'"
-    :nextChallengeLink="'/challenge/ssrf-local-file'"
+    :title="'Solution #3: SSRF bypass webhook'"
+    :previousChallengeLink="'/challenges/sqli2'"
+    :nextChallengeLink="'/challenges/ssrf2'"
   >
     <template #solution>
       <p>To prevent SSRF attacks in webhook implementations:</p>

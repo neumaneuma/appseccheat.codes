@@ -1,5 +1,5 @@
 <template>
-  <div class="challenge-container">
+  <div>
     <ChallengeView
       :title="'Challenge #3: SSRF bypass webhook'"
       :introduction="'What is SSRF?'"
@@ -137,12 +137,6 @@ const submitWebhook = async () => {
 </script>
 
 <style scoped>
-.challenge-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
 .challenge-sections {
   display: flex;
   flex-direction: column;

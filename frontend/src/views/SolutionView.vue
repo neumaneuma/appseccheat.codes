@@ -1,7 +1,7 @@
 <template>
   <div class="solution-container">
     <div class="solution-header">
-      <h2 class="page-title">Solution</h2>
+      <h2 class="page-title">{{ title }}</h2>
     </div>
 
     <div class="section">
@@ -49,6 +49,7 @@ type SourceCodeLinks = {
 
 interface Props {
   patchedSourceCode: SourceCodeLinks
+  title: string
   previousChallengeLink?: string
   nextChallengeLink?: string
 }
@@ -58,7 +59,7 @@ defineProps<Props>()
 
 <style scoped>
 .solution-container {
-  padding: 2rem 1rem;
+  padding: 4rem 2rem;
   max-width: 64rem;
   margin: 0 auto;
   color: rgb(75, 85, 99);

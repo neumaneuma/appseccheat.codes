@@ -1,5 +1,5 @@
 <template>
-  <div class="challenge-container">
+  <div>
     <ChallengeView
       :title="'Challenge #1: SQLi login bypass'"
       :introduction="'What is SQL injection?'"
@@ -140,11 +140,6 @@ const submitLogin = async () => {
 </script>
 
 <style scoped>
-.challenge-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
 
 .challenge-title {
   margin-top: 1.5rem;

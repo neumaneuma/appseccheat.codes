@@ -1,8 +1,8 @@
 <template>
   <SolutionView
     :patchedSourceCode="patchedSourceCode"
-    :previousChallengeLink="'/challenge/ssrf-webhook'"
-    :nextChallengeLink="'/challenge/ssrf-local-file'"
+    :title="'Solution #4: SSRF local file inclusion'"
+    :previousChallengeLink="'/challenges/ssrf1'"
   >
     <template #solution>
       <p>To prevent SSRF attacks targeting local files:</p>

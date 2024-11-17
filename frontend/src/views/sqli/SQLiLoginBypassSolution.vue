@@ -1,8 +1,8 @@
 <template>
-  <SolutionView
-    :patchedSourceCode="patchedSourceCode"
-    :previousChallengeLink="'/challenge/sqli-login-bypass'"
-    :nextChallengeLink="'/challenge/sqli-second-order'"
+    <SolutionView
+      :patchedSourceCode="patchedSourceCode"
+    :title="'Solution #1: SQLi login bypass'"
+    :nextChallengeLink="'/challenges/sqli2'"
   >
     <template #solution>
       <p>To fix SQL injection vulnerabilities in login forms, you should:</p>
@@ -12,8 +12,8 @@
         <li>Use an ORM (Object-Relational Mapping) when possible</li>
         <li>Follow the principle of least privilege for database users</li>
       </ul>
-    </template>
-  </SolutionView>
+      </template>
+    </SolutionView>
 </template>
 
 <script setup lang="ts">

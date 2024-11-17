@@ -21,25 +21,25 @@
     imageAlt="Open lock"
     header="SQLi: login bypass"
     description="Forget passkeys, this is how you do true passwordless login"
-    routePath="/vulnerabilities/sqli1"
+    routePath="/challenges/sqli1"
   />        <ChallengeCard
     :imagePath="sqliSecondOrderImage"
     imageAlt="Double agent"
     header="SQLi: second order"
     description="Sometimes the injection doesn't happen right away"
-    routePath="/vulnerabilities/sqli2"
+    routePath="/challenges/sqli2"
   />        <ChallengeCard
     :imagePath="ssrfWebhookImage"
     imageAlt="Castle with breached walls"
     header="SSRF: webhook"
     description="Sometimes you need to make a request to an external service"
-    routePath="/vulnerabilities/ssrf1"
+    routePath="/challenges/ssrf1"
   />        <ChallengeCard
     :imagePath="ssrfLocalFileInclusionImage"
     imageAlt="Confused deputy"
     header="SSRF: local file inclusion"
     description="Sometimes you need to read a local file"
-    routePath="/vulnerabilities/ssrf2"
+    routePath="/challenges/ssrf2"
   />
     </div>
   </div>

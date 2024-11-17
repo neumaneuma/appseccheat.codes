@@ -13,22 +13,22 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/vulnerabilities/sqli1',
+      path: '/challenges/sqli1',
       name: 'sqli1-challenge',
       component: SQLiLoginBypassChallenge,
     },
     {
-      path: '/vulnerabilities/sqli2',
+      path: '/challenges/sqli2',
       name: 'sqli2-challenge',
       component: SQLiSecondOrderChallenge,
     },
     {
-      path: '/vulnerabilities/ssrf1',
+      path: '/challenges/ssrf1',
       name: 'ssrf1-challenge',
       component: SSRFWebhookChallenge,
     },
     {
-      path: '/vulnerabilities/ssrf2',
+      path: '/challenges/ssrf2',
       name: 'ssrf2-challenge',
       component: SSRFLocalFileChallenge,
     },

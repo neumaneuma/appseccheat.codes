@@ -1,5 +1,5 @@
 <template>
-  <div class="challenge-container">
+  <div>
     <ChallengeView
       :title="'Challenge #4: SSRF local file inclusion'"
       :introduction="'What is SSRF?'"
@@ -180,12 +180,6 @@ const submitUrl = async () => {
 </script>
 
 <style scoped>
-.challenge-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
 .challenge-sections {
   display: flex;
   flex-direction: column;

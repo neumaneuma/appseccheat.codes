@@ -1,8 +1,9 @@
 <template>
   <SolutionView
     :patchedSourceCode="patchedSourceCode"
-    :previousChallengeLink="'/challenge/sqli-login-bypass'"
-    :nextChallengeLink="'/challenge/ssrf-webhook'"
+    :title="'Solution #2: SQLi second order'"
+    :previousChallengeLink="'/challenges/sqli2'"
+    :nextChallengeLink="'/challenges/ssrf1'"
   >
     <template #solution>
       <p>To prevent second-order SQL injection attacks:</p>

@@ -185,11 +185,12 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 
 <style scoped>
 .challenge-container {
-  padding: 2rem 1rem;
+  padding: 4rem 2rem;
   max-width: 64rem;
   margin: 0 auto;
   color: rgb(75, 85, 99);
 }
+
 
 .challenge-header {
   padding-top: 1rem;
