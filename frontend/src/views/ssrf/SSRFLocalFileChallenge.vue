@@ -21,89 +21,91 @@
       </template>
     </ChallengeView>
 
-    <p class="section-spacing">
-      Catcoin is the hot new crypto currency that everyone is talking about. The following form is for a financial web app
-      that will allow you to pick the API that is used to query the current price of catcoin.
-    </p>
+    <div class="challenge-sections">
+      <!-- API Selection Section -->
+      <section class="challenge-section">
+        <h2 class="section-title">API Selection Challenge</h2>
+        <p class="challenge-description">
+          Catcoin is the hot new crypto currency that everyone is talking about. The following form is for a financial web app
+          that will allow you to pick the API that is used to query the current price of catcoin.
+        </p>
 
-    <div class="api-urls">
-      <code class="code-block">http://internal_api:12301/get_cat_coin_price_v1/</code>
-      <code class="code-block">http://internal_api:12301/get_cat_coin_price_v2/</code>
-    </div>
+        <p class="instruction-text">
+          Solve this challenge by stealing the
+          <code class="code-block">file:///etc/shadow</code> or
+          <code class="code-block">file:///etc/passwd</code> files.
+        </p>
 
-    <p class="instruction-text">
-      Solve this challenge by stealing the
-      <code class="inline-code">file:///etc/shadow</code> or
-      <code class="inline-code">file:///etc/passwd</code> files.
-    </p>
+        <div class="form-container">
+          <AlertMessage
+            v-if="apiState.error"
+            :message="apiState.error"
+            type="error"
+          />
+          <AlertMessage
+            v-if="apiState.success"
+            :message="apiState.success"
+            type="success"
+          />
 
-    <div class="form-container">
-      <AlertMessage
-        v-if="apiState.error"
-        :message="apiState.error"
-        type="error"
-      />
-      <AlertMessage
-        v-if="apiState.success"
-        :message="apiState.success"
-        type="success"
-      />
-
-      <form @submit.prevent="submitUrl" class="api-form">
-        <div class="form-group">
-          <label class="form-label" for="api_url">
-            Enter the API URL:
-          </label>
-          <div class="radio-group">
-            <div v-for="(url, index) in predefinedUrls" :key="index" class="radio-option">
+          <form @submit.prevent="submitUrl" class="form">
+            <div class="form-group">
+              <label class="form-label" for="api_url">API Selection</label>
+              <div class="radio-group">
+                <div v-for="(url, index) in predefinedUrls" :key="index" class="radio-option">
+                  <input
+                    type="radio"
+                    :id="'url-' + index"
+                    v-model="selectedUrl"
+                    :value="url"
+                    class="radio-input"
+                    :disabled="apiState.isLoading"
+                  >
+                  <label :for="'url-' + index">{{ url }}</label>
+                </div>
+                <div class="radio-option">
+                  <input
+                    type="radio"
+                    id="custom-url"
+                    v-model="selectedUrl"
+                    value="custom"
+                    class="radio-input"
+                    :disabled="apiState.isLoading"
+                  >
+                  <label for="custom-url">Custom URL</label>
+                </div>
+              </div>
               <input
-                type="radio"
-                :id="'url-' + index"
-                v-model="selectedUrl"
-                :value="url"
-                class="radio-input"
+                v-if="selectedUrl === 'custom'"
+                v-model="customUrl"
                 :disabled="apiState.isLoading"
+                class="form-input"
+                type="text"
+                placeholder="Enter custom URL"
               >
-              <label :for="'url-' + index">{{ url }}</label>
             </div>
-            <div class="radio-option">
-              <input
-                type="radio"
-                id="custom-url"
-                v-model="selectedUrl"
-                value="custom"
-                class="radio-input"
-                :disabled="apiState.isLoading"
+            <div class="form-actions">
+              <button
+                :disabled="apiState.isLoading || !isValidUrl"
+                class="submit-button"
+                type="submit"
               >
-              <label for="custom-url">Custom URL</label>
+                <LoadingSpinner v-if="apiState.isLoading" />
+                <span v-else>Get Price</span>
+              </button>
             </div>
+          </form>
+
+          <!-- Response Display -->
+          <div v-if="apiResponse" class="response-container">
+            <h3 class="response-title">Response:</h3>
+            <pre class="response-content">{{ apiResponse }}</pre>
           </div>
-          <input
-            v-if="selectedUrl === 'custom'"
-            v-model="customUrl"
-            :disabled="apiState.isLoading"
-            class="url-input"
-            type="text"
-            placeholder="Enter custom URL"
-          >
         </div>
-        <div class="form-actions">
-          <button
-            :disabled="apiState.isLoading || !isValidUrl"
-            class="submit-button"
-            type="submit"
-          >
-            <LoadingSpinner v-if="apiState.isLoading" />
-            <span v-else>Get Price</span>
-          </button>
-        </div>
-      </form>
+      </section>
 
-      <!-- Response Display -->
-      <div v-if="apiResponse" class="response-container">
-        <h3 class="response-title">Response:</h3>
-        <pre class="response-content">{{ apiResponse }}</pre>
-      </div>
+      <!-- Passphrase Section -->
+      <PassphraseSubmission challenge-id="ssrf-local-file" />
     </div>
   </div>
 </template>
@@ -116,9 +118,11 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import SSRFIntroduction from '@/views/ssrf/SSRFIntroduction.vue'
 import SSRFNews from '@/views/ssrf/SSRFNews.vue'
 import ChallengeView from '@/views/ChallengeView.vue'
+import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
 import { store } from '@/store'
 import { ssrfLocalFileInclusionVulnerableSnippet } from '@/snippets'
 import { ssrfLocalFileInclusionExploitSnippet } from '@/snippets'
+
 const predefinedUrls = [
   'http://internal_api:12301/get_cat_coin_price_v1/',
   'http://internal_api:12301/get_cat_coin_price_v2/'
@@ -183,34 +187,50 @@ const submitUrl = async () => {
   padding: 2rem 1rem;
 }
 
-.challenge-title {
-  margin-top: 1.5rem;
-  font-size: 2.25rem;
-  line-height: 2.5rem;
-  font-weight: 700;
-  color: rgb(17, 24, 39);
+.challenge-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0;
 }
 
-.section-spacing {
-  margin: 2rem 0;
+.challenge-section {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgb(17, 24, 39);
+  margin-bottom: 1rem;
+}
+
+.challenge-description {
+  margin-bottom: 1.5rem;
+  color: rgb(55, 65, 81);
 }
 
 .api-urls {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
   margin: 1rem 0;
 }
 
 .code-block {
   background-color: rgb(229, 231, 235);
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.25rem;
+  padding: 0.15rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .inline-code {
   background-color: rgb(229, 231, 235);
   padding: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 .instruction-text {
@@ -219,86 +239,107 @@ const submitUrl = async () => {
 
 .form-container {
   width: 100%;
-  max-width: 20rem;
+  margin-top: 1.5rem;
 }
 
-.api-form {
-  background-color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border-radius: 0.375rem;
-  padding: 1.5rem 2rem 2rem;
-  margin-bottom: 1rem;
+.form {
+  background-color: rgb(249, 250, 251);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(229, 231, 235);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.radio-input {
+  margin: 0;
 }
 
 .form-label {
   display: block;
   color: rgb(55, 65, 81);
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.radio-option {
-  display: flex;
-  align-items: center;
-}
-
-.radio-input {
-  margin-right: 0.5rem;
-}
-
-.url-input {
-  margin-top: 0.5rem;
+.form-input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(229, 231, 235);
-  border-radius: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
   color: rgb(55, 65, 81);
   line-height: 1.25;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-in-out;
+  background-color: rgb(249, 250, 251);
+  box-sizing: border-box;
+  margin-top: 0.5rem;
 }
 
-.url-input:focus {
+.form-input:hover {
+  border-color: rgb(156, 163, 175);
+}
+
+.form-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background-color: white;
 }
 
 .form-actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  margin-top: 2rem;
 }
 
 .submit-button {
-  background-color: rgb(107, 114, 128);
+  background-color: rgb(59, 130, 246);
   color: white;
-  font-weight: 700;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  border: none;
+  cursor: pointer;
+  min-width: 8rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: rgb(156, 163, 175);
+  background-color: rgb(37, 99, 235);
+  transform: translateY(-1px);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .submit-button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
 .submit-button:disabled {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: not-allowed;
+  background-color: rgb(156, 163, 175);
 }
 
 .response-container {
@@ -316,5 +357,18 @@ const submitUrl = async () => {
 .response-content {
   white-space: pre-wrap;
   font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .challenge-sections {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .challenge-section {
+    flex: 1;
+    min-width: 0;
+  }
 }
 </style>

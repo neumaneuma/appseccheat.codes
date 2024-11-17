@@ -21,56 +21,65 @@
       </template>
     </ChallengeView>
 
-    <p class="section-spacing">
-      This web server has a functionality built for webhooks. However, you can abuse this functionality to access an internal admin API.
-      The only thing you know is that the internal API can be accessed through
-      <span class="code-block">http://internal_api</span>
-    </p>
+    <div class="challenge-sections">
+      <!-- Webhook Form Section -->
+      <section class="challenge-section">
+        <h2 class="section-title">Webhook Challenge</h2>
+        <p class="challenge-description">
+          This web server has a functionality built for webhooks. However, you can abuse this functionality to access an internal admin API.
+          The only thing you know is that the internal API can be accessed through
+          <span class="code-block">http://internal_api</span>
+        </p>
 
-    <div class="form-container">
-      <AlertMessage
-        v-if="apiState.error"
-        :message="apiState.error"
-        type="error"
-      />
-      <AlertMessage
-        v-if="apiState.success"
-        :message="apiState.success"
-        type="success"
-      />
+        <div class="form-container">
+          <AlertMessage
+            v-if="apiState.error"
+            :message="apiState.error"
+            type="error"
+          />
+          <AlertMessage
+            v-if="apiState.success"
+            :message="apiState.success"
+            type="success"
+          />
 
-      <form @submit.prevent="submitWebhook" class="webhook-form">
-        <div class="form-group">
-          <label class="form-label" for="custom_url">
-            Enter the URL to use for the webhook:
-          </label>
-          <input
-            v-model="customUrl"
-            :disabled="apiState.isLoading"
-            class="form-input"
-            name="custom_url"
-            id="custom_url"
-            type="text"
-            placeholder="http://example.com/webhook"
-          >
+          <form @submit.prevent="submitWebhook" class="form">
+            <div class="form-group">
+              <label class="form-label" for="custom_url">
+                Enter the URL to use for the webhook:
+              </label>
+              <input
+                v-model="customUrl"
+                :disabled="apiState.isLoading"
+                class="form-input"
+                name="custom_url"
+                id="custom_url"
+                type="text"
+                placeholder="http://example.com/webhook"
+              >
+            </div>
+            <div class="form-actions">
+              <button
+                :disabled="apiState.isLoading"
+                class="submit-button"
+                type="submit"
+              >
+                <LoadingSpinner v-if="apiState.isLoading" />
+                <span v-else>Submit</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Response Display -->
+          <div v-if="webhookResponse" class="response-container">
+            <h3 class="response-title">Response:</h3>
+            <pre class="response-content">{{ webhookResponse }}</pre>
+          </div>
         </div>
-        <div class="form-actions">
-          <button
-            :disabled="apiState.isLoading"
-            class="submit-button"
-            type="submit"
-          >
-            <LoadingSpinner v-if="apiState.isLoading" />
-            <span v-else>Submit</span>
-          </button>
-        </div>
-      </form>
+      </section>
 
-      <!-- Response Display -->
-      <div v-if="webhookResponse" class="response-container">
-        <h3 class="response-title">Response:</h3>
-        <pre class="response-content">{{ webhookResponse }}</pre>
-      </div>
+      <!-- Passphrase Section -->
+      <PassphraseSubmission challenge-id="ssrf-webhook" />
     </div>
   </div>
 </template>
@@ -86,6 +95,7 @@ import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
 import { ssrfWebhookVulnerableSnippet } from '@/snippets'
 import { ssrfWebhookExploitSnippet } from '@/snippets'
+import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
 
 const customUrl = ref('')
 const webhookResponse = ref('')
@@ -134,97 +144,124 @@ const submitWebhook = async () => {
   padding: 2rem 1rem;
 }
 
-.challenge-title {
-  margin-top: 1.5rem;
-  font-size: 2.25rem;
-  line-height: 2.5rem;
-  font-weight: 700;
-  color: rgb(17, 24, 39);
+.challenge-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0;
 }
 
-.section-spacing {
-  margin: 2rem 0;
+.challenge-section {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgb(17, 24, 39);
+  margin-bottom: 1rem;
+}
+
+.challenge-description {
+  margin-bottom: 1.5rem;
+  color: rgb(55, 65, 81);
 }
 
 .code-block {
   background-color: rgb(229, 231, 235);
-  padding: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  padding: 0.15rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .form-container {
   width: 100%;
-  max-width: 20rem;
+  margin-top: 1.5rem;
 }
 
-.webhook-form {
-  background-color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border-radius: 0.375rem;
-  padding: 1.5rem 2rem 2rem;
-  margin-bottom: 1rem;
+.form {
+  background-color: rgb(249, 250, 251);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(229, 231, 235);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-label {
   display: block;
   color: rgb(55, 65, 81);
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(229, 231, 235);
-  border-radius: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
   color: rgb(55, 65, 81);
   line-height: 1.25;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  appearance: none;
+  transition: all 0.15s ease-in-out;
+  background-color: rgb(249, 250, 251);
+  box-sizing: border-box;
+}
+
+.form-input:hover {
+  border-color: rgb(156, 163, 175);
 }
 
 .form-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
-}
-
-.form-input:disabled {
-  background-color: rgb(243, 244, 246);
-  cursor: not-allowed;
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background-color: white;
 }
 
 .form-actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  margin-top: 2rem;
 }
 
 .submit-button {
-  background-color: rgb(107, 114, 128);
+  background-color: rgb(59, 130, 246);
   color: white;
-  font-weight: 700;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  border: none;
+  cursor: pointer;
+  min-width: 8rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: rgb(156, 163, 175);
+  background-color: rgb(37, 99, 235);
+  transform: translateY(-1px);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .submit-button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
 .submit-button:disabled {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: not-allowed;
+  background-color: rgb(156, 163, 175);
 }
 
 .response-container {
@@ -242,5 +279,18 @@ const submitWebhook = async () => {
 .response-content {
   white-space: pre-wrap;
   font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .challenge-sections {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .challenge-section {
+    flex: 1;
+    min-width: 0;
+  }
 }
 </style>

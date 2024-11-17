@@ -82,51 +82,7 @@
         </div>
       </section>
 
-      <!-- Passphrase Section -->
-      <section class="challenge-section">
-        <h2 class="section-title">Submit Challenge Passphrase</h2>
-        <p class="challenge-description">
-          Once you've successfully exploited the login form, submit the passphrase you received to complete the challenge.
-        </p>
-
-        <div class="form-container">
-          <AlertMessage
-            v-if="passphraseApiState.error"
-            :message="passphraseApiState.error"
-            type="error"
-          />
-          <AlertMessage
-            v-if="passphraseApiState.success"
-            :message="passphraseApiState.success"
-            type="success"
-          />
-
-          <form @submit.prevent="submitPassphrase" class="form">
-            <div class="form-group">
-              <label class="form-label" for="passphrase">Challenge Passphrase</label>
-              <input
-                v-model="passphrase"
-                :disabled="passphraseApiState.isLoading"
-                class="form-input"
-                name="passphrase"
-                id="passphrase"
-                type="text"
-                placeholder="Enter the passphrase"
-              >
-            </div>
-            <div class="form-actions">
-              <button
-                :disabled="passphraseApiState.isLoading"
-                class="submit-button"
-                type="submit"
-              >
-                <LoadingSpinner v-if="passphraseApiState.isLoading" />
-                <span v-else>Submit Passphrase</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
+      <PassphraseSubmission challenge-id="sqli-login-bypass" />
     </div>
   </div>
 </template>
@@ -143,6 +99,7 @@ import ChallengeView from '@/views/ChallengeView.vue'
 import { store } from '@/store'
 import { sqliLoginBypassVulnerableSnippet } from '@/snippets'
 import { sqliLoginBypassExploitSnippet } from '@/snippets'
+import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
 
 const username = ref('')
 const password = ref('')
@@ -228,7 +185,7 @@ const submitPassphrase = async () => {
 
 .code-block {
   background-color: rgb(229, 231, 235);
-  padding: 0.05rem;
+  padding: 0.15rem;
   font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 }
 
