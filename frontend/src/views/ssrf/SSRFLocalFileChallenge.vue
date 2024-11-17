@@ -175,7 +175,9 @@ const submitUrl = async () => {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  max-width: 64rem;
+  padding: 0 2rem;
 }
 
 .challenge-section {
