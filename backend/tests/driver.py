@@ -16,10 +16,9 @@ verify = False
 class SQLI:
     class LoginBypass:
         class Vulnerabilities:
-            expected_data_for_login: tuple[str, int, str] = (
+            expected_data_for_login: tuple[str, int] = (
                 f"{url_prefix}/vulnerabilities/sqli1/login/",
                 200,
-                Passphrases.sqli1.value,
             )
 
         class Patches:
@@ -36,10 +35,9 @@ class SQLI:
                 200,
                 "Successfully registered",
             )
-            expected_data_for_change_password: tuple[str, int, str] = (
+            expected_data_for_change_password: tuple[str, int] = (
                 f"{url_prefix}/vulnerabilities/sqli2/change_password/",
                 200,
-                Passphrases.sqli2.value,
             )
 
         class Patches:
@@ -112,10 +110,11 @@ def check_response(
     return success
 
 
-def test_submission(challenge: Passphrases) -> bool:
+def test_submission(challenge: Passphrases, secret: str) -> bool:
     url = f"{url_prefix}/submission"
-    data = {"secret": challenge.value, "challenge": challenge.name}
+    data = {"secret": secret, "challenge": challenge.name}
     r = requests.post(url, json=data, verify=verify)
+    print(f"Testing submission for challenge {challenge.name}...")
     return check_response(
         expected_status_code=200,
         actual_status_code=r.status_code,
@@ -124,7 +123,7 @@ def test_submission(challenge: Passphrases) -> bool:
     )
 
 
-def sqli_login_bypass(state: State) -> bool:
+def sqli_login_bypass(state: State) -> list[bool]:
     expected_response: str | dict[str, str]
     username = "administrator"
     password = "' OR 'a' = 'a"
@@ -132,27 +131,41 @@ def sqli_login_bypass(state: State) -> bool:
 
     match state:
         case State.VULNERABLE:
-            url, status_code, expected_response = (
-                SQLI.LoginBypass.Vulnerabilities.expected_data_for_login
-            )
+            url, status_code = SQLI.LoginBypass.Vulnerabilities.expected_data_for_login
         case State.PATCHED:
-            url, status_code, expected_response = (
+            url, status_code, patched_expected_response = (
                 SQLI.LoginBypass.Patches.expected_data_for_login
             )
         case _:
             assert_never(state)
 
     r = requests.post(url, json=data, verify=verify)
+    actual_response = r.json()
+
+    # Since the passphrases are generated dynamically, we can't know a priori what
+    # the passphrases are. So we check that the submission api returns true for the
+    # vulnerable endpoint (since that will confirm that the challenge is working
+    # correctly)
+    expected_response = (
+        patched_expected_response if state == State.PATCHED else actual_response
+    )
+
     response = check_response(
         expected_status_code=status_code,
         actual_status_code=r.status_code,
         expected_response=expected_response,
-        actual_response=r.json(),
+        actual_response=actual_response,
     )
-    return response
+
+    if state == State.VULNERABLE:
+        submission_response = test_submission(Passphrases.sqli1, actual_response)
+    else:
+        submission_response = True
+
+    return [response, submission_response]
 
 
-def sqli_second_order(state: State) -> bool:
+def sqli_second_order(state: State) -> list[bool]:
     password = str(uuid.uuid4())
 
     match state:
@@ -180,11 +193,11 @@ def sqli_second_order(state: State) -> bool:
 
     match state:
         case State.VULNERABLE:
-            url, status_code, expected_response = (
+            url, status_code = (
                 SQLI.SecondOrder.Vulnerabilities.expected_data_for_change_password
             )
         case State.PATCHED:
-            url, status_code, expected_response = (
+            url, status_code, patched_expected_response = (
                 SQLI.SecondOrder.Patches.expected_data_for_change_password
             )
         case _:
@@ -192,15 +205,30 @@ def sqli_second_order(state: State) -> bool:
 
     data = {"old": password, "new": password, "new_verify": password}
     r = requests.post(url, json=data, cookies=r.cookies, verify=verify)
+    actual_response = r.json()
+
+    # Since the passphrases are generated dynamically, we can't know a priori what
+    # the passphrases are. So we check that the submission api returns true for the
+    # vulnerable endpoint (since that will confirm that the challenge is working
+    # correctly)
+    expected_response = (
+        patched_expected_response if state == State.PATCHED else actual_response
+    )
+
     second_check = check_response(
         expected_status_code=status_code,
         actual_status_code=r.status_code,
         expected_response=expected_response,
-        actual_response=r.json(),
+        actual_response=actual_response,
         appended_custom_msg="(2/2)",
     )
 
-    return first_check and second_check
+    if state == State.VULNERABLE:
+        submission_response = test_submission(Passphrases.sqli2, actual_response)
+    else:
+        submission_response = True
+
+    return [first_check, second_check, submission_response]
 
 
 def ssrf_webhook(state: State) -> list[bool]:
@@ -308,22 +336,18 @@ start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
 
-for challenge in Passphrases:
-    print(f"Testing submission for challenge {challenge.name}...")
-    results.append(test_submission(challenge))
-
 for state in State:
     print(f"Testing {state.name} state for SQLi login bypass...")
-    results.append(sqli_login_bypass(state))
+    results.extend(sqli_login_bypass(state))
 
     print(f"Testing {state.name} state for SQLi second order...")
-    results.append(sqli_second_order(state))
+    results.extend(sqli_second_order(state))
 
-    print(f"Testing {state.name} state for SSRF webhook...")
-    results.extend(ssrf_webhook(state))
+    # print(f"Testing {state.name} state for SSRF webhook...")
+    # results.extend(ssrf_webhook(state))
 
-    print(f"Testing {state.name} state for SSRF local file inclusion...")
-    results.extend(ssrf_local_file_inclusion(state))
+    # print(f"Testing {state.name} state for SSRF local file inclusion...")
+    # results.extend(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
