@@ -22,35 +22,35 @@
   {
     "url": "http://internal_api",
     "status_code": "200",
-    "response": "Incorrect port. Use 12301 instead."
+    "response": "Incorrect port. Use 12302 instead."
   },
   {
     "url": "http://internal_api:8080",
     "status_code": "200",
-    "response": "Incorrect port. Use 12301 instead."
-  },
-  {
-    "url": "http://internal_api:12300",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12301 instead."
+    "response": "Incorrect port. Use 12302 instead."
   },
   {
     "url": "http://internal_api:12301",
     "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+    "response": "Incorrect port. Use 12302 instead."
   },
   {
-    "url": "http://internal_api:12301/",
+    "url": "http://internal_api:12302",
     "status_code": "200",
     "response": "Use the /reset_admin_password endpoint to reset the admin password!"
   },
   {
-    "url": "http://internal_api:12301/not_right_endpoint",
+    "url": "http://internal_api:12302/",
     "status_code": "200",
     "response": "Use the /reset_admin_password endpoint to reset the admin password!"
   },
   {
-    "url": "http://internal_api:12301/reset_admin_password/",
+    "url": "http://internal_api:12302/not_right_endpoint",
+    "status_code": "200",
+    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+  },
+  {
+    "url": "http://internal_api:12302/reset_admin_password/",
     "status_code": "400",
     "response": {
       "detail": "Failure: Hostname internal_api failed validation"

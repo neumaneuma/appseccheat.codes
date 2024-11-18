@@ -1,14 +1,9 @@
-const API_BASE_URL = 'http://127.0.0.1:12300'
+const API_BASE_URL = 'http://127.0.0.1:12301'
 const VULNERABLE_PATH = 'vulnerabilities'
-const PATCHED_PATH = 'patches'
 
+export const SUBMISSION_URL = `${API_BASE_URL}/submission`
 export const SQLI_LOGIN_BYPASS_API_VULNERABLE_URL = `${API_BASE_URL}/${VULNERABLE_PATH}/sqli1/login/`
 export const SQLI_SECOND_ORDER_API_REGISTER_VULNERABLE_URL = `${API_BASE_URL}/${VULNERABLE_PATH}/sqli2/register/`
 export const SQLI_SECOND_ORDER_API_CHANGE_PASSWORD_VULNERABLE_URL = `${API_BASE_URL}/${VULNERABLE_PATH}/sqli2/change_password/`
 export const SSRF_WEBHOOK_API_VULNERABLE_URL = `${API_BASE_URL}/${VULNERABLE_PATH}/ssrf1/submit_webhook/`
 export const SSRF_LOCAL_FILE_API_VULNERABLE_URL = `${API_BASE_URL}/${VULNERABLE_PATH}/ssrf2/submit_api_url/`
-export const SQLI_LOGIN_BYPASS_API_PATCHED_URL = `${API_BASE_URL}/${PATCHED_PATH}/sqli1/login/`
-export const SQLI_SECOND_ORDER_API_REGISTER_PATCHED_URL = `${API_BASE_URL}/${PATCHED_PATH}/sqli2/register/`
-export const SQLI_SECOND_ORDER_API_CHANGE_PASSWORD_PATCHED_URL = `${API_BASE_URL}/${PATCHED_PATH}/sqli2/change_password/`
-export const SSRF_WEBHOOK_API_PATCHED_URL = `${API_BASE_URL}/${PATCHED_PATH}/ssrf1/submit_webhook/`
-export const SSRF_LOCAL_FILE_API_PATCHED_URL = `${API_BASE_URL}/${PATCHED_PATH}/ssrf2/submit_api_url/`

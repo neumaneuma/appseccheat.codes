@@ -86,6 +86,7 @@ import { store } from '@/store'
 import { ssrfWebhookVulnerableSnippet } from '@/snippets'
 import { ssrfWebhookExploitSnippet } from '@/snippets'
 import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
+import { SSRF_WEBHOOK_API_VULNERABLE_URL } from '@/constants'
 
 const customUrl = ref('')
 const webhookResponse = ref('')
@@ -101,7 +102,7 @@ const shouldShowIntroduction = computed(determineIfShouldShowIntroduction)
 const submitWebhook = async () => {
   try {
     const result = await handleApiCall(async () => {
-      const response = await fetch('/vulnerabilities/ssrf1/submit_webhook/', {
+      const response = await fetch(SSRF_WEBHOOK_API_VULNERABLE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,10 +1,22 @@
 services:
+  frontend:
+    build:
+      context: frontend
+    ports:
+      - "12300:12300"
+    command: npm run dev
+    # command: tail -f /dev/null
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/frontend
+
   backend:
     build:
       context: backend
     ports:
-      - "12300:12300"
-    command: sh -c 'fastapi dev --host 0.0.0.0 --port 12300 main.py'
+      - "12301:12301"
+    command: fastapi dev --host 0.0.0.0 --port 12301 main.py
     depends_on:
       - db
       - internal_api
@@ -15,8 +27,8 @@ services:
     build:
       context: internal_api
     ports:
-      - "12301:12301"
-    command: sh -c 'fastapi dev --host 0.0.0.0 --port 12301 main.py'
+      - "12302:12302"
+    command: fastapi dev --host 0.0.0.0 --port 12302 main.py
     volumes:
       - ./internal_api:/app
 

@@ -48,6 +48,7 @@ import { useRouter } from 'vue-router'
 import { useApiState } from '@/composables/useApiState'
 import AlertMessage from '@/components/AlertMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import { SUBMISSION_URL } from '@/constants'
 
 const props = defineProps<{
   challengeId: string
@@ -59,7 +60,7 @@ const { state: passphraseApiState, handleApiCall: handlePassphraseApiCall } = us
 
 const submitPassphrase = async () => {
   await handlePassphraseApiCall(async () => {
-    const response = await fetch(`http://localhost:12300/submission`, {
+    const response = await fetch(SUBMISSION_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

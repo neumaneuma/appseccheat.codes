@@ -42,36 +42,36 @@
     }
   },
   {
-    "url": "http://internal_api:12300",
-    "status_code": "400",
-    "response": {
-      "detail": "Failure: supplied url is invalid (http://internal_api:12300)"
-    }
-  },
-  {
     "url": "http://internal_api:12301",
-    "status_code": "200",
-    "response": "Hello, World from the internal API!"
-  },
-  {
-    "url": "http://internal_api:12301/",
-    "status_code": "200",
-    "response": "Hello, World from the internal API!"
-  },
-  {
-    "url": "http://internal_api:12301/not_right_endpoint",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (http://internal_api:12301/not_right_endpoint)"
+      "detail": "Failure: supplied url is invalid (http://internal_api:12301)"
     }
   },
   {
-    "url": "http://internal_api:12301/get_cat_coin_price_v1",
+    "url": "http://internal_api:12302",
+    "status_code": "200",
+    "response": "Hello, World from the internal API!"
+  },
+  {
+    "url": "http://internal_api:12302/",
+    "status_code": "200",
+    "response": "Hello, World from the internal API!"
+  },
+  {
+    "url": "http://internal_api:12302/not_right_endpoint",
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12302/not_right_endpoint)"
+    }
+  },
+  {
+    "url": "http://internal_api:12302/get_cat_coin_price_v1",
     "status_code": "200",
     "response": "Cat coin price"
   },
   {
-    "url": "http://internal_api:12301/get_cat_coin_price_v2",
+    "url": "http://internal_api:12302/get_cat_coin_price_v2",
     "status_code": "200",
     "response": "Cat coin price"
   },

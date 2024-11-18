@@ -186,6 +186,10 @@ import { store } from '@/store'
 import { sqliSecondOrderVulnerableSnippet } from '@/snippets'
 import { sqliSecondOrderExploitSnippet } from '@/snippets'
 import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
+import {
+  SQLI_SECOND_ORDER_API_REGISTER_VULNERABLE_URL,
+  SQLI_SECOND_ORDER_API_CHANGE_PASSWORD_VULNERABLE_URL,
+} from '@/constants'
 
 function determineIfShouldShowIntroduction() {
   const shouldShowIntroduction = !store.sqliIntroductionSeen
@@ -260,7 +264,7 @@ const submitRegister = async () => {
 
   try {
     await handleRegister(async () => {
-      const response = await fetch('/vulnerabilities/sqli2/register/', {
+      const response = await fetch(SQLI_SECOND_ORDER_API_REGISTER_VULNERABLE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -294,7 +298,7 @@ const submitChangePassword = async () => {
 
   try {
     await handleChangePassword(async () => {
-      const response = await fetch('/vulnerabilities/sqli2/change_password/', {
+      const response = await fetch(SQLI_SECOND_ORDER_API_CHANGE_PASSWORD_VULNERABLE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

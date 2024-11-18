@@ -115,10 +115,11 @@ import PassphraseSubmission from '@/components/PassphraseSubmission.vue'
 import { store } from '@/store'
 import { ssrfLocalFileInclusionVulnerableSnippet } from '@/snippets'
 import { ssrfLocalFileInclusionExploitSnippet } from '@/snippets'
+import { SSRF_LOCAL_FILE_API_VULNERABLE_URL } from '@/constants'
 
 const predefinedUrls = [
-  'http://internal_api:12301/get_cat_coin_price_v1/',
-  'http://internal_api:12301/get_cat_coin_price_v2/',
+  'http://internal_api:12302/get_cat_coin_price_v1/',
+  'http://internal_api:12302/get_cat_coin_price_v2/',
 ]
 
 const selectedUrl = ref(predefinedUrls[0])
@@ -147,7 +148,7 @@ const getEffectiveUrl = () => {
 const submitUrl = async () => {
   try {
     const result = await handleApiCall(async () => {
-      const response = await fetch('/vulnerabilities/ssrf2/submit_api_url/', {
+      const response = await fetch(SSRF_LOCAL_FILE_API_VULNERABLE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
