@@ -157,12 +157,13 @@ def sqli_login_bypass(state: State) -> list[bool]:
         actual_response=actual_response,
     )
 
+    responses = [response]
+
     if state == State.VULNERABLE:
         submission_response = test_submission(Passphrases.sqli1, actual_response)
-    else:
-        submission_response = True
+        responses.append(submission_response)
 
-    return [response, submission_response]
+    return responses
 
 
 def sqli_second_order(state: State) -> list[bool]:
@@ -223,12 +224,13 @@ def sqli_second_order(state: State) -> list[bool]:
         appended_custom_msg="(2/2)",
     )
 
+    responses = [first_check, second_check]
+
     if state == State.VULNERABLE:
         submission_response = test_submission(Passphrases.sqli2, actual_response)
-    else:
-        submission_response = True
+        responses.append(submission_response)
 
-    return [first_check, second_check, submission_response]
+    return responses
 
 
 def ssrf_webhook(state: State) -> list[bool]:
