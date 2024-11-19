@@ -4,7 +4,9 @@ services:
       context: frontend
     ports:
       - "12300:12300"
-    command: npm run dev
+    command: >
+      sh -c "npm install --production=false &&
+             npm run dev"
     depends_on:
       - backend
     volumes:
