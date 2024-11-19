@@ -5,7 +5,6 @@ services:
     ports:
       - "12300:12300"
     command: npm run dev
-    # command: tail -f /dev/null
     depends_on:
       - backend
     volumes:
