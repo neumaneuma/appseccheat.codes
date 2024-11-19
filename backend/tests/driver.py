@@ -234,6 +234,7 @@ def sqli_second_order(state: State) -> list[bool]:
 
 
 def ssrf_webhook(state: State) -> list[bool]:
+    submission_secret: str
     match state:
         case State.VULNERABLE:
             url = SSRF.Webhook.Vulnerabilities.submit_webhook_url
@@ -255,19 +256,22 @@ def ssrf_webhook(state: State) -> list[bool]:
         raw_status_code = expected_response["status_code"]
         assert isinstance(raw_status_code, str), "Status code is not an string"
         status_code = int(raw_status_code)
-        response = expected_response["response"]
-
-        # Hacky way of dealing with not being able to access python from the json file
-        if response == "Passphrases.ssrf1.value":
-            response = Passphrases.ssrf1.value
+        expected_response = expected_response["response"]
 
         data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
+        actual_response = r.json()
+
+        # Hacky way of dealing with not being able to access python from the json file
+        if expected_response == "Passphrases.ssrf1.value":
+            expected_response = actual_response
+            submission_secret = actual_response
+
         is_correct_response = check_response(
             expected_status_code=status_code,
             actual_status_code=r.status_code,
-            expected_response=response,
-            actual_response=r.json(),
+            expected_response=expected_response,
+            actual_response=actual_response,
             url=payload_url,
             appended_custom_msg=f"({i + 1}/{len(expected_responses)})",
         )
@@ -275,10 +279,19 @@ def ssrf_webhook(state: State) -> list[bool]:
         if not is_correct_response:
             break
 
+        # Since the passphrases are generated dynamically, we can't know a priori what
+        # the passphrases are. So we check that the submission api returns true for the
+        # vulnerable endpoint (since that will confirm that the challenge is working
+        # correctly)
+        if state == State.VULNERABLE:
+            submission_response = test_submission(Passphrases.ssrf1, submission_secret)
+            all_response_checks.append(submission_response)
+
     return all_response_checks
 
 
 def ssrf_local_file_inclusion(state: State) -> bool:
+    submission_secret: str
     cat_coin_price_pattern = re.compile(
         r"Price at \d{2}:\d{2}:\d{2}\.\d{6} - \$\d+\.\d+"
     )
@@ -304,16 +317,18 @@ def ssrf_local_file_inclusion(state: State) -> bool:
         raw_status_code = expected_response["status_code"]
         assert isinstance(raw_status_code, str), "Status code is not an string"
         status_code = int(raw_status_code)
-        response = expected_response["response"]
-
-        # Hacky way of dealing with not being able to access python from the json file
-        if response == "Passphrases.ssrf2.value":
-            response = Passphrases.ssrf2.value
+        expected_response = expected_response["response"]
 
         data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
 
         actual_response = r.json()
+
+        # Hacky way of dealing with not being able to access python from the json file
+        if expected_response == "Passphrases.ssrf2.value":
+            expected_response = actual_response
+            submission_secret = actual_response
+
         if isinstance(actual_response, str) and cat_coin_price_pattern.match(
             actual_response
         ):
@@ -322,7 +337,7 @@ def ssrf_local_file_inclusion(state: State) -> bool:
         is_correct_response = check_response(
             expected_status_code=status_code,
             actual_status_code=r.status_code,
-            expected_response=response,
+            expected_response=expected_response,
             actual_response=actual_response,
             url=payload_url,
             appended_custom_msg=f"({i + 1}/{len(expected_responses)})",
@@ -330,6 +345,10 @@ def ssrf_local_file_inclusion(state: State) -> bool:
         all_response_checks.append(is_correct_response)
         if not is_correct_response:
             break
+
+    if state == State.VULNERABLE:
+        submission_response = test_submission(Passphrases.ssrf2, submission_secret)
+        all_response_checks.append(submission_response)
 
     return all_response_checks
 
