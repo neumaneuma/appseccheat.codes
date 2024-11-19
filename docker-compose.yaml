@@ -4,8 +4,7 @@ services:
       context: frontend
     ports:
       - "12300:12300"
-    # command: npm run dev
-    command: tail -f /dev/null
+    command: npm run dev
     depends_on:
       - backend
     volumes:
