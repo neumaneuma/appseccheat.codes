@@ -279,13 +279,13 @@ def ssrf_webhook(state: State) -> list[bool]:
         if not is_correct_response:
             break
 
-        # Since the passphrases are generated dynamically, we can't know a priori what
-        # the passphrases are. So we check that the submission api returns true for the
-        # vulnerable endpoint (since that will confirm that the challenge is working
-        # correctly)
-        if state == State.VULNERABLE:
-            submission_response = test_submission(Passphrases.ssrf1, submission_secret)
-            all_response_checks.append(submission_response)
+    # Since the passphrases are generated dynamically, we can't know a priori what
+    # the passphrases are. So we check that the submission api returns true for the
+    # vulnerable endpoint (since that will confirm that the challenge is working
+    # correctly)
+    if state == State.VULNERABLE:
+        submission_response = test_submission(Passphrases.ssrf1, submission_secret)
+        all_response_checks.append(submission_response)
 
     return all_response_checks
 
@@ -364,11 +364,11 @@ for state in State:
     print(f"Testing {state.name} state for SQLi second order...")
     results.extend(sqli_second_order(state))
 
-    # print(f"Testing {state.name} state for SSRF webhook...")
-    # results.extend(ssrf_webhook(state))
+    print(f"Testing {state.name} state for SSRF webhook...")
+    results.extend(ssrf_webhook(state))
 
-    # print(f"Testing {state.name} state for SSRF local file inclusion...")
-    # results.extend(ssrf_local_file_inclusion(state))
+    print(f"Testing {state.name} state for SSRF local file inclusion...")
+    results.extend(ssrf_local_file_inclusion(state))
 
 stop_time = round(time.time() * 1000)
 run_time = (stop_time - start_time) / 1000
