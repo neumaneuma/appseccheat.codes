@@ -1,19 +1,19 @@
 [project]
 name = "appseccheat-codes"
 version = "1.0.0"
-description = "Add your description here"
+description = "Dev environment requirements for AppSec Cheat Codes"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "mypy==1.13.0", # run mypy manually with `mypy .`
-    "pre-commit==4.0.1",
+    "pre-commit==4.0.1", # run `pre-commit install` to install the hooks prior to committing
+    "requests==2.32.3", # needed for functional tests
     "fastapi[standard]==0.115.4",
-    "requests==2.32.3",
     "peewee==3.17.7",
     "safehttpx==0.1.1",
     "types-requests==2.32.0.20241016",
     "types-peewee==3.17.7.20241017",
     "psycopg2-binary==2.9.10",
     "bcrypt==4.2.0",
-    "itsdangerous>=2.2.0",
+    "itsdangerous==2.2.0",
 ]

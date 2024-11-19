@@ -251,19 +251,23 @@ def ssrf_webhook(state: State) -> list[bool]:
         )
 
     all_response_checks = []
-    for i, expected_response in enumerate(expected_responses):
-        payload_url = expected_response["url"]
-        raw_status_code = expected_response["status_code"]
+    for i, er in enumerate(expected_responses):
+        payload_url = er["url"]
+        assert isinstance(payload_url, str), "URL is not an string"
+        raw_status_code = er["status_code"]
         assert isinstance(raw_status_code, str), "Status code is not an string"
         status_code = int(raw_status_code)
-        expected_response = expected_response["response"]
+        expected_response = er["response"]
 
         data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
         actual_response = r.json()
 
         # Hacky way of dealing with not being able to access python from the json file
-        if expected_response == "Passphrases.ssrf1.value":
+        if (
+            isinstance(expected_response, str)
+            and expected_response == "Passphrases.ssrf1.value"
+        ):
             expected_response = actual_response
             submission_secret = actual_response
 
@@ -290,7 +294,7 @@ def ssrf_webhook(state: State) -> list[bool]:
     return all_response_checks
 
 
-def ssrf_local_file_inclusion(state: State) -> bool:
+def ssrf_local_file_inclusion(state: State) -> list[bool]:
     submission_secret: str
     cat_coin_price_pattern = re.compile(
         r"Price at \d{2}:\d{2}:\d{2}\.\d{6} - \$\d+\.\d+"
@@ -312,12 +316,13 @@ def ssrf_local_file_inclusion(state: State) -> bool:
         )
 
     all_response_checks = []
-    for i, expected_response in enumerate(expected_responses):
-        payload_url = expected_response["url"]
-        raw_status_code = expected_response["status_code"]
+    for i, er in enumerate(expected_responses):
+        payload_url = er["url"]
+        assert isinstance(payload_url, str), "URL is not an string"
+        raw_status_code = er["status_code"]
         assert isinstance(raw_status_code, str), "Status code is not an string"
         status_code = int(raw_status_code)
-        expected_response = expected_response["response"]
+        expected_response = er["response"]
 
         data = {"url": payload_url}
         r = requests.post(url, json=data, verify=verify)
@@ -325,7 +330,10 @@ def ssrf_local_file_inclusion(state: State) -> bool:
         actual_response = r.json()
 
         # Hacky way of dealing with not being able to access python from the json file
-        if expected_response == "Passphrases.ssrf2.value":
+        if (
+            isinstance(expected_response, str)
+            and expected_response == "Passphrases.ssrf2.value"
+        ):
             expected_response = actual_response
             submission_secret = actual_response
 
