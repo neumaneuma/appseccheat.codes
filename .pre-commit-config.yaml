@@ -25,3 +25,16 @@ repos:
     hooks:
     -   id: oxlint
         types_or: [javascript, jsx, ts, tsx, vue]
+
+-   repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.2
+    hooks:
+    # -   id: terraform_validate
+    #     args: [--hook-config=--retry-once-with-cleanup=true]
+    #     files: '(\.tf|\.tf.json)'
+    -   id: terraform_fmt
+        args:
+        - --args=-no-color
+        - --args=-diff
+        - --args=-write=false
+        files: '(\.tf|\.tf.json)'
