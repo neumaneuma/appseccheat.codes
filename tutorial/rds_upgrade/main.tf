@@ -25,12 +25,10 @@ module "vpc" {
   enable_dns_support   = true
 }
 
-resource "random_pet" "name" {
-  length = 1
-}
+
 
 resource "aws_db_subnet_group" "education" {
-  name       = "${random_pet.name.id}-education"
+  name       = "smarmyui-education"
   subnet_ids = module.vpc.public_subnets
 
   tags = {
@@ -39,7 +37,7 @@ resource "aws_db_subnet_group" "education" {
 }
 
 resource "aws_security_group" "rds" {
-  name   = "${random_pet.name.id}_education_rds"
+  name   = "smarmyui_education_rds"
   vpc_id = module.vpc.vpc_id
 
   ingress {
@@ -62,23 +60,27 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_db_parameter_group" "education" {
-  name_prefix = "${random_pet.name.id}-education"
-  family      = "postgres15"
+  name_prefix = "smarmyui-education"
+  family      = "postgres17"
 
   parameter {
     name  = "log_connections"
     value = "1"
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
 }
 
 resource "aws_db_instance" "education" {
-  identifier                  = "${random_pet.name.id}education"
+  identifier                  = "smarmyuieducation"
   instance_class              = "db.t3.micro"
   allocated_storage           = 10
   apply_immediately           = true
   engine                      = "postgres"
-  engine_version              = "15"
+  engine_version              = "17"
   username                    = "edu"
   password                    = var.db_password
   allow_major_version_upgrade = true

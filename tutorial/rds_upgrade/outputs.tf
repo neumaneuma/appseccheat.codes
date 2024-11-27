@@ -18,8 +18,3 @@ output "rds_username" {
   value       = aws_db_instance.education.username
   sensitive   = true
 }
-
-output "random_pet_name" {
-  description = "Value of random pet name in configuration"
-  value = random_pet.name.id
-}
