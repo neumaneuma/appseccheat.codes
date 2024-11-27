@@ -5,8 +5,8 @@ resource "aws_db_instance" "postgres_db" {
   instance_class    = "db.t4g.micro"
   allocated_storage = 20
   max_allocated_storage = 0 # Disable auto-scaling
-    auto_minor_version_upgrade  = false
-
+  auto_minor_version_upgrade  = false
+  skip_final_snapshot    = true # don't create a snapshot when the db is deleted
 
   username             = var.db_username
   password             = var.db_password
