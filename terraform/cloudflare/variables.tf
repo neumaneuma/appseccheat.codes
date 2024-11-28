@@ -1,4 +1,4 @@
 variable "domain" {
-  type        = string
+  type    = string
   default = "appseccheat.codes"
 }

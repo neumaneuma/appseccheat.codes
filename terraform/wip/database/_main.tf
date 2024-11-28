@@ -28,7 +28,7 @@ resource "aws_security_group" "database" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = []  # Will need to be updated with application security group
+    security_groups = [] # Will need to be updated with application security group
   }
 }
 

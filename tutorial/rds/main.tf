@@ -172,29 +172,29 @@ resource "aws_db_parameter_group" "education" {
 
 # represents a db instance. core settings config set here
 resource "aws_db_instance" "education" {
-  identifier             = "education"
-  instance_class         = "db.t3.micro"
-  allocated_storage      = 10
-  engine                 = "postgres"
-  engine_version         = "17.1"
-  username               = "edu"
-  password               = var.db_password
-  db_subnet_group_name   = aws_db_subnet_group.education.name
-  vpc_security_group_ids = [aws_security_group.rds.id]
-  parameter_group_name   = aws_db_parameter_group.education.name
-  publicly_accessible    = true
-  skip_final_snapshot    = true
-  apply_immediately      = true
+  identifier              = "education"
+  instance_class          = "db.t3.micro"
+  allocated_storage       = 10
+  engine                  = "postgres"
+  engine_version          = "17.1"
+  username                = "edu"
+  password                = var.db_password
+  db_subnet_group_name    = aws_db_subnet_group.education.name
+  vpc_security_group_ids  = [aws_security_group.rds.id]
+  parameter_group_name    = aws_db_parameter_group.education.name
+  publicly_accessible     = true
+  skip_final_snapshot     = true
+  apply_immediately       = true
   backup_retention_period = 1
 }
 
 resource "aws_db_instance" "education_replica" {
-   identifier             = "education-replica"
-   replicate_source_db    = aws_db_instance.education.identifier
-   instance_class         = "db.t3.micro"
-   apply_immediately      = true
-   publicly_accessible    = true
-   skip_final_snapshot    = true
-   vpc_security_group_ids = [aws_security_group.rds.id]
-   parameter_group_name   = aws_db_parameter_group.education.name
+  identifier             = "education-replica"
+  replicate_source_db    = aws_db_instance.education.identifier
+  instance_class         = "db.t3.micro"
+  apply_immediately      = true
+  publicly_accessible    = true
+  skip_final_snapshot    = true
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  parameter_group_name   = aws_db_parameter_group.education.name
 }

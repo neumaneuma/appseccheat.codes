@@ -2,15 +2,15 @@
 # SPDX-License-Identifier: MPL-2.0
 
 provider "aws" {
-  alias                    = "source"
-  region                   = "us-east-1"
-  profile                  = "source"
+  alias   = "source"
+  region  = "us-east-1"
+  profile = "source"
 }
 
 provider "aws" {
-  alias                    = "destination"
-  region                   = "us-east-1"
-  profile                  = "destination"
+  alias   = "destination"
+  region  = "us-east-1"
+  profile = "destination"
 }
 
 data "aws_caller_identity" "source" {
@@ -39,10 +39,10 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "assume_role" {
-  provider            = aws.destination
-  name                = "assume_role"
-  assume_role_policy  = data.aws_iam_policy_document.assume_role.json
-  tags                = {}
+  provider           = aws.destination
+  name               = "assume_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  tags               = {}
 }
 
 resource "aws_iam_role_policy_attachment" "assume_role_policy_attachment" {

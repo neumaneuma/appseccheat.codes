@@ -50,7 +50,7 @@ module "database" {
   source = "./modules/database"
 
   environment     = var.environment
-  vpc_id         = module.vpc.vpc_id
+  vpc_id          = module.vpc.vpc_id
   private_subnets = module.vpc.private_subnets
 
   db_name     = var.db_name
