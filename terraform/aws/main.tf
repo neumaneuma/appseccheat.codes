@@ -8,7 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  alias  = "us-east-1"
+  region = "us-east-1"
 }
 
 provider "cloudflare" {}
@@ -24,13 +25,13 @@ module "cloudtrail" {
 }
 
 module "certificates" {
-  source      = "./modules/certificates"
+  source      = "../modules/certificates"
   domain_name = var.domain_name
   region      = var.region
 }
 
 module "cdn" {
-  source                     = "./modules/cdn"
+  source                     = "../modules/cdn"
   region                     = var.region
   domain_name                = var.domain_name
   origin_id                  = "S3Origin"
