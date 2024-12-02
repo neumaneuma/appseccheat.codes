@@ -11,8 +11,29 @@ provider "aws" {
   region = var.region
 }
 
+provider "cloudflare" {}
+
+# S3 bucket names must be globally unique, so we use a random UUID to generate a unique name
+resource "random_uuid" "uuid" {}
 
 module "cloudtrail" {
-  source = "../modules/cloudtrail"
-  region = var.region
+  source      = "../modules/cloudtrail"
+  region      = var.region
+  trail_name  = "permissions-audit-trail"
+  bucket_name = "cloudtrail-audit-logs-${random_uuid.uuid.result}"
+}
+
+module "certificates" {
+  source      = "./modules/certificates"
+  domain_name = var.domain_name
+  region      = var.region
+}
+
+module "cdn" {
+  source                     = "./modules/cdn"
+  region                     = var.region
+  domain_name                = var.domain_name
+  origin_id                  = "S3Origin"
+  bucket_name                = "cloudfront-cdn-bucket-${random_uuid.uuid.result}"
+  cloudfront_certificate_arn = module.certificates.cloudfront_certificate_arn
 }

@@ -1,12 +1,5 @@
 data "aws_caller_identity" "current" {}
 
-resource "random_uuid" "uuid" {}
-
-# Define the trail name as a local to avoid the cycle
-locals {
-  trail_name = "permissions-audit-trail"
-}
-
 # Update policy document to use local trail name instead of resource reference
 data "aws_iam_policy_document" "audit_logs" {
   statement {
@@ -21,7 +14,7 @@ data "aws_iam_policy_document" "audit_logs" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:cloudtrail:${var.region}:${data.aws_caller_identity.current.account_id}:trail/${local.trail_name}"]
+      values   = ["arn:aws:cloudtrail:${var.region}:${data.aws_caller_identity.current.account_id}:trail/${var.trail_name}"]
     }
   }
 
@@ -43,14 +36,13 @@ data "aws_iam_policy_document" "audit_logs" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:cloudtrail:${var.region}:${data.aws_caller_identity.current.account_id}:trail/${local.trail_name}"]
+      values   = ["arn:aws:cloudtrail:${var.region}:${data.aws_caller_identity.current.account_id}:trail/${var.trail_name}"]
     }
   }
 }
 
-# Create CloudTrail using the same local name
 resource "aws_cloudtrail" "audit" {
-  name                          = local.trail_name
+  name                          = var.trail_name
   s3_bucket_name                = aws_s3_bucket.audit_logs.id
   include_global_service_events = true
   is_multi_region_trail         = false
@@ -66,7 +58,7 @@ resource "aws_accessanalyzer_analyzer" "main" {
 }
 
 resource "aws_s3_bucket" "audit_logs" {
-  bucket = "terraform-audit-logs-${random_uuid.uuid.result}" # Must be globally unique
+  bucket = var.bucket_name
 }
 
 resource "aws_s3_bucket_policy" "audit_logs" {
