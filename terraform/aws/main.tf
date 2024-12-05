@@ -1,12 +1,18 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-64ec6d21-b96a-b7bc-7cd2-d3d4284d5ffc"
+    bucket         = "terraform-state-ab09aedc-2127-60e3-d7e2-544c0cab76d4"
     key            = "state/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-state-locks"
   }
 }
 
+# Default provider configuration
+provider "aws" {
+  region = var.region
+}
+
+# Additional provider configuration for us-east-1 (required for ACM certificates)
 provider "aws" {
   alias  = "us-east-1"
   region = "us-east-1"
@@ -28,6 +34,10 @@ module "certificates" {
   source      = "../modules/certificates"
   domain_name = var.domain_name
   region      = var.region
+  providers = {
+    aws           = aws
+    aws.us-east-1 = aws.us-east-1
+  }
 }
 
 module "cdn" {
