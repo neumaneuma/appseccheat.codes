@@ -84,8 +84,8 @@ resource "aws_cloudfront_distribution" "website" {
   }
 
   default_cache_behavior {
-    allowed_methods        = ["GET", "POST"]
-    cached_methods         = ["GET"]
+    allowed_methods        = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods         = ["HEAD", "GET"]
     target_origin_id       = var.origin_id
     viewer_protocol_policy = "redirect-to-https"
     compress               = true

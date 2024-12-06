@@ -9,3 +9,10 @@ variable "domain_name" {
   type        = string
   default     = "appseccheat.codes"
 }
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token"
+  type        = string
+  default     = null # force terraform to use $CLOUDFLARE_API_TOKEN environment variable
+  sensitive   = true
+}

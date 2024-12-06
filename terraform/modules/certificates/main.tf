@@ -74,10 +74,10 @@ resource "cloudflare_record" "alb_validation" {
 resource "aws_acm_certificate_validation" "cloudfront" {
   provider                = aws.us-east-1
   certificate_arn         = aws_acm_certificate.cloudfront.arn
-  validation_record_fqdns = [for record in cloudflare_record.cloudfront_validation : record.fqdn]
+  validation_record_fqdns = [for record in cloudflare_record.cloudfront_validation : record.hostname]
 }
 
 resource "aws_acm_certificate_validation" "alb" {
   certificate_arn         = aws_acm_certificate.alb.arn
-  validation_record_fqdns = [for record in cloudflare_record.alb_validation : record.fqdn]
+  validation_record_fqdns = [for record in cloudflare_record.alb_validation : record.hostname]
 }

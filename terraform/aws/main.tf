@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-ab09aedc-2127-60e3-d7e2-544c0cab76d4"
+    bucket         = "terraform-state-fd98f914-e3a3-e024-c533-fb339fbb5be3"
     key            = "state/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-state-locks"
@@ -18,7 +18,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-provider "cloudflare" {}
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
 
 # S3 bucket names must be globally unique, so we use a random UUID to generate a unique name
 resource "random_uuid" "uuid" {}
