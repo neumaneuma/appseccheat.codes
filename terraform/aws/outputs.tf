@@ -5,3 +5,7 @@ output "cloudfront_distribution_domain" {
 output "cdn_s3_bucket_name" {
   value = module.cdn.s3_bucket_name
 }
+
+output "cloudtrail_s3_bucket_name" {
+  value = module.cloudtrail.s3_bucket_name
+}
