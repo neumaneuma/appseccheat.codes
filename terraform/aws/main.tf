@@ -50,3 +50,8 @@ module "cdn" {
   bucket_name                = "cloudfront-cdn-bucket-${random_uuid.uuid.result}"
   cloudfront_certificate_arn = module.certificates.cloudfront_certificate_arn
 }
+
+module "vpc" {
+  source = "../modules/vpc"
+  region = var.region
+}
