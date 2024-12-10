@@ -9,3 +9,7 @@ output "cdn_s3_bucket_name" {
 output "cloudtrail_s3_bucket_name" {
   value = module.cloudtrail.s3_bucket_name
 }
+
+output "vpc_id" {
+  value = module.vpc.vpc_id
+}

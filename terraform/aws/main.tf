@@ -55,3 +55,10 @@ module "vpc" {
   source = "../modules/vpc"
   region = var.region
 }
+
+module "ecs" {
+  source               = "../modules/ecs"
+  region               = var.region
+  public_subnet_ids    = [module.vpc.public_subnets[0].id, module.vpc.public_subnets[1].id]
+  traffic_distribution = var.traffic_distribution
+}

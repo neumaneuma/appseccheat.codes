@@ -16,3 +16,9 @@ variable "cloudflare_api_token" {
   default     = null # force terraform to use $CLOUDFLARE_API_TOKEN environment variable
   sensitive   = true
 }
+
+variable "traffic_distribution" {
+  description = "Levels of traffic distribution"
+  type        = string
+  default     = "blue"
+}
