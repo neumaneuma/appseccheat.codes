@@ -22,3 +22,9 @@ variable "traffic_distribution" {
   type        = string
   default     = "blue"
 }
+
+variable "ecr_repo_name" {
+  description = "ECR repository name"
+  type        = string
+  default     = "appseccheat.codes"
+}

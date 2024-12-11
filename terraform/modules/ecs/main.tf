@@ -1,3 +1,12 @@
+resource "aws_ecr_repository" "repo" {
+  name                 = var.repo_name
+  image_tag_mutability = "MUTABLE"
+
+  encryption_configuration {
+    encryption_type = "AES256"
+  }
+}
+
 resource "aws_lb" "main" {
   name               = "app-load-balancer"
   internal           = false

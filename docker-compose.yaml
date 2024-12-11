@@ -37,7 +37,6 @@ services:
 
   db:
     image: postgres:17.1-alpine
-    restart: always
     environment:
       POSTGRES_PASSWORD: "postgres"
     ports:

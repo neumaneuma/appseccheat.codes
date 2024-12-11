@@ -3,6 +3,11 @@ variable "region" {
   type        = string
 }
 
+variable "repo_name" {
+  description = "ECR repository name"
+  type        = string
+}
+
 variable "public_subnet_ids" {
   description = "Public subnet IDs"
   type        = list(string)
