@@ -172,11 +172,6 @@ resource "aws_ecs_service" "backend" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.backend.arn
   desired_count   = 1
-
-  network_configuration {
-    subnets         = var.private_subnet_ids
-    security_groups = [aws_security_group.backend.id]
-  }
 }
 
 resource "aws_ecs_service" "internal_api" {
@@ -184,11 +179,6 @@ resource "aws_ecs_service" "internal_api" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.internal_api.arn
   desired_count   = 1
-
-  network_configuration {
-    subnets         = var.private_subnet_ids
-    security_groups = [aws_security_group.internal_api.id]
-  }
 }
 
 # resource "aws_lb" "main" {
