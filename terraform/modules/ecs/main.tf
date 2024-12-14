@@ -61,9 +61,15 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
+# Can manually examine this via `aws ssm get-parameter --name "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id" --region us-east-1`
+data "aws_ssm_parameter" "ecs_optimized_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
+}
+
 resource "aws_launch_template" "ecs" {
   name_prefix   = "ecs-template"
-  image_id      = "ami-0c7217cdde317cfec" # Amazon ECS-optimized AMI for us-east-1
+  image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
   instance_type = "t2.micro"
 
   user_data = base64encode(<<-EOF
