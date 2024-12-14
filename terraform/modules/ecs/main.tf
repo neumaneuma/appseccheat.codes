@@ -61,6 +61,29 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
+resource "aws_iam_instance_profile" "ecs_instance_profile" {
+  name = "ecs-instance-profile"
+  role = aws_iam_role.ecs_role.name
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "ecs_role" {
+  name               = "ecs-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
 # Can manually examine this via `aws ssm get-parameter --name "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id" --region us-east-1`
 data "aws_ssm_parameter" "ecs_optimized_ami" {
@@ -72,6 +95,8 @@ resource "aws_launch_template" "ecs" {
   image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
   instance_type = "t2.micro"
 
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
+  # Fargate abstracts away this hackiness; EC2 instances require this.
   user_data = base64encode(<<-EOF
               #!/bin/bash
               echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
@@ -84,10 +109,11 @@ resource "aws_launch_template" "ecs" {
 }
 
 resource "aws_autoscaling_group" "ecs" {
+  name_prefix         = "ecs-asg"
   desired_capacity    = 1
   max_size            = 1
   min_size            = 1
-  vpc_zone_identifier = aws_subnet.private[*].id # Your private subnets
+  vpc_zone_identifier = var.private_subnet_ids
 
   launch_template {
     id      = aws_launch_template.ecs.id
@@ -97,15 +123,16 @@ resource "aws_autoscaling_group" "ecs" {
 
 resource "aws_ecs_task_definition" "backend" {
   family                   = "backend"
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = "768"
+  memory                   = "768"
 
   container_definitions = jsonencode([
     {
       name      = "backend"
-      image     = "${aws_ecr_repository.main.repository_url}:backend"
+      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12301", "main.py"]
+      image     = "${aws_ecr_repository.repo.repository_url}:backend"
       essential = true
       portMappings = [
         {
@@ -119,15 +146,16 @@ resource "aws_ecs_task_definition" "backend" {
 
 resource "aws_ecs_task_definition" "internal_api" {
   family                   = "internal-api"
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = "256"
-  memory                   = "512"
+  memory                   = "196"
 
   container_definitions = jsonencode([
     {
       name      = "internal-api"
-      image     = "${aws_ecr_repository.main.repository_url}:internal_api"
+      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12302", "main.py"]
+      image     = "${aws_ecr_repository.repo.repository_url}:internal_api"
       essential = true
       portMappings = [
         {

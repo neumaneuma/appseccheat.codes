@@ -18,6 +18,10 @@ variable "public_subnet_ids" {
   type        = list(string)
 }
 
+variable "private_subnet_ids" {
+  description = "Private subnet IDs"
+  type        = list(string)
+}
 
 locals {
   traffic_dist_map = {

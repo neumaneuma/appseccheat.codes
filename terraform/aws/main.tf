@@ -60,7 +60,8 @@ module "ecs" {
   source               = "../modules/ecs"
   region               = var.region
   bucket_name          = "ecs-logs-${random_uuid.uuid.result}"
-  public_subnet_ids    = [module.vpc.public_subnets[0].id, module.vpc.public_subnets[1].id]
+  public_subnet_ids    = module.vpc.public_subnets[*].id
+  private_subnet_ids   = module.vpc.private_subnets[*].id
   traffic_distribution = var.traffic_distribution
   repo_name            = var.ecr_repo_name
 }
