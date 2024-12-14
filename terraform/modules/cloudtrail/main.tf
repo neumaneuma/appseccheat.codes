@@ -62,7 +62,7 @@ resource "aws_s3_bucket" "audit_logs" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "logs_cleanup" {
-  bucket = aws_s3_bucket.logs.id
+  bucket = aws_s3_bucket.audit_logs.id
 
   rule {
     id     = "cleanup"

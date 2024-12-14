@@ -55,7 +55,7 @@ resource "aws_ecs_cluster" "main" {
     execute_command_configuration {
       logging = "DEFAULT"
       log_configuration {
-        s3_bucket_name = aws_s3_bucket.ecs_logs.name
+        s3_bucket_name = aws_s3_bucket.ecs_logs.id
       }
     }
   }
@@ -174,7 +174,7 @@ resource "aws_ecs_service" "backend" {
   desired_count   = 1
 
   network_configuration {
-    subnets         = aws_subnet.private[*].id
+    subnets         = var.private_subnet_ids
     security_groups = [aws_security_group.backend.id]
   }
 }
@@ -186,7 +186,7 @@ resource "aws_ecs_service" "internal_api" {
   desired_count   = 1
 
   network_configuration {
-    subnets         = aws_subnet.private[*].id
+    subnets         = var.private_subnet_ids
     security_groups = [aws_security_group.internal_api.id]
   }
 }
