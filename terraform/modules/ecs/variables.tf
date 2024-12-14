@@ -8,6 +8,11 @@ variable "repo_name" {
   type        = string
 }
 
+variable "bucket_name" {
+  description = "S3 bucket name for ECS logs"
+  type        = string
+}
+
 variable "public_subnet_ids" {
   description = "Public subnet IDs"
   type        = list(string)

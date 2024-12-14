@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-# Update policy document to use local trail name instead of resource reference
+# https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
 data "aws_iam_policy_document" "audit_logs" {
   statement {
     principals {
@@ -59,6 +59,19 @@ resource "aws_accessanalyzer_analyzer" "main" {
 
 resource "aws_s3_bucket" "audit_logs" {
   bucket = var.bucket_name
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "logs_cleanup" {
+  bucket = aws_s3_bucket.logs.id
+
+  rule {
+    id     = "cleanup"
+    status = "Enabled"
+
+    expiration {
+      days = 30
+    }
+  }
 }
 
 resource "aws_s3_bucket_policy" "audit_logs" {
