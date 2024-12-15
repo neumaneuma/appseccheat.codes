@@ -91,10 +91,6 @@ resource "aws_cloudfront_distribution" "website" {
     compress               = true
     # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized
     cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
-
-    # Optimize caching for SPA
-    default_ttl = 3600  # 1 hour
-    max_ttl     = 86400 # 24 hours
   }
 
   # Handle SPA routing - return index.html for 404s

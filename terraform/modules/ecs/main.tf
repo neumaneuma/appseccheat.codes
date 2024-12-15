@@ -53,7 +53,7 @@ resource "aws_ecs_cluster" "main" {
 
   configuration {
     execute_command_configuration {
-      logging = "DEFAULT"
+      logging = "OVERRIDE"
       log_configuration {
         s3_bucket_name = aws_s3_bucket.ecs_logs.id
       }
