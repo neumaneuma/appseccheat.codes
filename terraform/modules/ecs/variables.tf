@@ -13,6 +13,11 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
+
 variable "public_subnet_ids" {
   description = "Public subnet IDs"
   type        = list(string)
@@ -20,6 +25,16 @@ variable "public_subnet_ids" {
 
 variable "private_subnet_ids" {
   description = "Private subnet IDs"
+  type        = list(string)
+}
+
+variable "public_subnet_cidr_blocks" {
+  description = "Public subnet CIDR blocks"
+  type        = list(string)
+}
+
+variable "private_subnet_cidr_blocks" {
+  description = "Private subnet CIDR blocks"
   type        = list(string)
 }
 
@@ -50,5 +65,10 @@ locals {
 
 variable "traffic_distribution" {
   description = "Levels of traffic distribution"
+  type        = string
+}
+
+variable "alb_certificate_arn" {
+  description = "ALB certificate ARN"
   type        = string
 }

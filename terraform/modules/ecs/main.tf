@@ -172,6 +172,16 @@ resource "aws_ecs_service" "backend" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.backend.arn
   desired_count   = 1
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.blue.arn
+    container_name   = "backend"
+    container_port   = 12301
+  }
+
+  depends_on = [
+    aws_lb_listener.main
+  ]
 }
 
 resource "aws_ecs_service" "internal_api" {
@@ -181,36 +191,84 @@ resource "aws_ecs_service" "internal_api" {
   desired_count   = 1
 }
 
-# resource "aws_lb" "main" {
-#   name               = "app-load-balancer"
-#   internal           = false
-#   load_balancer_type = "application"
-#   subnets            = var.public_subnet_ids
-#   security_groups    = [module.lb_security_group.security_group_id]
-# }
+resource "aws_security_group" "allow_tls" {
+  name        = "allow_tls"
+  description = "Allow TLS inbound traffic and all outbound traffic"
+  vpc_id      = var.vpc_id
 
-# resource "aws_lb_listener" "main" {
-#   load_balancer_arn = aws_lb.main.arn
-#   port              = "443"
-#   protocol          = "HTTPS"
+  tags = {
+    Name = "allow_tls"
+  }
+}
 
-#   default_action {
-#     type = "forward"
-#     forward {
-#       target_group {
-#         arn    = aws_lb_target_group.blue.arn
-#         weight = lookup(local.traffic_dist_map[var.traffic_distribution], "blue", 100)
-#       }
 
-#       target_group {
-#         arn    = aws_lb_target_group.green.arn
-#         weight = lookup(local.traffic_dist_map[var.traffic_distribution], "green", 0)
-#       }
+resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv4" {
+  count             = length(var.public_subnet_cidr_blocks)
+  security_group_id = aws_security_group.allow_tls.id
+  cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
+  from_port         = 443
+  ip_protocol       = "tcp"
+  to_port           = 443
+}
 
-#       stickiness {
-#         enabled  = false
-#         duration = 1
-#       }
-#     }
-#   }
-# }
+
+resource "aws_vpc_security_group_egress_rule" "allow_private_traffic" {
+  count             = length(var.private_subnet_cidr_blocks)
+  security_group_id = aws_security_group.allow_tls.id
+  cidr_ipv4         = var.private_subnet_cidr_blocks[count.index]
+  # from_port         = 443
+  #ip_protocol       = "tcp"
+  # to_port           = 12301
+  ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
+}
+
+resource "aws_lb" "main" {
+  name               = "app-load-balancer"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = var.public_subnet_ids
+  security_groups    = [aws_security_group.allow_tls.id]
+}
+
+resource "aws_lb_listener" "main" {
+  load_balancer_arn = aws_lb.main.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = var.alb_certificate_arn
+
+  default_action {
+    type = "forward"
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.blue.arn
+        weight = lookup(local.traffic_dist_map[var.traffic_distribution], "blue", 100)
+      }
+
+      # target_group {
+      #   arn    = aws_lb_target_group.green.arn
+      #   weight = lookup(local.traffic_dist_map[var.traffic_distribution], "green", 0)
+      # }
+
+      stickiness {
+        enabled  = false
+        duration = 1
+      }
+    }
+  }
+}
+
+resource "aws_lb_target_group" "blue" {
+  name     = "blue-target-group"
+  port     = 12301
+  protocol = "HTTPS"
+  vpc_id   = var.vpc_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
+  security_group_id            = aws_security_group.allow_tls.id
+  from_port                    = 12301
+  to_port                      = 12301
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.allow_tls.id # Allow traffic from the ALB's security group
+}
