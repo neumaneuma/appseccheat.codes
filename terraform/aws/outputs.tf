@@ -25,3 +25,7 @@ output "ecr_repository_url" {
 output "ecr_repository_name" {
   value = var.ecr_repo_name
 }
+
+output "db_host" {
+  value = module.database.db_host
+}

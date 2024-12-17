@@ -69,3 +69,16 @@ module "ecs" {
   vpc_id                     = module.vpc.vpc_id
   alb_certificate_arn        = module.certificates.alb_certificate_arn
 }
+
+module "database" {
+  source                     = "../modules/database"
+  region                     = var.region
+  vpc_id                     = module.vpc.vpc_id
+  alb_sg_id                  = module.ecs.alb_sg_id
+  private_subnet_ids         = module.vpc.private_subnets[*].id
+  private_subnet_cidr_blocks = module.vpc.private_subnets[*].cidr_block
+  db_name                    = var.db_name
+  db_username                = var.db_username
+  db_password                = var.db_password
+  iam_user_name              = var.iam_user_name
+}
