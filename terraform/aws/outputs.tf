@@ -29,3 +29,8 @@ output "ecr_repository_name" {
 output "db_host" {
   value = module.database.db_host
 }
+
+
+output "alb_dns_name" {
+  value = module.ecs.alb_dns_name
+}

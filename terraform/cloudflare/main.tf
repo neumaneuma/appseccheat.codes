@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-64ec6d21-b96a-b7bc-7cd2-d3d4284d5ffc"
-    key            = "state/terraform.tfstate"
+    bucket         = "terraform-state-fd98f914-e3a3-e024-c533-fb339fbb5be3"
+    key            = "state/cloudflare.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-state-locks"
   }
@@ -9,16 +9,36 @@ terraform {
 
 provider "cloudflare" {}
 
+
+data "terraform_remote_state" "aws" {
+  backend = "s3"
+  config = {
+    bucket = "terraform-state-fd98f914-e3a3-e024-c533-fb339fbb5be3"
+    key    = "state/terraform.tfstate"
+    region = var.region
+  }
+}
+
+
 data "cloudflare_zones" "domain" {
   filter {
     name = var.domain_name
   }
 }
 
-# https://registry.terraform.io/providers/cloudflare/cloudflare/4.47.0/docs/resources/record
-resource "cloudflare_record" "cname" {
+resource "cloudflare_record" "frontend" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
   name    = var.domain_name
-  content = aws_s3_bucket_website_configuration.site.website_endpoint
+  content = data.terraform_remote_state.aws.outputs.cloudfront_distribution_domain
   type    = "CNAME"
+  proxied = false # TODO use proxied records for ddos protection
+}
+
+
+resource "cloudflare_record" "backend" {
+  zone_id = data.cloudflare_zones.domain.zones[0].id
+  name    = var.api_domain_name
+  content = data.terraform_remote_state.aws.outputs.alb_dns_name
+  type    = "CNAME"
+  proxied = false # TODO use proxied records for ddos protection
 }

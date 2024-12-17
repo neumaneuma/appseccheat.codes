@@ -9,3 +9,7 @@ output "s3_bucket_name" {
 output "alb_sg_id" {
   value = aws_security_group.allow_tls.id
 }
+
+output "alb_dns_name" {
+  value = aws_lb.main.dns_name
+}
