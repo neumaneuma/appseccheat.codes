@@ -115,7 +115,7 @@ resource "aws_lb_target_group" "blue" {
     healthy_threshold   = 2
     interval            = 30
     matcher             = "200"
-    path                = "/health"
+    path                = "/"
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 5
@@ -177,7 +177,7 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-data "aws_iam_policy_document" "assume_role" {
+data "aws_iam_policy_document" "ec2_assume_role" {
   statement {
     effect = "Allow"
 
@@ -192,7 +192,19 @@ data "aws_iam_policy_document" "assume_role" {
 
 resource "aws_iam_role" "ecs_role" {
   name               = "ecs-role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_policy" {
+  role = aws_iam_role.ecs_role.name
+  # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEC2ContainerServiceforEC2Role.html
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
+  role = aws_iam_role.ecs_role.name
+  # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonECSTaskExecutionRolePolicy.html
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
@@ -210,6 +222,8 @@ resource "aws_launch_template" "ecs" {
   name_prefix   = "ecs-template"
   image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
   instance_type = "t2.micro"
+
+  vpc_security_group_ids = [aws_security_group.ecs_sg.id]
 
   tag_specifications {
     resource_type = "instance"
@@ -249,6 +263,29 @@ resource "aws_autoscaling_attachment" "backend" {
   lb_target_group_arn    = aws_lb_target_group.blue.arn
 }
 
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name               = "ecs-task-execution-role"
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role.json
+}
+
+data "aws_iam_policy_document" "ecs_task_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonECSTaskExecutionRolePolicy.html
+}
 
 resource "aws_ecs_task_definition" "backend" {
   family                   = "backend"
@@ -256,6 +293,7 @@ resource "aws_ecs_task_definition" "backend" {
   requires_compatibilities = ["EC2"]
   cpu                      = "768"
   memory                   = "768"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -269,6 +307,14 @@ resource "aws_ecs_task_definition" "backend" {
           hostPort      = 12301
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/backend"
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
