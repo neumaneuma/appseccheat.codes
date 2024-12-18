@@ -23,10 +23,10 @@ variable "traffic_distribution" {
   default     = "blue"
 }
 
-variable "ecr_repo_name" {
-  description = "ECR repository name"
+variable "docker_hub_repo" {
+  description = "Docker Hub repository identifier"
   type        = string
-  default     = "appseccheat.codes"
+  default     = "neumaneuma/appseccheat.codes"
 }
 
 variable "db_name" {
@@ -45,6 +45,7 @@ variable "db_password" {
   description = "Database password"
   type        = string
   sensitive   = true
+  default     = "dbesrdgtfhjklgdmrfseadjfbcgofdklmsea" # putting here until development is complete for ease of development
 }
 
 variable "iam_user_name" {

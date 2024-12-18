@@ -18,18 +18,9 @@ output "vpc_id" {
   value = module.vpc.vpc_id
 }
 
-output "ecr_repository_url" {
-  value = module.ecs.repo_url
-}
-
-output "ecr_repository_name" {
-  value = var.ecr_repo_name
-}
-
 output "db_host" {
   value = module.database.db_host
 }
-
 
 output "alb_dns_name" {
   value = module.ecs.alb_dns_name

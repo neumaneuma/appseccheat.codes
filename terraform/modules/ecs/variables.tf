@@ -3,8 +3,8 @@ variable "region" {
   type        = string
 }
 
-variable "repo_name" {
-  description = "ECR repository name"
+variable "docker_hub_repo" {
+  description = "Docker Hub repository identifier"
   type        = string
 }
 

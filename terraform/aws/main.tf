@@ -65,7 +65,7 @@ module "ecs" {
   public_subnet_cidr_blocks  = module.vpc.public_subnets[*].cidr_block
   private_subnet_cidr_blocks = module.vpc.private_subnets[*].cidr_block
   traffic_distribution       = var.traffic_distribution
-  repo_name                  = var.ecr_repo_name
+  docker_hub_repo            = var.docker_hub_repo
   vpc_id                     = module.vpc.vpc_id
   alb_certificate_arn        = module.certificates.alb_certificate_arn
 }

@@ -1,12 +1,3 @@
-resource "aws_ecr_repository" "repo" {
-  name                 = var.repo_name
-  image_tag_mutability = "MUTABLE"
-
-  encryption_configuration {
-    encryption_type = "AES256"
-  }
-}
-
 resource "aws_security_group" "allow_tls" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic and all outbound traffic"
@@ -17,7 +8,7 @@ resource "aws_security_group" "allow_tls" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "alb_public_traffic" {
+resource "aws_vpc_security_group_ingress_rule" "alb_traffic" {
   description       = "Allow HTTPS public traffic to the ALB"
   count             = length(var.public_subnet_cidr_blocks)
   security_group_id = aws_security_group.allow_tls.id
@@ -27,12 +18,12 @@ resource "aws_vpc_security_group_ingress_rule" "alb_public_traffic" {
   to_port           = 443
 }
 
-resource "aws_vpc_security_group_egress_rule" "alb_private_traffic" {
+resource "aws_vpc_security_group_egress_rule" "alb_traffic" {
   description       = "Allow ALB to communicate with the ECS instances"
-  count             = length(var.private_subnet_cidr_blocks)
+  count             = length(var.public_subnet_cidr_blocks)
   security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = var.private_subnet_cidr_blocks[count.index]
-  # from_port         = 443
+  cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
+  # from_port         = 12301
   #ip_protocol       = "tcp"
   # to_port           = 12301
   ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
@@ -58,12 +49,13 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
 
 resource "aws_vpc_security_group_egress_rule" "allow_ecs_to_alb" {
   description       = "Allow ECS instances to send traffic to the ALB"
-  count             = length(var.private_subnet_cidr_blocks)
+  count             = length(var.public_subnet_cidr_blocks)
   security_group_id = aws_security_group.ecs_sg.id
-  cidr_ipv4         = var.private_subnet_cidr_blocks[count.index]
+  cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
+  # also need 80? unsure
   # from_port         = 443
   #ip_protocol       = "tcp"
-  # to_port           = 12301
+  # to_port           = 443
   ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
 }
 
@@ -190,6 +182,7 @@ data "aws_iam_policy_document" "ec2_assume_role" {
   }
 }
 
+# IAM permissions required: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-iam-role-overview.html
 resource "aws_iam_role" "ecs_role" {
   name               = "ecs-role"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
@@ -198,14 +191,29 @@ resource "aws_iam_role" "ecs_role" {
 resource "aws_iam_role_policy_attachment" "ecs_policy" {
   role = aws_iam_role.ecs_role.name
   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEC2ContainerServiceforEC2Role.html
+  # necessary since we're using EC2 instances to host the containers https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   role = aws_iam_role.ecs_role.name
   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonECSTaskExecutionRolePolicy.html
+  # necessary for cloudwatch logs and runtime monitoring
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+
+# probably need rds iam permissions as well
+
+# resource "aws_iam_role_policy_attachment" "ecs_ssm_policy" {
+#   role       = aws_iam_role.ecs_role.name
+#   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+# }
+
+# resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_policy" {
+#   role       = aws_iam_role.ecs_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+# }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
   name = "ecs-instance-profile"
@@ -220,10 +228,19 @@ data "aws_ssm_parameter" "ecs_optimized_ami" {
 
 resource "aws_launch_template" "ecs" {
   name_prefix   = "ecs-template"
-  image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
   instance_type = "t2.micro"
+  image_id      = data.aws_ssm_parameter.ecs_optimized_ami.value
 
-  vpc_security_group_ids = [aws_security_group.ecs_sg.id]
+  network_interfaces {
+    security_groups             = [aws_security_group.ecs_sg.id]
+    subnet_id                   = var.public_subnet_ids[0]
+    associate_public_ip_address = true
+  }
+
+  # cloudwatch monitoring https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-metrics.html
+  monitoring {
+    enabled = true
+  }
 
   tag_specifications {
     resource_type = "instance"
@@ -250,7 +267,7 @@ resource "aws_autoscaling_group" "ecs" {
   desired_capacity    = 1
   max_size            = 1
   min_size            = 1
-  vpc_zone_identifier = var.private_subnet_ids
+  vpc_zone_identifier = var.public_subnet_ids
 
   launch_template {
     id      = aws_launch_template.ecs.id
@@ -287,19 +304,38 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonECSTaskExecutionRolePolicy.html
 }
 
-resource "aws_ecs_task_definition" "backend" {
-  family                   = "backend"
+resource "aws_ecs_service" "multi_container_service" {
+  name            = "multi-container-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.multi_container_task.arn
+  desired_count   = 1
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.blue.arn
+    container_name   = "backend"
+    container_port   = 12301
+  }
+
+  # don't need a load balancer block for the internal_api container since that's only used internally
+
+  depends_on = [
+    aws_lb_listener.main
+  ]
+}
+
+resource "aws_ecs_task_definition" "multi_container_task" {
+  family                   = "multi-container-task"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                      = "768"
-  memory                   = "768"
+  cpu                      = "1024"
+  memory                   = "1024"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
     {
       name      = "backend"
       command   = ["fastapi", "--host", "0.0.0.0", "--port", "12301", "main.py"]
-      image     = "${aws_ecr_repository.repo.repository_url}:backend"
+      image     = "${var.docker_hub_repo}:backend"
       essential = true
       portMappings = [
         {
@@ -315,22 +351,11 @@ resource "aws_ecs_task_definition" "backend" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
-    }
-  ])
-}
-
-resource "aws_ecs_task_definition" "internal_api" {
-  family                   = "internal-api"
-  network_mode             = "bridge"
-  requires_compatibilities = ["EC2"]
-  cpu                      = "256"
-  memory                   = "196"
-
-  container_definitions = jsonencode([
+    },
     {
-      name      = "internal-api"
+      name      = "internal_api"
       command   = ["fastapi", "--host", "0.0.0.0", "--port", "12302", "main.py"]
-      image     = "${aws_ecr_repository.repo.repository_url}:internal_api"
+      image     = "${var.docker_hub_repo}:internal_api"
       essential = true
       portMappings = [
         {
@@ -338,30 +363,14 @@ resource "aws_ecs_task_definition" "internal_api" {
           hostPort      = 12302
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/internal_api"
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
-}
-
-resource "aws_ecs_service" "backend" {
-  name            = "backend"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.backend.arn
-  desired_count   = 1
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.blue.arn
-    container_name   = "backend"
-    container_port   = 12301
-  }
-
-  depends_on = [
-    aws_lb_listener.main
-  ]
-}
-
-resource "aws_ecs_service" "internal_api" {
-  name            = "internal-api"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.internal_api.arn
-  desired_count   = 1
 }
