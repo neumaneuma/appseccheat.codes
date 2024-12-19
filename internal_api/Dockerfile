@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM python:3.13.0-alpine
+FROM python:3.13.0-alpine
 
 WORKDIR /internal_api
 
