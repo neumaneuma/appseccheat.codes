@@ -57,17 +57,19 @@ module "vpc" {
 }
 
 module "ecs" {
-  source                     = "../modules/ecs"
-  region                     = var.region
-  bucket_name                = "ecs-logs-${random_uuid.uuid.result}"
-  public_subnet_ids          = module.vpc.public_subnets[*].id
-  private_subnet_ids         = module.vpc.private_subnets[*].id
-  public_subnet_cidr_blocks  = module.vpc.public_subnets[*].cidr_block
-  private_subnet_cidr_blocks = module.vpc.private_subnets[*].cidr_block
-  traffic_distribution       = var.traffic_distribution
-  docker_hub_repo            = var.docker_hub_repo
-  vpc_id                     = module.vpc.vpc_id
-  alb_certificate_arn        = module.certificates.alb_certificate_arn
+  source                                 = "../modules/ecs"
+  region                                 = var.region
+  bucket_name                            = "ecs-logs-${random_uuid.uuid.result}"
+  public_subnet_ids                      = module.vpc.public_subnets[*].id
+  private_subnet_ids                     = module.vpc.private_subnets[*].id
+  public_subnet_cidr_blocks              = module.vpc.public_subnets[*].cidr_block
+  private_subnet_cidr_blocks             = module.vpc.private_subnets[*].cidr_block
+  traffic_distribution                   = var.traffic_distribution
+  docker_hub_repo                        = var.docker_hub_repo
+  vpc_id                                 = module.vpc.vpc_id
+  alb_certificate_arn                    = module.certificates.alb_certificate_arn
+  backend_cloudwatch_log_group_name      = var.backend_cloudwatch_log_group_name
+  internal_api_cloudwatch_log_group_name = var.internal_api_cloudwatch_log_group_name
 }
 
 module "database" {

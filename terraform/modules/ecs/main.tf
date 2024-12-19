@@ -310,7 +310,6 @@ resource "aws_launch_template" "ecs" {
   user_data = base64encode(<<-EOF
               #!/bin/bash
               echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
-              sudo dnf install -y ec2-instance-connect
               EOF
   )
 
@@ -393,12 +392,22 @@ resource "aws_ecs_service" "multi_container_service" {
 
 }
 
+resource "aws_cloudwatch_log_group" "backend" {
+  name              = var.backend_cloudwatch_log_group_name
+  retention_in_days = 3
+}
+
+resource "aws_cloudwatch_log_group" "internal_api" {
+  name              = var.internal_api_cloudwatch_log_group_name
+  retention_in_days = 3
+}
+
 resource "aws_ecs_task_definition" "multi_container_task" {
   family                   = "multi-container-task"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                      = "1024"
-  memory                   = "1024"
+  cpu                      = "768"
+  memory                   = "768"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
   container_definitions = jsonencode([
@@ -416,7 +425,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/backend"
+          "awslogs-group"         = var.backend_cloudwatch_log_group_name
           "awslogs-region"        = var.region
           "awslogs-stream-prefix" = "ecs"
         }
@@ -436,7 +445,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/internal_api"
+          "awslogs-group"         = var.internal_api_cloudwatch_log_group_name
           "awslogs-region"        = var.region
           "awslogs-stream-prefix" = "ecs"
         }

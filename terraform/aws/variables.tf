@@ -53,3 +53,15 @@ variable "iam_user_name" {
   type        = string
   default     = "iam_user" # hardcoded to match the terraform/iam/main.tf file
 }
+
+variable "backend_cloudwatch_log_group_name" {
+  description = "Cloudwatch log group name for backend"
+  type        = string
+  default     = "/ecs/backend"
+}
+
+variable "internal_api_cloudwatch_log_group_name" {
+  description = "Cloudwatch log group name for internal_api"
+  type        = string
+  default     = "/ecs/internal_api"
+}

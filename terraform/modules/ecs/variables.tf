@@ -72,3 +72,13 @@ variable "alb_certificate_arn" {
   description = "ALB certificate ARN"
   type        = string
 }
+
+variable "backend_cloudwatch_log_group_name" {
+  description = "Cloudwatch log group name for backend"
+  type        = string
+}
+
+variable "internal_api_cloudwatch_log_group_name" {
+  description = "Cloudwatch log group name for internal_api"
+  type        = string
+}
