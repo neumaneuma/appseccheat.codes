@@ -169,6 +169,35 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
+resource "aws_ecs_capacity_provider" "main" {
+  name = "main_ecs_capacity_provider"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn = aws_autoscaling_group.ecs.arn
+
+    managed_scaling {
+      maximum_scaling_step_size = 1
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 100
+    }
+  }
+}
+
+
+resource "aws_ecs_cluster_capacity_providers" "main" {
+  cluster_name = aws_ecs_cluster.main.name
+
+  capacity_providers = [aws_ecs_capacity_provider.main.name]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = aws_ecs_capacity_provider.main.name
+  }
+}
+
+
 data "aws_iam_policy_document" "ec2_assume_role" {
   statement {
     effect = "Allow"
@@ -204,11 +233,18 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
 
 # probably need rds iam permissions as well
 
-# resource "aws_iam_role_policy_attachment" "ecs_ssm_policy" {
-#   role       = aws_iam_role.ecs_role.name
-#   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-# }
+resource "aws_iam_role_policy_attachment" "ecs_ssm_policy" {
+  role = aws_iam_role.ecs_role.name
+  # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html
+  # allow access ec2 host via ssm
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_ssm_policy2" {
+  role = aws_iam_role.ecs_role.name
+  # allow access ec2 host via ssm
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"
+}
 
 # resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_policy" {
 #   role       = aws_iam_role.ecs_role.name
