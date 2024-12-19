@@ -246,10 +246,10 @@ resource "aws_iam_role_policy_attachment" "ecs_ssm_policy2" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"
 }
 
-# resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_policy" {
-#   role       = aws_iam_role.ecs_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-# }
+resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_policy" {
+  role       = aws_iam_role.ecs_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
   name = "ecs-instance-profile"
