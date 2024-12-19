@@ -47,6 +47,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
   ip_protocol                  = "tcp"
 }
 
+
 resource "aws_vpc_security_group_egress_rule" "allow_ecs_to_alb" {
   description       = "Allow ECS instances to send traffic to the ALB"
   count             = length(var.public_subnet_cidr_blocks)
@@ -58,6 +59,26 @@ resource "aws_vpc_security_group_egress_rule" "allow_ecs_to_alb" {
   # to_port           = 443
   ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
 }
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
+  description                  = "Allow SSH for EC2 instance connect while debugging"
+  security_group_id            = aws_security_group.ecs_sg.id
+  referenced_security_group_id = aws_security_group.allow_tls.id
+  from_port                    = 22
+  to_port                      = 22
+  ip_protocol                  = "tcp"
+}
+
+# EC2 Instance Connect
+resource "aws_vpc_security_group_egress_rule" "allow_instance_connect" {
+  security_group_id = aws_security_group.ecs_sg.id
+  description       = "Allow outbound HTTPS traffic for EC2 Instance Connect"
+  ip_protocol       = "tcp"
+  from_port         = 443
+  to_port           = 443
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
 
 resource "aws_lb" "main" {
   name               = "app-load-balancer"
@@ -105,13 +126,13 @@ resource "aws_lb_target_group" "blue" {
   health_check {
     enabled             = true
     healthy_threshold   = 2
-    interval            = 30
+    interval            = 15
     matcher             = "200"
     path                = "/"
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 5
-    unhealthy_threshold = 2
+    unhealthy_threshold = 5
   }
 }
 
@@ -233,18 +254,18 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
 
 # probably need rds iam permissions as well
 
-resource "aws_iam_role_policy_attachment" "ecs_ssm_policy" {
-  role = aws_iam_role.ecs_role.name
-  # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html
-  # allow access ec2 host via ssm
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
+# resource "aws_iam_role_policy_attachment" "ecs_ssm_policy" {
+#   role = aws_iam_role.ecs_role.name
+#   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html
+#   # allow access ec2 host via ssm
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+# }
 
-resource "aws_iam_role_policy_attachment" "ecs_ssm_policy2" {
-  role = aws_iam_role.ecs_role.name
-  # allow access ec2 host via ssm
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"
-}
+# resource "aws_iam_role_policy_attachment" "ecs_ssm_policy2" {
+#   role = aws_iam_role.ecs_role.name
+#   # allow access ec2 host via ssm
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"
+# }
 
 resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_policy" {
   role       = aws_iam_role.ecs_role.name
@@ -269,7 +290,6 @@ resource "aws_launch_template" "ecs" {
 
   network_interfaces {
     security_groups             = [aws_security_group.ecs_sg.id]
-    subnet_id                   = var.public_subnet_ids[0]
     associate_public_ip_address = true
   }
 
@@ -290,6 +310,7 @@ resource "aws_launch_template" "ecs" {
   user_data = base64encode(<<-EOF
               #!/bin/bash
               echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+              sudo dnf install -y ec2-instance-connect
               EOF
   )
 
@@ -346,6 +367,13 @@ resource "aws_ecs_service" "multi_container_service" {
   task_definition = aws_ecs_task_definition.multi_container_task.arn
   desired_count   = 1
 
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.main.name
+    weight            = 100
+    base              = 1
+  }
+
   load_balancer {
     target_group_arn = aws_lb_target_group.blue.arn
     container_name   = "backend"
@@ -357,6 +385,12 @@ resource "aws_ecs_service" "multi_container_service" {
   depends_on = [
     aws_lb_listener.main
   ]
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
 }
 
 resource "aws_ecs_task_definition" "multi_container_task" {
@@ -370,7 +404,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
   container_definitions = jsonencode([
     {
       name      = "backend"
-      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12301", "main.py"]
+      command   = ["fastapi", "dev", "--host", "0.0.0.0", "--port", "12301", "main.py"]
       image     = "${var.docker_hub_repo}:backend"
       essential = true
       portMappings = [
@@ -390,7 +424,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
     },
     {
       name      = "internal_api"
-      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12302", "main.py"]
+      command   = ["fastapi", "dev", "--host", "0.0.0.0", "--port", "12302", "main.py"]
       image     = "${var.docker_hub_repo}:internal_api"
       essential = true
       portMappings = [
