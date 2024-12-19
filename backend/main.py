@@ -56,7 +56,12 @@ class Flag(BaseModel):
 
 @app.get("/")
 async def root() -> str:
-    return "Hello, World from the backend!"
+    return "👋 🌎"
+
+
+@app.get("/health")
+async def health() -> str:
+    return "OK"
 
 
 @app.post("/submission")

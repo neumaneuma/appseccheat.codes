@@ -54,25 +54,24 @@ resource "aws_vpc_security_group_egress_rule" "allow_ecs_to_alb" {
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
   # also need 80? unsure
-  # from_port         = 443
+  # from_port         = 12301
   #ip_protocol       = "tcp"
-  # to_port           = 443
+  # to_port           = 12301
   ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
-  description                  = "Allow SSH for EC2 instance connect while debugging"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.allow_tls.id
-  from_port                    = 22
-  to_port                      = 22
-  ip_protocol                  = "tcp"
-}
+# resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
+#   description                  = "Allow SSH for EC2 instance connect while debugging"
+#   security_group_id            = aws_security_group.ecs_sg.id
+#   referenced_security_group_id = aws_security_group.allow_tls.id
+#   from_port                    = 22
+#   to_port                      = 22
+#   ip_protocol                  = "tcp"
+# }
 
-# EC2 Instance Connect
-resource "aws_vpc_security_group_egress_rule" "allow_instance_connect" {
+resource "aws_vpc_security_group_egress_rule" "allow_ssm" {
   security_group_id = aws_security_group.ecs_sg.id
-  description       = "Allow outbound HTTPS traffic for EC2 Instance Connect"
+  description       = "Allow outbound HTTPS traffic for SSM access"
   ip_protocol       = "tcp"
   from_port         = 443
   to_port           = 443
@@ -128,7 +127,7 @@ resource "aws_lb_target_group" "blue" {
     healthy_threshold   = 2
     interval            = 15
     matcher             = "200"
-    path                = "/"
+    path                = "/health"
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 5
@@ -324,6 +323,7 @@ resource "aws_autoscaling_group" "ecs" {
   max_size            = 1
   min_size            = 1
   vpc_zone_identifier = var.public_subnet_ids
+  force_delete        = true # development only, skips draining instances and just deletes them immediately
 
   launch_template {
     id      = aws_launch_template.ecs.id
@@ -413,7 +413,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
   container_definitions = jsonencode([
     {
       name      = "backend"
-      command   = ["fastapi", "dev", "--host", "0.0.0.0", "--port", "12301", "main.py"]
+      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12301", "main.py"]
       image     = "${var.docker_hub_repo}:backend"
       essential = true
       portMappings = [
@@ -433,7 +433,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
     },
     {
       name      = "internal_api"
-      command   = ["fastapi", "dev", "--host", "0.0.0.0", "--port", "12302", "main.py"]
+      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12302", "main.py"]
       image     = "${var.docker_hub_repo}:internal_api"
       essential = true
       portMappings = [

@@ -110,6 +110,28 @@ def check_response(
     return success
 
 
+def test_static_routes() -> list[bool]:
+    base_url = f"{url_prefix}"
+    health_url = f"{url_prefix}/health"
+    r = requests.get(base_url, verify=verify)
+    print("Testing root endpoint...")
+    r1 = check_response(
+        expected_status_code=200,
+        actual_status_code=r.status_code,
+        expected_response='"👋 🌎"',
+        actual_response=r.text,
+    )
+    r = requests.get(health_url, verify=verify)
+    print("Testing health check...")
+    r2 = check_response(
+        expected_status_code=200,
+        actual_status_code=r.status_code,
+        expected_response='"OK"',
+        actual_response=r.text,
+    )
+    return [r1, r2]
+
+
 def test_submission(challenge: Passphrases, secret: str) -> bool:
     url = f"{url_prefix}/submission"
     data = {"secret": secret, "challenge": challenge.name}
@@ -364,6 +386,9 @@ def ssrf_local_file_inclusion(state: State) -> list[bool]:
 start_time = round(time.time() * 1000)
 print("Starting functional test...\n\n")
 results = []
+
+print("Testing static routes...")
+results.extend(test_static_routes())
 
 for state in State:
     print(f"Testing {state.name} state for SQLi login bypass...")
