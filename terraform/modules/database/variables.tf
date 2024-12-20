@@ -8,8 +8,8 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "alb_sg_id" {
-  description = "ALB security group ID"
+variable "ecs_sg_id" {
+  description = "ECS security group ID"
   type        = string
 }
 

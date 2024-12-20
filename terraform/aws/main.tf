@@ -77,7 +77,7 @@ module "database" {
   source                     = "../modules/database"
   region                     = var.region
   vpc_id                     = module.vpc.vpc_id
-  alb_sg_id                  = module.ecs.alb_sg_id
+  ecs_sg_id                  = module.ecs.ecs_sg_id
   private_subnet_ids         = module.vpc.private_subnets[*].id
   private_subnet_cidr_blocks = module.vpc.private_subnets[*].cidr_block
   db_name                    = var.db_name

@@ -2,8 +2,8 @@ output "s3_bucket_name" {
   value = aws_s3_bucket.ecs_logs.id
 }
 
-output "alb_sg_id" {
-  value = aws_security_group.allow_tls.id
+output "ecs_sg_id" {
+  value = aws_security_group.ecs_sg.id
 }
 
 output "alb_dns_name" {

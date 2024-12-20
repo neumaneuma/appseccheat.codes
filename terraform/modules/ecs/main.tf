@@ -48,16 +48,11 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
 }
 
 
-resource "aws_vpc_security_group_egress_rule" "allow_ecs_to_alb" {
-  description       = "Allow ECS instances to send traffic to the ALB"
-  count             = length(var.public_subnet_cidr_blocks)
+resource "aws_vpc_security_group_egress_rule" "allow_ecs_outbound" {
+  description       = "Allow all outbound traffic from ECS"
   security_group_id = aws_security_group.ecs_sg.id
-  cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
-  # also need 80? unsure
-  # from_port         = 12301
-  #ip_protocol       = "tcp"
-  # to_port           = 12301
-  ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
+  ip_protocol       = "-1"        # Allow all protocols
+  cidr_ipv4         = "0.0.0.0/0" # Allow to all destinations
 }
 
 # resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
@@ -69,14 +64,14 @@ resource "aws_vpc_security_group_egress_rule" "allow_ecs_to_alb" {
 #   ip_protocol                  = "tcp"
 # }
 
-resource "aws_vpc_security_group_egress_rule" "allow_ssm" {
-  security_group_id = aws_security_group.ecs_sg.id
-  description       = "Allow outbound HTTPS traffic for SSM access"
-  ip_protocol       = "tcp"
-  from_port         = 443
-  to_port           = 443
-  cidr_ipv4         = "0.0.0.0/0"
-}
+# resource "aws_vpc_security_group_egress_rule" "allow_ssm" {
+#   security_group_id = aws_security_group.ecs_sg.id
+#   description       = "Allow outbound HTTPS traffic for SSM access"
+#   ip_protocol       = "tcp"
+#   from_port         = 443
+#   to_port           = 443
+#   cidr_ipv4         = "0.0.0.0/0"
+# }
 
 
 resource "aws_lb" "main" {

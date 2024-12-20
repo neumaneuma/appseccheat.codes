@@ -9,7 +9,7 @@ resource "aws_vpc_security_group_ingress_rule" "database_sg_ipv4" {
   from_port                    = 5432
   ip_protocol                  = "tcp"
   to_port                      = 5432
-  referenced_security_group_id = var.alb_sg_id
+  referenced_security_group_id = var.ecs_sg_id
 }
 
 resource "aws_db_subnet_group" "database" {
@@ -104,6 +104,9 @@ resource "aws_db_instance" "postgres_db" {
   max_allocated_storage      = 0 # Disable auto-scaling
   auto_minor_version_upgrade = false
   skip_final_snapshot        = true # don't create a snapshot when the db is deleted
+
+  db_subnet_group_name   = aws_db_subnet_group.database.name
+  vpc_security_group_ids = [aws_security_group.database.id]
 
   db_name  = var.db_name
   username = var.db_username
