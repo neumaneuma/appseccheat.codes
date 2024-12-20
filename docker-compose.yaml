@@ -22,7 +22,6 @@ services:
       - "12301:12301"
     command: fastapi dev --host 0.0.0.0 --port 12301 main.py
     environment:
-      - ENABLE_HSTS=false
       - DB_HOST=db
     depends_on:
       db:

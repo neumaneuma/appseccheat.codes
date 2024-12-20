@@ -422,10 +422,6 @@ resource "aws_ecs_task_definition" "multi_container_task" {
       image   = "${var.docker_hub_repo}:backend"
       environment = [
         {
-          name  = "ENABLE_HSTS"
-          value = "true"
-        },
-        {
           name  = "DB_HOST"
           value = var.rds_instance_url
         }

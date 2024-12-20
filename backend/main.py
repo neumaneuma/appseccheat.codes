@@ -1,4 +1,3 @@
-import os
 import secrets
 
 from fastapi import FastAPI, Request, Response
@@ -61,10 +60,9 @@ async def add_hsts_header(
     request: Request, call_next: RequestResponseEndpoint
 ) -> Response:
     response = await call_next(request)
-    if os.getenv("ENABLE_HSTS", "false").lower() == "true":
-        response.headers["Strict-Transport-Security"] = (
-            "max-age=63072000; includeSubDomains"
-        )
+    response.headers["Strict-Transport-Security"] = (
+        "max-age=63072000; includeSubDomains"
+    )
     return response
 
 
