@@ -25,3 +25,7 @@ output "db_host" {
 output "alb_dns_name" {
   value = module.ecs.alb_dns_name
 }
+
+output "asg_name" {
+  value = module.ecs.asg_name
+}

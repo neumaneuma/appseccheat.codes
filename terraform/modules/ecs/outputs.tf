@@ -9,3 +9,7 @@ output "alb_sg_id" {
 output "alb_dns_name" {
   value = aws_lb.main.dns_name
 }
+
+output "asg_name" {
+  value = aws_autoscaling_group.ecs.name
+}

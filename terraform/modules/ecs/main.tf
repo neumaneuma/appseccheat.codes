@@ -418,7 +418,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
   container_definitions = jsonencode([
     {
       name      = "backend"
-      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12301", "main.py"]
+      command   = ["fastapi", "run", "--host", "0.0.0.0", "--port", "12301", "main.py"]
       image     = "${var.docker_hub_repo}:backend"
       essential = true
       portMappings = [
@@ -438,7 +438,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
     },
     {
       name      = "internal_api"
-      command   = ["fastapi", "--host", "0.0.0.0", "--port", "12302", "main.py"]
+      command   = ["fastapi", "run", "--host", "0.0.0.0", "--port", "12302", "main.py"]
       image     = "${var.docker_hub_repo}:internal_api"
       essential = true
       portMappings = [
