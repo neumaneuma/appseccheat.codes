@@ -419,6 +419,10 @@ resource "aws_ecs_task_definition" "multi_container_task" {
         {
           name  = "DB_HOST"
           value = var.rds_instance_url
+        },
+        {
+          name  = "DB_PASSWORD"
+          value = var.db_password
         }
       ]
       essential = true

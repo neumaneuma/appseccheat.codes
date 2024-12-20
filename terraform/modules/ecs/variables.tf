@@ -8,6 +8,12 @@ variable "rds_instance_url" {
   type        = string
 }
 
+variable "db_password" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+}
+
 variable "docker_hub_repo" {
   description = "Docker Hub repository identifier"
   type        = string

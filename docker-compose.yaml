@@ -23,6 +23,7 @@ services:
     command: fastapi dev --host 0.0.0.0 --port 12301 main.py
     environment:
       - DB_HOST=db
+      - DB_PASSWORD=postgres
     depends_on:
       db:
         condition: service_healthy

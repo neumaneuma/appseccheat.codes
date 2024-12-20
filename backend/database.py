@@ -10,7 +10,7 @@ from backend.constants import SQLI1_USERNAME, SQLI2_USERNAME
 db = PostgresqlDatabase(
     "postgres",
     user="postgres",
-    password="postgres",
+    password=os.getenv("DB_PASSWORD", "postgres"),
     host=os.getenv("DB_HOST", "db"),
     port=5432,
     autoconnect=False,
