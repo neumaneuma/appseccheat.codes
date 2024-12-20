@@ -1,8 +1,10 @@
+import os
 import secrets
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from starlette.middleware.base import RequestResponseEndpoint
 from starlette.middleware.sessions import SessionMiddleware
 
 from backend.constants import SESSION_IDENTIFIER
@@ -52,6 +54,18 @@ reset_db()
 class Flag(BaseModel):
     secret: str
     challenge: str
+
+
+@app.middleware("http")
+async def add_hsts_header(
+    request: Request, call_next: RequestResponseEndpoint
+) -> Response:
+    response = await call_next(request)
+    if os.getenv("ENABLE_HSTS", "false").lower() == "true":
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=63072000; includeSubDomains"
+        )
+    return response
 
 
 @app.get("/")

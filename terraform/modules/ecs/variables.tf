@@ -3,6 +3,11 @@ variable "region" {
   type        = string
 }
 
+variable "rds_instance_url" {
+  description = "RDS instance URL"
+  type        = string
+}
+
 variable "docker_hub_repo" {
   description = "Docker Hub repository identifier"
   type        = string

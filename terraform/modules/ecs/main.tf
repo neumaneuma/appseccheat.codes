@@ -417,9 +417,19 @@ resource "aws_ecs_task_definition" "multi_container_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "backend"
-      command   = ["fastapi", "run", "--host", "0.0.0.0", "--port", "12301", "main.py"]
-      image     = "${var.docker_hub_repo}:backend"
+      name    = "backend"
+      command = ["fastapi", "run", "--host", "0.0.0.0", "--port", "12301", "main.py"]
+      image   = "${var.docker_hub_repo}:backend"
+      environment = [
+        {
+          name  = "ENABLE_HSTS"
+          value = "true"
+        },
+        {
+          name  = "DB_HOST"
+          value = var.rds_instance_url
+        }
+      ]
       essential = true
       portMappings = [
         {

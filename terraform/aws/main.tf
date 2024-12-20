@@ -59,6 +59,7 @@ module "vpc" {
 module "ecs" {
   source                                 = "../modules/ecs"
   region                                 = var.region
+  rds_instance_url                       = module.database.db_host
   bucket_name                            = "ecs-logs-${random_uuid.uuid.result}"
   public_subnet_ids                      = module.vpc.public_subnets[*].id
   private_subnet_ids                     = module.vpc.private_subnets[*].id

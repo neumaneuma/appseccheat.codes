@@ -1,3 +1,4 @@
+import os
 import secrets
 import uuid
 from typing import Any
@@ -10,7 +11,7 @@ db = PostgresqlDatabase(
     "postgres",
     user="postgres",
     password="postgres",
-    host="db",
+    host=os.getenv("DB_HOST", "db"),
     port=5432,
     autoconnect=False,
 )
