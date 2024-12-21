@@ -10,6 +10,12 @@ variable "domain_name" {
   default     = "appseccheat.codes"
 }
 
+variable "api_domain_name" {
+  description = "API domain name"
+  type        = string
+  default     = "api.appseccheat.codes"
+}
+
 variable "cloudflare_api_token" {
   description = "Cloudflare API token"
   type        = string

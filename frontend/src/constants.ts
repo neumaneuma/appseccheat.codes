@@ -1,4 +1,19 @@
-const API_BASE_URL = 'http://127.0.0.1:12301'
+interface Config {
+  API_BASE_URL: string
+}
+
+async function loadConfig(): Promise<Config> {
+  try {
+    const response = await fetch('/config.json')
+    const config: Config = await response.json()
+    return config
+  } catch (error) {
+    return { API_BASE_URL: 'http://127.0.0.1:12301' }
+  }
+}
+
+export const config = await loadConfig()
+export const API_BASE_URL = config.API_BASE_URL
 const VULNERABLE_PATH = 'vulnerabilities'
 
 export const SUBMISSION_URL = `${API_BASE_URL}/submission`

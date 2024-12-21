@@ -14,7 +14,7 @@ resource "aws_acm_certificate" "cloudfront" {
 }
 
 resource "aws_acm_certificate" "alb" {
-  domain_name       = "api.${var.domain_name}"
+  domain_name       = var.api_domain_name
   validation_method = "DNS"
   key_algorithm     = "EC_prime256v1"
 

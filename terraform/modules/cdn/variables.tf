@@ -8,6 +8,11 @@ variable "domain_name" {
   type        = string
 }
 
+variable "api_domain_name" {
+  description = "API domain name"
+  type        = string
+}
+
 variable "bucket_name" {
   description = "S3 bucket name for the frontend"
   type        = string

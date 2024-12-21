@@ -33,9 +33,10 @@ module "cloudtrail" {
 }
 
 module "certificates" {
-  source      = "../modules/certificates"
-  domain_name = var.domain_name
-  region      = var.region
+  source          = "../modules/certificates"
+  domain_name     = var.domain_name
+  api_domain_name = var.api_domain_name
+  region          = var.region
   providers = {
     aws           = aws
     aws.us-east-1 = aws.us-east-1
@@ -46,6 +47,7 @@ module "cdn" {
   source                     = "../modules/cdn"
   region                     = var.region
   domain_name                = var.domain_name
+  api_domain_name            = var.api_domain_name
   origin_id                  = "S3Origin"
   bucket_name                = "cloudfront-cdn-bucket-${random_uuid.uuid.result}"
   cloudfront_certificate_arn = module.certificates.cloudfront_certificate_arn

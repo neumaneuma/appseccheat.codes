@@ -114,3 +114,12 @@ resource "aws_cloudfront_distribution" "website" {
     minimum_protocol_version = "TLSv1.2_2021"
   }
 }
+
+resource "aws_s3_object" "config" {
+  bucket = aws_s3_bucket.website.id
+  key    = "config.json"
+  content = jsonencode({
+    API_BASE_URL = "https://${var.api_domain_name}"
+  })
+  content_type = "application/json"
+}
