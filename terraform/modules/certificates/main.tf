@@ -1,4 +1,10 @@
+provider "aws" {
+  region = "us-east-1"
+  alias  = "us-east-1"
+}
+
 resource "aws_acm_certificate" "cloudfront" {
+  provider                  = aws.us-east-1
   domain_name               = var.domain_name
   validation_method         = "DNS"
   subject_alternative_names = ["www.${var.domain_name}"]
@@ -26,8 +32,6 @@ resource "aws_acm_certificate" "alb" {
     create_before_destroy = true
   }
 }
-
-
 
 data "cloudflare_zones" "domain" {
   filter {

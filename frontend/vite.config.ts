@@ -16,4 +16,10 @@ export default defineConfig({
     port: 12300,
     host: '0.0.0.0',
   },
+  publicDir: false,
+  esbuild: {
+    supported: {
+      'top-level-await': true, // required so constants.ts can use await
+    },
+  },
 })

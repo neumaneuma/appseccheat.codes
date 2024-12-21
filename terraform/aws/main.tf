@@ -37,10 +37,6 @@ module "certificates" {
   domain_name     = var.domain_name
   api_domain_name = var.api_domain_name
   region          = var.region
-  providers = {
-    aws           = aws
-    aws.us-east-1 = aws.us-east-1
-  }
 }
 
 module "cdn" {

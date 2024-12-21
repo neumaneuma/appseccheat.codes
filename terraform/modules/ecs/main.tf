@@ -10,9 +10,8 @@ resource "aws_security_group" "allow_tls" {
 
 resource "aws_vpc_security_group_ingress_rule" "alb_traffic" {
   description       = "Allow HTTPS public traffic to the ALB"
-  count             = length(var.public_subnet_cidr_blocks)
   security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
+  cidr_ipv4         = "0.0.0.0/0"
   from_port         = 443
   ip_protocol       = "tcp"
   to_port           = 443

@@ -8,7 +8,17 @@ async function loadConfig(): Promise<Config> {
     const config: Config = await response.json()
     return config
   } catch (error) {
-    return { API_BASE_URL: 'http://127.0.0.1:12301' }
+    // If config.json isn't present for some reason, try to guess the right API_BASE_URL
+    console.log('Error loading config')
+    const isRunningLocally =
+      window.location.hostname === '0.0.0.0' ||
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+
+    if (isRunningLocally) {
+      return { API_BASE_URL: 'http://127.0.0.1:12301' }
+    }
+    return { API_BASE_URL: 'https://api.appseccheat.codes' }
   }
 }
 
