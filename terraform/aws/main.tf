@@ -39,16 +39,6 @@ module "certificates" {
   region          = var.region
 }
 
-module "cdn" {
-  source                     = "../modules/cdn"
-  region                     = var.region
-  domain_name                = var.domain_name
-  api_domain_name            = var.api_domain_name
-  origin_id                  = "S3Origin"
-  bucket_name                = "cloudfront-cdn-bucket-${random_uuid.uuid.result}"
-  cloudfront_certificate_arn = module.certificates.cloudfront_certificate_arn
-}
-
 module "vpc" {
   source = "../modules/vpc"
   region = var.region
