@@ -136,7 +136,6 @@ uv.lock
 *.tfvars
 *.tfvars.json
 .terraform/
-.terraform.lock.hcl
 crash.log
 crash.*.log
 override.tf
