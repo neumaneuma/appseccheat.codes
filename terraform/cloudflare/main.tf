@@ -26,19 +26,10 @@ data "cloudflare_zones" "domain" {
   }
 }
 
-resource "cloudflare_record" "frontend" {
-  zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = "@" # root domain
-  content = data.terraform_remote_state.aws.outputs.cloudfront_distribution_domain
-  type    = "CNAME"
-  proxied = true
-}
-
-
 resource "cloudflare_record" "backend" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
   name    = var.api_domain_name
   content = data.terraform_remote_state.aws.outputs.alb_dns_name
   type    = "CNAME"
-  proxied = false # TODO use proxied records for ddos protection
+  proxied = true
 }
