@@ -19,14 +19,28 @@ resource "aws_vpc_security_group_ingress_rule" "alb_traffic" {
 
 resource "aws_vpc_security_group_egress_rule" "alb_traffic" {
   description       = "Allow ALB to communicate with the ECS instances"
-  count             = length(var.public_subnet_cidr_blocks)
   security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = var.public_subnet_cidr_blocks[count.index]
-  # from_port         = 12301
-  #ip_protocol       = "tcp"
-  # to_port           = 12301
-  ip_protocol = "-1" # semantically equivalent to all ports until i verify everything works
+  ip_protocol       = "-1"        # Allow all protocols
+  cidr_ipv4         = "0.0.0.0/0" # Allow to all destinations
 }
+
+# resource "aws_vpc_security_group_egress_rule" "egress_alb_to_ecs" {
+#   description       = "Allow ALB to communicate with the ECS instances"
+#   security_group_id = aws_security_group.allow_tls.id
+# referenced_security_group_id = aws_security_group.ecs_sg.id
+#   from_port         = 12301
+#   ip_protocol       = "tcp"
+#   to_port           = 12301
+# }
+
+# resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_external" {
+#   description       = "Allow ALB to communicate with external hosts"
+#   security_group_id = aws_security_group.allow_tls.id
+#   cidr_ipv4         = "0.0.0.0/0"
+#   from_port         = 443
+#   ip_protocol       = "tcp"
+#   to_port           = 443
+# }
 
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs_sg"
@@ -54,24 +68,23 @@ resource "aws_vpc_security_group_egress_rule" "allow_ecs_outbound" {
   cidr_ipv4         = "0.0.0.0/0" # Allow to all destinations
 }
 
-# resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
-#   description                  = "Allow SSH for EC2 instance connect while debugging"
-#   security_group_id            = aws_security_group.ecs_sg.id
-#   referenced_security_group_id = aws_security_group.allow_tls.id
-#   from_port                    = 22
-#   to_port                      = 22
-#   ip_protocol                  = "tcp"
-# }
-
-# resource "aws_vpc_security_group_egress_rule" "allow_ssm" {
+# resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_alb" {
+#   description       = "Allow ECS instances to respond to the ALB"
 #   security_group_id = aws_security_group.ecs_sg.id
-#   description       = "Allow outbound HTTPS traffic for SSM access"
+#   referenced_security_group_id = aws_security_group.allow_tls.id
+#   from_port         = 12301
 #   ip_protocol       = "tcp"
-#   from_port         = 443
-#   to_port           = 443
-#   cidr_ipv4         = "0.0.0.0/0"
+#   to_port           = 12301
 # }
 
+# resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_external" {
+#   description       = "Allow ECS instances to talk to external hosts for webhook"
+#   security_group_id = aws_security_group.ecs_sg.id
+#   cidr_ipv4         = "0.0.0.0/0"
+#   from_port         = 443
+#   ip_protocol       = "tcp"
+#   to_port           = 443
+# }
 
 resource "aws_lb" "main" {
   name               = "app-load-balancer"
@@ -244,21 +257,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   # necessary for cloudwatch logs and runtime monitoring
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
-
-# probably need rds iam permissions as well
-
-# resource "aws_iam_role_policy_attachment" "ecs_ssm_policy" {
-#   role = aws_iam_role.ecs_role.name
-#   # https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonSSMManagedInstanceCore.html
-#   # allow access ec2 host via ssm
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-# }
-
-# resource "aws_iam_role_policy_attachment" "ecs_ssm_policy2" {
-#   role = aws_iam_role.ecs_role.name
-#   # allow access ec2 host via ssm
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"
-# }
 
 resource "aws_iam_role_policy_attachment" "ecs_cloudwatch_policy" {
   role       = aws_iam_role.ecs_role.name
