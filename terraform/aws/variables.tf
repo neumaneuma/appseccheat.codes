@@ -71,3 +71,9 @@ variable "internal_api_cloudwatch_log_group_name" {
   type        = string
   default     = "/ecs/internal_api"
 }
+
+variable "ec2_host_name" {
+  description = "EC2 host name"
+  type        = string
+  default     = "ecs-instance"
+}

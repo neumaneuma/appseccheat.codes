@@ -1,7 +1,10 @@
+import logging
 import secrets
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -47,6 +50,32 @@ app.include_router(sqli_second_order_patched_router)
 app.include_router(ssrf_webhook_patched_router)
 app.include_router(ssrf_lfi_patched_router)
 reset_db()
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+# Business logic error handler
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.info(
+        f"{request.client.host}:{request.client.port} - "
+        f'"{request.method} {request.url.path} HTTP/1.1" '
+        f"{exc.status_code} - {exc.detail}"
+    )
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
+# Pydantic error handler
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.info(
+        f"{request.client.host}:{request.client.port} - "
+        f'"{request.method} {request.url.path} HTTP/1.1" '
+        f"422 - {exc.errors()}"
+    )
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 
 class Flag(BaseModel):

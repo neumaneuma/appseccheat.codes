@@ -60,6 +60,7 @@ module "ecs" {
   alb_certificate_arn                    = module.certificates.alb_certificate_arn
   backend_cloudwatch_log_group_name      = var.backend_cloudwatch_log_group_name
   internal_api_cloudwatch_log_group_name = var.internal_api_cloudwatch_log_group_name
+  ec2_host_name                          = var.ec2_host_name
 }
 
 module "database" {

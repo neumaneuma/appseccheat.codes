@@ -1,3 +1,7 @@
+locals {
+  version = 2
+}
+
 resource "aws_security_group" "allow_tls" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic and all outbound traffic"
@@ -198,6 +202,7 @@ resource "aws_ecs_cluster" "main" {
 
 resource "aws_ecs_capacity_provider" "main" {
   name = "main_ecs_capacity_provider"
+  # name = "main-ecs-capacity-provider-${local.version}"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.ecs.arn
@@ -292,7 +297,7 @@ resource "aws_launch_template" "ecs" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "ecs-instance"
+      Name = var.ec2_host_name
     }
   }
 
@@ -310,7 +315,7 @@ resource "aws_launch_template" "ecs" {
 }
 
 resource "aws_autoscaling_group" "ecs" {
-  name_prefix         = "ecs-asg"
+  name_prefix         = "ecs-asg-${local.version}"
   desired_capacity    = 1
   max_size            = 1
   min_size            = 1
@@ -353,7 +358,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 }
 
 resource "aws_ecs_service" "multi_container_service" {
-  name            = "multi-container-service"
+  name            = "multi-container-service-${local.version}"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.multi_container_task.arn
   desired_count   = 1
@@ -377,10 +382,10 @@ resource "aws_ecs_service" "multi_container_service" {
     aws_lb_listener.main
   ]
 
-  deployment_circuit_breaker {
-    enable   = true
-    rollback = true
-  }
+  # deployment_circuit_breaker {
+  #   enable   = true
+  #   rollback = true
+  # }
 
 }
 
@@ -395,7 +400,7 @@ resource "aws_cloudwatch_log_group" "internal_api" {
 }
 
 resource "aws_ecs_task_definition" "multi_container_task" {
-  family                   = "multi-container-task"
+  family                   = "multi-container-task-${local.version}"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = "768"

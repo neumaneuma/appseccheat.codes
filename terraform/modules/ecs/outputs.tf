@@ -13,3 +13,11 @@ output "alb_dns_name" {
 output "asg_name" {
   value = aws_autoscaling_group.ecs.name
 }
+
+output "ecs_service_name" {
+  value = aws_ecs_service.multi_container_service.name
+}
+
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.main.name
+}
