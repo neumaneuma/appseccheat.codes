@@ -1,5 +1,5 @@
 locals {
-  version = 2
+  version = 3
 }
 
 resource "aws_security_group" "allow_tls" {
@@ -201,8 +201,7 @@ resource "aws_ecs_cluster" "main" {
 }
 
 resource "aws_ecs_capacity_provider" "main" {
-  name = "main_ecs_capacity_provider"
-  # name = "main-ecs-capacity-provider-${local.version}"
+  name = "main-ecs-capacity-provider-${local.version}"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.ecs.arn
@@ -442,6 +441,7 @@ resource "aws_ecs_task_definition" "multi_container_task" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
+      links = ["internal_api:internal_api"]
     },
     {
       name      = "internal_api"
