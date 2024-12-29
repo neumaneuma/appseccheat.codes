@@ -52,6 +52,7 @@
                 id="username"
                 type="text"
                 placeholder="Username"
+                @blur="handleBlur('username', 'register')"
               />
               <p v-if="registerFormErrors.username" class="error-message">
                 {{ registerFormErrors.username }}
@@ -68,6 +69,7 @@
                 id="password"
                 type="password"
                 placeholder="******************"
+                @blur="handleBlur('password', 'register')"
               />
               <p v-if="registerFormErrors.password" class="error-message">
                 {{ registerFormErrors.password }}
@@ -120,6 +122,7 @@
                 id="old-password"
                 type="password"
                 placeholder="Old Password"
+                @blur="handleBlur('oldPassword', 'password')"
               />
               <p v-if="passwordFormErrors.oldPassword" class="error-message">
                 {{ passwordFormErrors.oldPassword }}
@@ -136,6 +139,7 @@
                 id="new-password"
                 type="password"
                 placeholder="New Password"
+                @blur="handleBlur('newPassword', 'password')"
               />
               <p v-if="passwordFormErrors.newPassword" class="error-message">
                 {{ passwordFormErrors.newPassword }}
@@ -152,6 +156,7 @@
                 id="verify-password"
                 type="password"
                 placeholder="Verify New Password"
+                @blur="handleBlur('verifyPassword', 'password')"
               />
               <p v-if="passwordFormErrors.verifyPassword" class="error-message">
                 {{ passwordFormErrors.verifyPassword }}
@@ -206,12 +211,24 @@ const registerForm = ref({
   password: '',
 })
 
+const touchedFields = ref({
+  register: {
+    username: false,
+    password: false,
+  },
+  password: {
+    oldPassword: false,
+    newPassword: false,
+    verifyPassword: false,
+  },
+})
+
 const registerFormErrors = computed(() => {
   const errors: Record<string, string> = {}
-  if (!registerForm.value.username) {
+  if (!registerForm.value.username && touchedFields.value.register.username) {
     errors.username = 'Username is required'
   }
-  if (!registerForm.value.password) {
+  if (!registerForm.value.password && touchedFields.value.register.password) {
     errors.password = 'Password is required'
   }
   return errors
@@ -234,16 +251,18 @@ const passwordForm = ref({
 
 const passwordFormErrors = computed(() => {
   const errors: Record<string, string> = {}
-  if (!passwordForm.value.oldPassword) {
+  if (!passwordForm.value.oldPassword && touchedFields.value.password.oldPassword) {
     errors.oldPassword = 'Old password is required'
   }
-  if (!passwordForm.value.newPassword) {
+  if (!passwordForm.value.newPassword && touchedFields.value.password.newPassword) {
     errors.newPassword = 'New password is required'
   }
-  if (!passwordForm.value.verifyPassword) {
-    errors.verifyPassword = 'Password verification is required'
-  } else if (passwordForm.value.newPassword !== passwordForm.value.verifyPassword) {
-    errors.verifyPassword = 'Passwords do not match'
+  if (touchedFields.value.password.verifyPassword) {
+    if (!passwordForm.value.verifyPassword) {
+      errors.verifyPassword = 'Password verification is required'
+    } else if (passwordForm.value.newPassword !== passwordForm.value.verifyPassword) {
+      errors.verifyPassword = 'Passwords do not match'
+    }
   }
   return errors
 })
@@ -329,6 +348,10 @@ const submitChangePassword = async () => {
   } catch (error) {
     console.error('Error:', error)
   }
+}
+
+const handleBlur = (field: string, form: 'register' | 'password') => {
+  touchedFields.value[form][field] = true
 }
 </script>
 
