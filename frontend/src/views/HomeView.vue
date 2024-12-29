@@ -70,15 +70,6 @@ import ssrfLocalFileInclusionImage from '@/assets/ssrf_local_file_inclusion.svg'
   text-align: center;
 }
 
-.main-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-  background: linear-gradient(45deg, #1d4ed8, #047857);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .taglines {
   font-weight: bold;
   font-size: 1.25rem;
