@@ -55,28 +55,9 @@
                     class="radio-input"
                     :disabled="apiState.isLoading"
                   />
-                  <label :for="'url-' + index">{{ url }}</label>
-                </div>
-                <div class="radio-option">
-                  <input
-                    type="radio"
-                    id="custom-url"
-                    v-model="selectedUrl"
-                    value="custom"
-                    class="radio-input"
-                    :disabled="apiState.isLoading"
-                  />
-                  <label for="custom-url">Custom URL</label>
+                  <label :for="'url-' + index" class="code-block radio-label">{{ url }}</label>
                 </div>
               </div>
-              <input
-                v-if="selectedUrl === 'custom'"
-                v-model="customUrl"
-                :disabled="apiState.isLoading"
-                class="form-input"
-                type="text"
-                placeholder="Enter custom URL"
-              />
             </div>
             <div class="form-actions">
               <button
@@ -254,36 +235,17 @@ const submitUrl = async () => {
   margin: 0;
 }
 
+.radio-label {
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .form-label {
   display: block;
   color: rgb(55, 65, 81);
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.5rem;
-  color: rgb(55, 65, 81);
-  line-height: 1.25;
-  transition: all 0.15s ease-in-out;
-  background-color: rgb(249, 250, 251);
-  box-sizing: border-box;
-  margin-top: 0.5rem;
-}
-
-.form-input:hover {
-  border-color: rgb(156, 163, 175);
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: rgb(59, 130, 246);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  background-color: white;
 }
 
 .form-actions {
