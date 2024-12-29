@@ -28,7 +28,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     url = (
         user_supplied_url.url
         if user_supplied_url.url.startswith(("http://", "https://"))
-        else f"https://{user_supplied_url.url}"
+        else f"http://{user_supplied_url.url}"
     )
 
     if should_reveal_first_hint(url):
@@ -48,7 +48,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
         try:
             response_body = r.json()
         except Exception:
-            response_body = r.text[:750]
+            response_body = r.text[:750].strip()
 
         if timing_safe_compare(response_body, get_ssrf_webhook_expected_response()):
             return Passphrases.ssrf1.value

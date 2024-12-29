@@ -31,7 +31,7 @@ def is_public_ip(ip: str) -> bool:
 
 
 def allowed_to_continue_for_ssrf_challenge(
-    url: str, check_valid_internal_urls: Callable[[str], bool]
+    url: str, check_valid_internal_urls: Callable[[str], bool] | None = None
 ) -> bool:
     if is_public_ip(url):
         return True
@@ -40,7 +40,6 @@ def allowed_to_continue_for_ssrf_challenge(
         parsed_url = urlparse(url)
         hostname = parsed_url.netloc.split(":")[0]  # Remove port if present
 
-        # Get IPs using dnspython
         answers = dns.resolver.resolve(hostname, "A")
         ips = {str(answer) for answer in answers}  # Use set to remove duplicates
 
@@ -51,7 +50,7 @@ def allowed_to_continue_for_ssrf_challenge(
         print(f"Error resolving hostname: {e}")
         return False
 
-    return check_valid_internal_urls(url)
+    return check_valid_internal_urls(url) if check_valid_internal_urls else False
 
 
 def get_ssrf_webhook_expected_response() -> str:

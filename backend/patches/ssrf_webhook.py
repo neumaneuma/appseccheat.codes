@@ -28,17 +28,10 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     url = (
         user_supplied_url.url
         if user_supplied_url.url.startswith(("http://", "https://"))
-        else f"https://{user_supplied_url.url}"
+        else f"http://{user_supplied_url.url}"
     )
 
-    if should_reveal_first_hint(url):
-        return FIRST_HINT
-    if should_reveal_second_hint(url):
-        return SECOND_HINT
-    if should_reveal_third_hint(url):
-        return THIRD_HINT
-
-    if not allowed_to_continue_for_ssrf_challenge(url, is_valid_internal_url):
+    if not allowed_to_continue_for_ssrf_challenge(url):
         raise HTTPException(
             status_code=400, detail=f"Failure: supplied url is invalid ({url})"
         )
@@ -48,7 +41,7 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
         try:
             response_body = r.json()
         except Exception:
-            response_body = r.text[:750]
+            response_body = r.text[:750].strip()
 
         if timing_safe_compare(response_body, get_ssrf_webhook_expected_response()):
             return Passphrases.ssrf1.value
@@ -104,6 +97,7 @@ def should_reveal_third_hint(url: str) -> bool:
 
 
 def is_valid_internal_url(url: str) -> bool:
+    return False
     return url in VALID_INTERNAL_URLS
 
 

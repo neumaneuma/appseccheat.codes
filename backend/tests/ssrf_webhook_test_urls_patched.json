@@ -67,77 +67,91 @@
     "url": "https://apple.com",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (https://apple.com)"
+      "detail_starts_with": "Challenge failed. Response body: <!DOCTYPE html>"
+    }
+  },
+  {
+    "url": "https://duckduckgo.com",
+    "status_code": "400",
+    "response": {
+      "detail_starts_with": "Challenge failed. Response body: <!DOCTYPE html>"
+    }
+  },
+  {
+    "url": "https://cloudflare.com",
+    "status_code": "400",
+    "response": {
+      "detail_starts_with": "Challenge failed. Response body: <!DOCTYPE html>"
     }
   },
   {
     "url": "file://etc/passwd",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (file://etc/passwd)"
+      "detail": "Failure: supplied url is invalid (http://file://etc/passwd)"
     }
   },
   {
     "url": "file://\\/\\/etc/passwd",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (file://\\/\\/etc/passwd)"
+      "detail": "Failure: supplied url is invalid (http://file://\\/\\/etc/passwd)"
     }
   },
   {
     "url": "file://etc/shadow",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (file://etc/shadow)"
+      "detail": "Failure: supplied url is invalid (http://file://etc/shadow)"
     }
   },
   {
     "url": "file:///etc/shadow",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (file:///etc/shadow)"
+      "detail": "Failure: supplied url is invalid (http://file:///etc/shadow)"
     }
   },
   {
     "url": "file://\\/\\/etc/shadow",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (file://\\/\\/etc/shadow)"
+      "detail": "Failure: supplied url is invalid (http://file://\\/\\/etc/shadow)"
     }
   },
   {
     "url": "ftp://apple.com:11211/",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (ftp://apple.com:11211/)"
+      "detail": "Failure: supplied url is invalid (http://ftp://apple.com:11211/)"
     }
   },
   {
     "url": "sftp://apple.com:11111/",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (sftp://apple.com:11111/)"
+      "detail": "Failure: supplied url is invalid (http://sftp://apple.com:11111/)"
     }
   },
   {
     "url": "tftp://apple.com:123456/TESTUDP",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (tftp://apple.com:123456/TESTUDP)"
+      "detail": "Failure: supplied url is invalid (http://tftp://apple.com:123456/TESTUDP)"
     }
   },
   {
     "url": "ldap://127.0.0.1/%0astats%0aquit",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (ldap://127.0.0.1/%0astats%0aquit)"
+      "detail": "Failure: supplied url is invalid (http://ldap://127.0.0.1/%0astats%0aquit)"
     }
   },
   {
     "url": "gopher://127.0.0.1:25/xHELO%20localhost%250d%250aMAIL%20FROM%3A%attacker@attack.net%3E%250d%250aRCPT%20TO%3A%3Cvictim@target.com%3E%250d%250aDATA%250d%250aFrom%3A%20%5BAttacker%5D%20%3Cattacker@attack.net%3E%250d%250aTo%3A%20%3Cvictime@target.com%3E%250d%250aDate%3A%20Fri%2C%2013%20Mar%200020%2003%3A33%3A00%20-0600%250d%250aSubject%3A%20Hacked%250d%250a%250d%250aYou%27ve%20been%20exploited%20%3A%28%20%21%250d%250a%250d%250a%250d%250a.%250d%250aQUIT%250d%250a",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (gopher://127.0.0.1:25/xHELO%20localhost%250d%250aMAIL%20FROM%3A%attacker@attack.net%3E%250d%250aRCPT%20TO%3A%3Cvictim@target.com%3E%250d%250aDATA%250d%250aFrom%3A%20%5BAttacker%5D%20%3Cattacker@attack.net%3E%250d%250aTo%3A%20%3Cvictime@target.com%3E%250d%250aDate%3A%20Fri%2C%2013%20Mar%200020%2003%3A33%3A00%20-0600%250d%250aSubject%3A%20Hacked%250d%250a%250d%250aYou%27ve%20been%20exploited%20%3A%28%20%21%250d%250a%250d%250a%250d%250a.%250d%250aQUIT%250d%250a)"
+      "detail": "Failure: supplied url is invalid (http://gopher://127.0.0.1:25/xHELO%20localhost%250d%250aMAIL%20FROM%3A%attacker@attack.net%3E%250d%250aRCPT%20TO%3A%3Cvictim@target.com%3E%250d%250aDATA%250d%250aFrom%3A%20%5BAttacker%5D%20%3Cattacker@attack.net%3E%250d%250aTo%3A%20%3Cvictime@target.com%3E%250d%250aDate%3A%20Fri%2C%2013%20Mar%200020%2003%3A33%3A00%20-0600%250d%250aSubject%3A%20Hacked%250d%250a%250d%250aYou%27ve%20been%20exploited%20%3A%28%20%21%250d%250a%250d%250a%250d%250a.%250d%250aQUIT%250d%250a)"
     }
   },
   {
