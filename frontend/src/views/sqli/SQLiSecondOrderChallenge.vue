@@ -28,7 +28,8 @@
       <section class="challenge-section">
         <h2 class="section-title">Register New Account</h2>
         <p class="challenge-description">
-          Create a new account and try to exploit the password change functionality.
+          Create a new account to try to exploit the change password functionality. You are going to
+          try to change the password of the user <span class="code-block">batman</span>.
         </p>
 
         <div class="form-container">
@@ -90,8 +91,9 @@
       <section class="challenge-section">
         <h2 class="section-title">Change Password</h2>
         <p class="challenge-description">
-          After registering, try to change your password. Can you find a way to bypass the old
-          password verification?
+          After registering, try to change the password of the user
+          <span class="code-block">batman</span>. Can you find a way to bypass the verification of
+          the current password?
         </p>
 
         <div class="form-container">
@@ -354,6 +356,12 @@ const submitChangePassword = async () => {
   font-weight: 600;
   color: rgb(17, 24, 39);
   margin-bottom: 1rem;
+}
+
+.code-block {
+  background-color: rgb(229, 231, 235);
+  padding: 0.15rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 .challenge-description {

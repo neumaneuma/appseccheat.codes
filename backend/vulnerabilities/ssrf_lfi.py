@@ -37,7 +37,6 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
         requests_session.mount(FILE_SCHEME, local_file_adapter.LocalFileAdapter())
         r = requests_session.get(user_supplied_url.url, timeout=TIMEOUT)
         response_body = r.text[:750].strip()
-        print(f"$$$ 1 - {len(r.text.strip())}")
 
         # Read allowed files from disk
         passwd_contents = ""

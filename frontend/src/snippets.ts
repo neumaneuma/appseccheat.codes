@@ -78,33 +78,39 @@ async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    if should_reveal_first_hint(user_supplied_url.url):
+    url = user_supplied_url.url
+
+    if should_reveal_first_hint(url):
         return FIRST_HINT
-    if should_reveal_second_hint(user_supplied_url.url):
+    if should_reveal_second_hint(url):
         return SECOND_HINT
-    if should_reveal_third_hint(user_supplied_url.url):
+    if should_reveal_third_hint(url):
         return THIRD_HINT
 
     if not await allowed_to_continue_for_ssrf_challenge(
-        user_supplied_url.url, is_valid_internal_url
+        url, is_valid_internal_url
     ):
         raise HTTPException(
             status_code=400,
-            detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
+            detail=f"Failure: supplied url is invalid ({url})",
         )
 
     try:
-        r = requests.post(user_supplied_url.url, timeout=TIMEOUT)
-        response_body = r.json()
+        r = requests.post(url, timeout=TIMEOUT)
+        try:
+            response_body = r.json()
+        except Exception:
+            response_body = r.text[:750].strip()
 
         if timing_safe_compare(response_body, get_ssrf_webhook_expected_response()):
             return Passphrases.ssrf1.value
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\\n\\nFailure"
+                status_code=400,
+                detail=f"Challenge failed. Response body: {response_body}",
             )
     except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e`
+        raise HTTPException(status_code=400, detail=f"Failure: {e}") from e`
 
 export const ssrfLocalFileInclusionVulnerableSnippet = `
 class UserSuppliedUrl(BaseModel):
@@ -116,24 +122,24 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    if should_reveal_first_hint(user_supplied_url.url):
+    url = user_supplied_url.url
+
+    if should_reveal_first_hint(url):
         return FIRST_HINT
 
     if not await allowed_to_continue_for_ssrf_challenge(
-        user_supplied_url.url, is_valid_internal_url
+        url, is_valid_internal_url
     ):
         raise HTTPException(
             status_code=400,
-            detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
+            detail=f"Failure: supplied url is invalid ({url})",
         )
 
     try:
         requests_session = requests.session()
         requests_session.mount(FILE_SCHEME, local_file_adapter.LocalFileAdapter())
-        r = requests_session.get(user_supplied_url.url, timeout=TIMEOUT)
-        response_body = (
-            r.text if user_supplied_url.url.startswith(FILE_SCHEME) else r.json()
-        )
+        r = requests_session.get(url, timeout=TIMEOUT)
+        response_body = r.text[:750].strip()
 
         # Read allowed files from disk
         passwd_contents = ""
@@ -152,14 +158,15 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             response_body, shadow_contents
         ):
             return Passphrases.ssrf2.value
-        elif accessed_cat_coin_api(user_supplied_url.url):
+        elif accessed_cat_coin_api(url):
             return response_body
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\\n\\nFailure"
+                status_code=400,
+                detail=f"Challenge failed. Response body: {response_body}",
             )
     except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=400, detail="Failure: " + str(e)) from e`
+        raise HTTPException(status_code=400, detail=f"Failure: {e}") from e`
 
 export const sqliLoginBypassExploitSnippet = `
 username = "administrator"
@@ -350,36 +357,33 @@ class UserSuppliedUrl(BaseModel):
 
 
 @router.post("/submit_webhook/", response_model=str)
-async def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
+def submit_webhook(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    if should_reveal_first_hint(user_supplied_url.url):
-        return FIRST_HINT
-    if should_reveal_second_hint(user_supplied_url.url):
-        return SECOND_HINT
-    if should_reveal_third_hint(user_supplied_url.url):
-        return THIRD_HINT
+    url = user_supplied_url.url
 
-    if not await allowed_to_continue_for_ssrf_challenge(
-        user_supplied_url.url, is_valid_internal_url
-    ):
+    if not await allowed_to_continue_for_ssrf_challenge(url):
         raise HTTPException(
             status_code=400,
-            detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
+            detail=f"Failure: supplied url is invalid ({url})",
         )
 
     try:
-        r = await safehttpx.get(user_supplied_url.url, timeout=TIMEOUT)
-        response_body = r.json()
+        r = requests.post(url, timeout=TIMEOUT)
+        try:
+            response_body = r.json()
+        except Exception:
+            response_body = r.text[:750].strip()
 
         if timing_safe_compare(response_body, get_ssrf_webhook_expected_response()):
             return Passphrases.ssrf1.value
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\\n\\nFailure"
+                status_code=400,
+                detail=f"Challenge failed. Response body: {response_body}",
             )
-    except ValueError as e:
+    except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failure: {e}") from e`
 
 export const ssrfLocalFileInclusionPatchedSnippet = `
@@ -392,12 +396,8 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    if should_reveal_first_hint(user_supplied_url.url):
-        return FIRST_HINT
-
     if not await allowed_to_continue_for_ssrf_challenge(
-        user_supplied_url.url, is_valid_internal_url
-    ):
+        user_supplied_url.url):
         raise HTTPException(
             status_code=400,
             detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
@@ -434,7 +434,8 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             return response_body
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\\n\\nFailure"
+                status_code=400,
+                detail=f"Challenge failed. Response body: {response_body}",
             )
-    except ValueError as e:
+    except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failure: {e}") from e`
