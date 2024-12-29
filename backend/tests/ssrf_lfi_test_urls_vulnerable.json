@@ -83,10 +83,10 @@
     }
   },
   {
-    "url": "https://google.com",
+    "url": "https://apple.com",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (https://google.com)"
+      "detail": "Failure: supplied url is invalid (https://apple.com)"
     }
   },
   {

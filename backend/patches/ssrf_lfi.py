@@ -23,7 +23,7 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if should_reveal_first_hint(user_supplied_url.url):
         return FIRST_HINT
 
-    if not await allowed_to_continue_for_ssrf_challenge(
+    if not allowed_to_continue_for_ssrf_challenge(
         user_supplied_url.url, is_valid_internal_url
     ):
         raise HTTPException(
@@ -62,9 +62,10 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             return response_body
         else:
             raise HTTPException(
-                status_code=400, detail=f"{response_body}...\n\nFailure"
+                status_code=400,
+                detail=f"Challenge failed. Response body: {response_body}",
             )
-    except ValueError as e:
+    except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failure: {e}") from e
 
 

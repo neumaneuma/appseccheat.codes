@@ -35,11 +35,12 @@ app.add_middleware(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "*"
-    ],  # TODO change this to the docker url? or maybe appsecheat.codes
+        "https://appseccheat.codes",
+        "http://localhost:12300",
+        "https://*.appseccheat-dot-codes.pages.dev",
+    ],
     allow_credentials=True,
     allow_methods=["POST", "GET"],
-    allow_headers=["*"],  # TODO change this to only the required headers
 )
 app.include_router(sqli_login_bypass_vulnerable_router)
 app.include_router(sqli_second_order_vulnerable_router)
@@ -58,23 +59,36 @@ logger = logging.getLogger(__name__)
 
 # Business logic error handler
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    logger.info(
-        f"{request.client.host}:{request.client.port} - "
-        f'"{request.method} {request.url.path} HTTP/1.1" '
-        f"{exc.status_code} - {exc.detail}"
-    )
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    if request.client is None:
+        logger.info(
+            f'"{request.method} {request.url.path} HTTP/1.1" '
+            f"{exc.status_code} - {exc.detail}"
+        )
+    else:
+        logger.info(
+            f"{request.client.host}:{request.client.port} - "
+            f'"{request.method} {request.url.path} HTTP/1.1" '
+            f"{exc.status_code} - {exc.detail}"
+        )
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 
 # Pydantic error handler
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    logger.info(
-        f"{request.client.host}:{request.client.port} - "
-        f'"{request.method} {request.url.path} HTTP/1.1" '
-        f"422 - {exc.errors()}"
-    )
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    if request.client is None:
+        logger.info(
+            f'"{request.method} {request.url.path} HTTP/1.1" ' f"422 - {exc.errors()}"
+        )
+    else:
+        logger.info(
+            f"{request.client.host}:{request.client.port} - "
+            f'"{request.method} {request.url.path} HTTP/1.1" '
+            f"422 - {exc.errors()}"
+        )
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 

@@ -411,7 +411,7 @@ def ssrf_local_file_inclusion(
     return all_response_checks
 
 
-def get_cli_arguments() -> str:
+def get_cli_arguments() -> tuple[str, bool]:
     opts = [opt for opt in sys.argv[1:] if opt.startswith("-")]
     assert len(opts) == 1, "Only one flag can be provided"
     message = "Overriding default: "
