@@ -349,9 +349,20 @@ const submitChangePassword = async () => {
     console.error('Error:', error)
   }
 }
-
 const handleBlur = (field: string, form: 'register' | 'password') => {
-  touchedFields.value[form][field] = true
+  if (form === 'register') {
+    ;(touchedFields.value[form] as { username: boolean; password: boolean })[
+      field as 'username' | 'password'
+    ] = true
+  } else {
+    ;(
+      touchedFields.value[form] as {
+        oldPassword: boolean
+        newPassword: boolean
+        verifyPassword: boolean
+      }
+    )[field as 'oldPassword' | 'newPassword' | 'verifyPassword'] = true
+  }
 }
 </script>
 
