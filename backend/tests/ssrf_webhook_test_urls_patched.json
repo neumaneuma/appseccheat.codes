@@ -1,59 +1,79 @@
 [
   {
     "url": "http://localhost:22/",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://localhost:22/)"
+    }
   },
   {
     "url": "http://127.0.0.1:3389/",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://127.0.0.1:3389/)"
+    }
   },
   {
     "url": "http://localhost",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://localhost)"
+    }
   },
   {
     "url": "http://127.0.0.1",
-    "status_code": "200",
-    "response": "Docker container in use - use internal_api as hostname to access admin functionality."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://127.0.0.1)"
+    }
   },
   {
     "url": "http://internal_api",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12302 instead."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api)"
+    }
   },
   {
     "url": "http://internal_api:8080",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12302 instead."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:8080)"
+    }
   },
   {
     "url": "http://internal_api:12301",
-    "status_code": "200",
-    "response": "Incorrect port. Use 12302 instead."
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12301)"
+    }
   },
   {
     "url": "http://internal_api:12302",
-    "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12302)"
+    }
   },
   {
     "url": "http://internal_api:12302/",
-    "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12302/)"
+    }
   },
   {
     "url": "http://internal_api:12302/not_right_endpoint",
-    "status_code": "200",
-    "response": "Use the /reset_admin_password endpoint to reset the admin password!"
+    "status_code": "400",
+    "response": {
+      "detail": "Failure: supplied url is invalid (http://internal_api:12302/not_right_endpoint)"
+    }
   },
   {
     "url": "http://internal_api:12302/reset_admin_password/",
     "status_code": "400",
     "response": {
-      "detail": "Failure: Hostname internal_api failed validation"
+      "detail": "Failure: supplied url is invalid (http://internal_api:12302/reset_admin_password/)"
     }
   },
   {
@@ -214,7 +234,7 @@
     "url": "localhost:11211",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (localhost:11211)"
+      "detail": "Failure: supplied url is invalid (http://localhost:11211)"
     }
   },
   {
@@ -294,7 +314,7 @@
     "url": "%2573%2573%2568://127.0.0.1",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (%2573%2573%2568://127.0.0.1)"
+      "detail": "Failure: supplied url is invalid (http://%2573%2573%2568://127.0.0.1)"
     }
   }
 ]
