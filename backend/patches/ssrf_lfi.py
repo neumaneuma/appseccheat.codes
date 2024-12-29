@@ -20,12 +20,7 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
     if not user_supplied_url.url:
         raise HTTPException(status_code=400, detail="Fields can not be empty")
 
-    if should_reveal_first_hint(user_supplied_url.url):
-        return FIRST_HINT
-
-    if not allowed_to_continue_for_ssrf_challenge(
-        user_supplied_url.url, is_valid_internal_url
-    ):
+    if not allowed_to_continue_for_ssrf_challenge(user_supplied_url.url):
         raise HTTPException(
             status_code=400,
             detail=f"Failure: supplied url is invalid ({user_supplied_url.url})",
@@ -47,9 +42,9 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
         shadow_contents = ""
         try:
             with open("/etc/passwd") as f:
-                passwd_contents = f.read()
+                passwd_contents = f.read().strip()
             with open("/etc/shadow") as f:
-                shadow_contents = f.read()
+                shadow_contents = f.read().strip()
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"{e}") from e
 
@@ -67,11 +62,6 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
             )
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=400, detail=f"Failure: {e}") from e
-
-
-FILE_SCHEME = "file://"
-ALLOWED_PATHS = [f"{FILE_SCHEME}/etc/passwd", f"{FILE_SCHEME}/etc/shadow"]
-FIRST_HINT = "The scheme is correct, but that is not the right file."
 
 
 INTERNAL_API_NO_PORT = "http://internal_api"
@@ -94,22 +84,14 @@ INTERNAL_API_WITH_PATH_AND_SLASH_V1 = INTERNAL_API_WITH_PATH_V1 + "/"
 # http://internal_api:12302/get_cat_coin_price_v2/
 INTERNAL_API_WITH_PATH_AND_SLASH_V2 = INTERNAL_API_WITH_PATH_V2 + "/"
 
-VALID_INTERNAL_URLS = [
+VALID_INTERNAL_URLS = {
     INTERNAL_API,
     INTERNAL_API_WITH_SLASH,
     INTERNAL_API_WITH_PATH_V1,
     INTERNAL_API_WITH_PATH_AND_SLASH_V1,
     INTERNAL_API_WITH_PATH_V2,
     INTERNAL_API_WITH_PATH_AND_SLASH_V2,
-]
-
-
-def should_reveal_first_hint(url: str) -> bool:
-    return url.startswith(FILE_SCHEME) and url not in ALLOWED_PATHS
-
-
-def is_valid_internal_url(url: str) -> bool:
-    return url in VALID_INTERNAL_URLS or url in ALLOWED_PATHS
+}
 
 
 def accessed_cat_coin_api(url: str) -> bool:

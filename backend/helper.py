@@ -48,7 +48,6 @@ def allowed_to_continue_for_ssrf_challenge(
                 return True
     except Exception as e:
         print(f"Error resolving hostname: {e}")
-        return False
 
     return check_valid_internal_urls(url) if check_valid_internal_urls else False
 

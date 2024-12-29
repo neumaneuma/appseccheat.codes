@@ -13,6 +13,9 @@ from backend.passphrases import Passphrases
 
 LOCAL_SERVER_URL = "http://127.0.0.1:12301"
 REMOTE_SERVER_URL = "https://api.appseccheat.codes"
+external_url_pattern = re.compile(
+    r"^Challenge failed\. Response body: <!DOCTYPE html>.*"
+)
 
 
 class SQLI:
@@ -353,7 +356,7 @@ def ssrf_local_file_inclusion(
 ) -> list[bool]:
     submission_secret: str
     cat_coin_price_pattern = re.compile(
-        r"Price at \d{2}:\d{2}:\d{2}\.\d{6} - \$\d+\.\d+"
+        r"\"Price at \d{2}:\d{2}:\d{2}\.\d{6} - \$\d+\.\d+\""
     )
 
     match state:
@@ -392,11 +395,18 @@ def ssrf_local_file_inclusion(
         ):
             expected_response = actual_response
             submission_secret = actual_response
-
-        if isinstance(actual_response, str) and cat_coin_price_pattern.match(
+        elif isinstance(actual_response, str) and cat_coin_price_pattern.match(
             actual_response
         ):
             actual_response = "Cat coin price"
+        elif (
+            isinstance(actual_response, dict)
+            and "detail" in actual_response
+            and external_url_pattern.match(actual_response["detail"])
+        ):
+            actual_response["detail"] = (
+                "Challenge failed. Response body: <!DOCTYPE html>"
+            )
 
         is_correct_response = check_response(
             expected_status_code=status_code,
@@ -471,13 +481,14 @@ if __name__ == "__main__":
 
         # print(f"Testing {state.name} state for SQLi second order...")
         # results.extend(sqli_second_order(state, url_prefix=url_prefix, verify=verify))
-        print(f"Testing {state.name} state for SSRF webhook...")
-        results.extend(ssrf_webhook(state, url_prefix=url_prefix, verify=verify))
+        # print(f"Testing {state.name} state for SSRF webhook...")
+        # results.extend(ssrf_webhook(state, url_prefix=url_prefix, verify=verify))
 
-        # print(f"Testing {state.name} state for SSRF local file inclusion...")
-        # results.extend(
-        #     ssrf_local_file_inclusion(state, url_prefix=url_prefix, verify=verify)
-        # )
+        if state == State.PATCHED:
+            print(f"Testing {state.name} state for SSRF local file inclusion...")
+            results.extend(
+                ssrf_local_file_inclusion(state, url_prefix=url_prefix, verify=verify)
+            )
 
     stop_time = round(time.time() * 1000)
     run_time = (stop_time - start_time) / 1000

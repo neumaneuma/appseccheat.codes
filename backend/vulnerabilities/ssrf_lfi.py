@@ -36,9 +36,8 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
         requests_session = requests.session()
         requests_session.mount(FILE_SCHEME, local_file_adapter.LocalFileAdapter())
         r = requests_session.get(user_supplied_url.url, timeout=TIMEOUT)
-        response_body = (
-            r.text if user_supplied_url.url.startswith(FILE_SCHEME) else r.json()
-        )
+        response_body = r.text[:750].strip()
+        print(f"$$$ 1 - {len(r.text.strip())}")
 
         # Read allowed files from disk
         passwd_contents = ""
@@ -46,9 +45,9 @@ async def submit_api_url(user_supplied_url: UserSuppliedUrl) -> str:
 
         try:
             with open("/etc/passwd") as f:
-                passwd_contents = f.read()
+                passwd_contents = f.read().strip()
             with open("/etc/shadow") as f:
-                shadow_contents = f.read()
+                shadow_contents = f.read().strip()
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"{e}") from e
 
@@ -93,14 +92,14 @@ INTERNAL_API_WITH_PATH_AND_SLASH_V1 = INTERNAL_API_WITH_PATH_V1 + "/"
 # http://internal_api:12302/get_cat_coin_price_v2/
 INTERNAL_API_WITH_PATH_AND_SLASH_V2 = INTERNAL_API_WITH_PATH_V2 + "/"
 
-VALID_INTERNAL_URLS = [
+VALID_INTERNAL_URLS = {
     INTERNAL_API,
     INTERNAL_API_WITH_SLASH,
     INTERNAL_API_WITH_PATH_V1,
     INTERNAL_API_WITH_PATH_AND_SLASH_V1,
     INTERNAL_API_WITH_PATH_V2,
     INTERNAL_API_WITH_PATH_AND_SLASH_V2,
-]
+}
 
 
 def should_reveal_first_hint(url: str) -> bool:

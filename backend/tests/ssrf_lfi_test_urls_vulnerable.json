@@ -51,12 +51,12 @@
   {
     "url": "http://internal_api:12302",
     "status_code": "200",
-    "response": "Hello, World from the internal API!"
+    "response": "\"Hello, World from the internal API!\""
   },
   {
     "url": "http://internal_api:12302/",
     "status_code": "200",
-    "response": "Hello, World from the internal API!"
+    "response": "\"Hello, World from the internal API!\""
   },
   {
     "url": "http://internal_api:12302/not_right_endpoint",
@@ -86,7 +86,21 @@
     "url": "https://apple.com",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (https://apple.com)"
+      "detail": "Challenge failed. Response body: <!DOCTYPE html>"
+    }
+  },
+  {
+    "url": "https://duckduckgo.com",
+    "status_code": "400",
+    "response": {
+      "detail": "Challenge failed. Response body: <!DOCTYPE html>"
+    }
+  },
+  {
+    "url": "https://cloudflare.com",
+    "status_code": "400",
+    "response": {
+      "detail": "Challenge failed. Response body: <!DOCTYPE html>"
     }
   },
   {
@@ -123,21 +137,21 @@
     "url": "ftp://apple.com:11211/",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (ftp://apple.com:11211/)"
+      "detail": "Failure: No connection adapters were found for 'ftp://apple.com:11211/'"
     }
   },
   {
     "url": "sftp://apple.com:11111/",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (sftp://apple.com:11111/)"
+      "detail": "Failure: No connection adapters were found for 'sftp://apple.com:11111/'"
     }
   },
   {
     "url": "tftp://apple.com:123456/TESTUDP",
     "status_code": "400",
     "response": {
-      "detail": "Failure: supplied url is invalid (tftp://apple.com:123456/TESTUDP)"
+      "detail": "Failure: No connection adapters were found for 'tftp://apple.com:123456/TESTUDP'"
     }
   },
   {
