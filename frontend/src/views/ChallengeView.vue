@@ -32,25 +32,10 @@
                 rel="noopener"
                 class="link"
                 >application security (AppSec)</a
-              >. Software developers learn best when reading and writing code. Most CTFs are catered
-              towards
-              <a
-                href="https://en.wikipedia.org/wiki/Penetration_test"
-                target="_blank"
-                rel="noopener"
-                class="link"
-                >pentesters</a
-              >
-              who predominantly use a variety of tools for CTFs and in their day jobs. While
-              certainly a more efficient approach, this does not, however, translate well for a
-              software developer trying to learn AppSec.
-            </p>
-
-            <p>
-              How is a software developer supposed to learn how to write secure code if all they
-              learn how to do from a CTF is click a few buttons and enter some input into a text
-              field? That is why the purpose of this CTF is to reframe the concept of AppSec in
-              terms of code.
+              >. Software developers learn best when reading and writing code. Most CTFs are
+              primarily focused on learning how to exploit the vulnerabilities, as opposed to
+              learning how to write secure code that is free of vulnerabilities. Think of this site
+              as a code-first CTF. It attempts to reframe the concept of AppSec in terms of code.
             </p>
 
             <p>
@@ -58,8 +43,9 @@
               <span class="emphasis"
                 >the exact code of the server-side vulnerability that you are trying to
                 exploit</span
-              >. It is one thing to read a description of a vulnerability, and a whole another thing
-              to actually see a working example of the code. Another hint will show you
+              >. Being able to read the code (and even modify it if you are running the webapp
+              locally) is how we can translate the abstract concept of a vulnerability into
+              something tangible. Another hint will show you
               <span class="emphasis">the exact code of the exploit and how to run it</span>.
               Technically this is less of a hint and more just the answer to how to solve the
               challenge, but let's not get too hung up on semantics.
@@ -125,24 +111,24 @@
             <p>If you are unsure on how to proceed, then the following may help:</p>
 
             <p>
-              You can enter the input necessary to exploit this challenge manually through your
-              browser, or you can use an automated tool such as
+              Most of the vulnerabilities in this CTF can be manually exploited simply through your
+              browser. Alternatively, you can use a dedicated web security tool such as
+              <a href="https://caido.io" target="_blank" rel="noopener" class="link">Caido</a>,
               <a href="https://portswigger.net/burp" target="_blank" rel="noopener" class="link"
                 >Burp Suite</a
-              >
-              or
+              >, or
               <a href="https://www.zaproxy.org" target="_blank" rel="noopener" class="link"
                 >OWASP ZAP</a
-              >. However, since this CTF is focused specifically on the code side of application
-              security, neither of those solutions will be presented here.
+              >. However, the focus of this CTF is on the code side of application security. Every
+              challenge's exploit code is available as the third hint. You are encouraged to attempt
+              to write the exploit code yourself before looking at the answer.
             </p>
 
             <p>
-              The exploit code and instructions on how to run it is presented in the third hint.
-              However, you are encouraged to attempt to write the exploit code yourself before
-              looking at the answer. In order to do this, you need to understand what fields are
-              being set in the HTTP request being sent to the server from the browser. This is so
-              that you can craft your own HTTP request from the script you write. You can use your
+              In order to do this, you need to understand what fields are being set in the HTTP
+              request being sent to the server from the browser. Think of this as the "anatomy" of
+              the request. This is so that you can craft your own HTTP request from the script you
+              write. You can use your
               <a
                 href="https://www.twilio.com/blog/2017/09/everything-you-ever-wanted-to-know-about-secure.html-forms.html"
                 target="_blank"
@@ -150,14 +136,13 @@
                 class="link"
                 >browser's developer tools</a
               >
-              to figure out this information or you can use a tool that can decrypt encrypted
-              traffic on your computer. Burp Suite and OWASP ZAP both offer this feature in addition
-              to their automated pentesting. I personally used
+              to figure out this information, or you can use a tool that can decrypt encrypted
+              traffic on your computer. All 3 of the aforementioned tools offer this feature.
+              There's also
               <a href="https://mitmproxy.org" target="_blank" rel="noopener" class="link"
                 >mitmproxy</a
               >
-              when writing the exploit scripts for this site because it has a lot fewer features
-              than those other tools, and therefore is a lot simpler to use.
+              if you want a tool dedicated to this purpose.
             </p>
           </div>
         </div>
