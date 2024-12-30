@@ -63,19 +63,20 @@ defineProps<{
 
 .card-image-container {
   width: 100%;
-  padding: 1.5rem;
+  aspect-ratio: 16/9;
   background: #f8fafc;
   border-bottom: 1px solid #e5e7eb;
-  aspect-ratio: 16/9;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
 }
 
 .card-content {

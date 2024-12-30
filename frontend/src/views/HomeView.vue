@@ -19,28 +19,28 @@
     </div>
     <div class="card-grid">
       <ChallengeCard
-        :imagePath="sqliLoginBypassImage"
+        :imagePath="'/public/sqli_login_bypass_cover.jpeg'"
         imageAlt="Open lock"
         header="SQLi: login bypass"
         description="Forget passkeys, this is how you do true passwordless login"
         routePath="/challenges/sqli1"
       />
       <ChallengeCard
-        :imagePath="sqliSecondOrderImage"
+        :imagePath="'/public/sqli_second_order_cover.jpeg'"
         imageAlt="Double agent"
         header="SQLi: second order"
         description="Sometimes the injection doesn't happen right away"
         routePath="/challenges/sqli2"
       />
       <ChallengeCard
-        :imagePath="ssrfWebhookImage"
+        :imagePath="'/public/ssrf_webhook.jpeg'"
         imageAlt="Castle with breached walls"
         header="SSRF: webhook"
         description="Sometimes you need to make a request to an external service"
         routePath="/challenges/ssrf1"
       />
       <ChallengeCard
-        :imagePath="ssrfLocalFileInclusionImage"
+        :imagePath="'/public/ssrf_lfi.jpeg'"
         imageAlt="Confused deputy"
         header="SSRF: local file inclusion"
         description="Sometimes you need to read a local file"
@@ -52,10 +52,6 @@
 
 <script setup lang="ts">
 import ChallengeCard from '@/components/ChallengeCard.vue'
-import sqliLoginBypassImage from '@/assets/sqli_login_bypass.svg'
-import sqliSecondOrderImage from '@/assets/sqli_second_order.svg'
-import ssrfWebhookImage from '@/assets/ssrf_webhook.svg'
-import ssrfLocalFileInclusionImage from '@/assets/ssrf_local_file_inclusion.svg'
 </script>
 
 <style scoped>
