@@ -43,6 +43,9 @@ def allowed_to_continue_for_ssrf_challenge(
         parsed_url = urlparse(url)
         hostname = parsed_url.netloc.split(":")[0]  # Remove port if present
 
+        # Derived from https://github.com/rthalley/dnspython/blob/main/examples/dot.py
+        # DNS-over-TLS didn't require any additional dependencies, unlike DNS-over-HTTPS, so opted
+        # for that instead
         where = "1.1.1.1"  # Cloudflare's encrypted DNS provider
         q = dns.message.make_query(hostname, dns.rdatatype.A)
         r = dns.query.tls(q, where)
