@@ -138,7 +138,7 @@ resource "aws_lb_target_group" "blue" {
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 5
-    unhealthy_threshold = 5
+    unhealthy_threshold = 3
   }
 }
 
@@ -327,6 +327,15 @@ resource "aws_autoscaling_group" "ecs" {
     version = "$Latest"
   }
 }
+
+resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
+  name                   = "ecs-managed-draining-termination-hook"
+  autoscaling_group_name = aws_autoscaling_group.ecs.name
+  lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
+  default_result         = "CONTINUE"
+  heartbeat_timeout      = 300 # 5 minutes
+}
+
 
 resource "aws_autoscaling_attachment" "backend" {
   autoscaling_group_name = aws_autoscaling_group.ecs.id
