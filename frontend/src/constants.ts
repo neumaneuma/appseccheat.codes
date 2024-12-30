@@ -3,15 +3,17 @@ interface Config {
 }
 
 function loadConfig(): Config {
-  // Check if we're running on Cloudflare Pages using their environment variable
-  // https://developers.cloudflare.com/pages/configuration/build-configuration/#environment-variables
-  const isCloudflarePages = Boolean(import.meta.env.CF_PAGES)
+  // By default, the dev server (dev command) runs in development mode and the build command runs in
+  // production mode. This means when running vite build, it will load the env variables from .env.production
+  // if there is one.
+  // https://vite.dev/guide/env-and-mode#modes
+  const isProdDeploy = import.meta.env.VITE_PROD_DEPLOY === 'true'
 
-  if (isCloudflarePages) {
+  if (isProdDeploy) {
     return { API_BASE_URL: 'https://api.appseccheat.codes' }
   }
 
-  // Default to localhost if not on Cloudflare Pages
+  // Default to localhost if not deploying to prod
   return { API_BASE_URL: 'http://127.0.0.1:12301' }
 }
 
