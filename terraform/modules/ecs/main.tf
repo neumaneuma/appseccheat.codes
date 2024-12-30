@@ -17,30 +17,23 @@ resource "aws_vpc_security_group_ingress_rule" "alb_traffic" {
   to_port           = 443
 }
 
-resource "aws_vpc_security_group_egress_rule" "alb_traffic" {
-  description       = "Allow ALB to communicate with the ECS instances"
-  security_group_id = aws_security_group.allow_tls.id
-  ip_protocol       = "-1"        # Allow all protocols
-  cidr_ipv4         = "0.0.0.0/0" # Allow to all destinations
+resource "aws_vpc_security_group_egress_rule" "egress_alb_to_ecs" {
+  description                  = "Allow ALB to communicate with the ECS instances"
+  security_group_id            = aws_security_group.allow_tls.id
+  referenced_security_group_id = aws_security_group.ecs_sg.id
+  from_port                    = 12301
+  ip_protocol                  = "tcp"
+  to_port                      = 12301
 }
 
-# resource "aws_vpc_security_group_egress_rule" "egress_alb_to_ecs" {
-#   description       = "Allow ALB to communicate with the ECS instances"
-#   security_group_id = aws_security_group.allow_tls.id
-# referenced_security_group_id = aws_security_group.ecs_sg.id
-#   from_port         = 12301
-#   ip_protocol       = "tcp"
-#   to_port           = 12301
-# }
-
-# resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_external" {
-#   description       = "Allow ALB to communicate with external hosts"
-#   security_group_id = aws_security_group.allow_tls.id
-#   cidr_ipv4         = "0.0.0.0/0"
-#   from_port         = 443
-#   ip_protocol       = "tcp"
-#   to_port           = 443
-# }
+resource "aws_vpc_security_group_egress_rule" "egress_alb_to_external" {
+  description       = "Allow ALB to communicate with external hosts"
+  security_group_id = aws_security_group.allow_tls.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 443
+  ip_protocol       = "tcp"
+  to_port           = 443
+}
 
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs_sg"
@@ -397,11 +390,11 @@ resource "aws_ecs_service" "multi_container_service" {
   }
 
   # Uncomment to force a new deployment if a new docker image needs to be deployed
-  force_new_deployment = true
+  # force_new_deployment = true
 
-  triggers = {
-    redeployment = plantimestamp() # This will force a new deployment every time you apply
-  }
+  # triggers = {
+  #   redeployment = plantimestamp() # This will force a new deployment every time you apply
+  # }
 }
 
 resource "aws_cloudwatch_log_group" "backend" {
