@@ -397,11 +397,11 @@ resource "aws_ecs_service" "multi_container_service" {
   }
 
   # Uncomment to force a new deployment if a new docker image needs to be deployed
-  # force_new_deployment = true
+  force_new_deployment = true
 
-  # triggers = {
-  #   redeployment = timestamp() # This will force a new deployment every time you apply
-  # }
+  triggers = {
+    redeployment = plantimestamp() # This will force a new deployment every time you apply
+  }
 }
 
 resource "aws_cloudwatch_log_group" "backend" {
