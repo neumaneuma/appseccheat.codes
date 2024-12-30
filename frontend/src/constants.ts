@@ -2,27 +2,20 @@ interface Config {
   API_BASE_URL: string
 }
 
-async function loadConfig(): Promise<Config> {
-  try {
-    const response = await fetch('/config.json')
-    const config: Config = await response.json()
-    return config
-  } catch (error) {
-    // If config.json isn't present for some reason, try to guess the right API_BASE_URL
-    console.log('Error loading config')
-    const isRunningLocally =
-      window.location.hostname === '0.0.0.0' ||
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1'
+function loadConfig(): Config {
+  // Check if we're running on Cloudflare Pages using their environment variable
+  // https://developers.cloudflare.com/pages/configuration/build-configuration/#environment-variables
+  const isCloudflarePages = Boolean(import.meta.env.CF_PAGES)
 
-    if (isRunningLocally) {
-      return { API_BASE_URL: 'http://127.0.0.1:12301' }
-    }
+  if (isCloudflarePages) {
     return { API_BASE_URL: 'https://api.appseccheat.codes' }
   }
+
+  // Default to localhost if not on Cloudflare Pages
+  return { API_BASE_URL: 'http://127.0.0.1:12301' }
 }
 
-export const config = await loadConfig()
+export const config = loadConfig()
 export const API_BASE_URL = config.API_BASE_URL
 const VULNERABLE_PATH = 'vulnerabilities'
 
