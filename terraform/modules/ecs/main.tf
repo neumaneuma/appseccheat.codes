@@ -63,12 +63,21 @@ resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_alb" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_https" {
-  description       = "Allow ECS instances to talk to external hosts for webhook"
+  description       = "Allow ECS instances to talk to external hosts for webhook over HTTPS"
   security_group_id = aws_security_group.ecs_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 443
   ip_protocol       = "tcp"
   to_port           = 443
+}
+
+resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_http" {
+  description       = "Allow ECS instances to talk to external hosts for webhook over HTTP"
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 80
+  ip_protocol       = "tcp"
+  to_port           = 80
 }
 
 resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_dns_over_tls" {
