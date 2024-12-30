@@ -381,11 +381,16 @@ resource "aws_ecs_service" "multi_container_service" {
     aws_lb_listener.main
   ]
 
-  # deployment_circuit_breaker {
-  #   enable   = true
-  #   rollback = true
-  # }
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 
+  force_new_deployment = true
+
+  triggers = {
+    redeployment = timestamp() # This will force a new deployment every time you apply
+  }
 }
 
 resource "aws_cloudwatch_log_group" "backend" {
