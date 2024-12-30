@@ -1,7 +1,3 @@
-locals {
-  version = 3
-}
-
 resource "aws_security_group" "allow_tls" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic and all outbound traffic"
@@ -201,7 +197,7 @@ resource "aws_ecs_cluster" "main" {
 }
 
 resource "aws_ecs_capacity_provider" "main" {
-  name = "main-ecs-capacity-provider-${local.version}"
+  name = "main-ecs-capacity-provider"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.ecs.arn
@@ -313,13 +309,18 @@ resource "aws_launch_template" "ecs" {
   }
 }
 
+locals {
+  asg_instance_count = 1
+}
+
 resource "aws_autoscaling_group" "ecs" {
-  name_prefix         = "ecs-asg-${local.version}"
-  desired_capacity    = 1
-  max_size            = 1
-  min_size            = 1
-  vpc_zone_identifier = var.public_subnet_ids
-  force_delete        = true # development only, skips draining instances and just deletes them immediately
+  name_prefix           = "ecs-asg"
+  desired_capacity      = local.asg_instance_count
+  max_size              = local.asg_instance_count
+  min_size              = local.asg_instance_count
+  vpc_zone_identifier   = var.public_subnet_ids
+  protect_from_scale_in = false
+  health_check_type     = "EC2"
 
   launch_template {
     id      = aws_launch_template.ecs.id
@@ -357,7 +358,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 }
 
 resource "aws_ecs_service" "multi_container_service" {
-  name            = "multi-container-service-${local.version}"
+  name            = "multi-container-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.multi_container_task.arn
   desired_count   = 1
@@ -386,11 +387,12 @@ resource "aws_ecs_service" "multi_container_service" {
     rollback = true
   }
 
-  force_new_deployment = true
+  # Uncomment to force a new deployment if a new docker image needs to be deployed
+  # force_new_deployment = true
 
-  triggers = {
-    redeployment = timestamp() # This will force a new deployment every time you apply
-  }
+  # triggers = {
+  #   redeployment = timestamp() # This will force a new deployment every time you apply
+  # }
 }
 
 resource "aws_cloudwatch_log_group" "backend" {
@@ -404,7 +406,7 @@ resource "aws_cloudwatch_log_group" "internal_api" {
 }
 
 resource "aws_ecs_task_definition" "multi_container_task" {
-  family                   = "multi-container-task-${local.version}"
+  family                   = "multi-container-task"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = "768"
