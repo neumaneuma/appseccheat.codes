@@ -19,28 +19,28 @@
     </div>
     <div class="card-grid">
       <ChallengeCard
-        :imagePath="'/public/sqli_login_bypass_cover.jpeg'"
+        :imagePath="'/sqli_login_bypass_cover.jpeg'"
         imageAlt="Open lock"
         header="SQLi: login bypass"
         description="Forget passkeys, this is how you do true passwordless login"
         routePath="/challenges/sqli1"
       />
       <ChallengeCard
-        :imagePath="'/public/sqli_second_order_cover.jpeg'"
+        :imagePath="'/sqli_second_order_cover.jpeg'"
         imageAlt="Double agent"
         header="SQLi: second order"
         description="Sometimes the injection doesn't happen right away"
         routePath="/challenges/sqli2"
       />
       <ChallengeCard
-        :imagePath="'/public/ssrf_webhook.jpeg'"
+        :imagePath="'/ssrf_webhook.jpeg'"
         imageAlt="Castle with breached walls"
         header="SSRF: webhook"
         description="Sometimes you need to make a request to an external service"
         routePath="/challenges/ssrf1"
       />
       <ChallengeCard
-        :imagePath="'/public/ssrf_lfi.jpeg'"
+        :imagePath="'/ssrf_lfi.jpeg'"
         imageAlt="Confused deputy"
         header="SSRF: local file inclusion"
         description="Sometimes you need to read a local file"
