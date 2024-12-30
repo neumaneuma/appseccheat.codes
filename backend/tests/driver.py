@@ -495,4 +495,6 @@ if __name__ == "__main__":
         f"\n\nFinished running {len(results)} functional tests. Run time: {run_time} seconds"
     )
 
-    assert all(results), "There were failed tests 😭"
+    assert all(
+        results
+    ), f"There were {len([r for r in results if not r])} failed tests 😭"

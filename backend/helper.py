@@ -3,7 +3,10 @@ import ipaddress
 from collections.abc import Callable
 from urllib.parse import urlparse
 
-import dns.resolver
+import dns.message
+import dns.query
+import dns.rdatatype
+import dns.rdtypes.IN.A
 from peewee import CharField
 
 
@@ -40,8 +43,13 @@ def allowed_to_continue_for_ssrf_challenge(
         parsed_url = urlparse(url)
         hostname = parsed_url.netloc.split(":")[0]  # Remove port if present
 
-        answers = dns.resolver.resolve(hostname, "A")
-        ips = {str(answer) for answer in answers}  # Use set to remove duplicates
+        where = "1.1.1.1"  # Cloudflare's encrypted DNS provider
+        q = dns.message.make_query(hostname, dns.rdatatype.A)
+        r = dns.query.tls(q, where)
+        ips: set[str] = set()
+        for rrset in r.answer:
+            a_records: list[dns.rdtypes.IN.A.A] = [a for a in rrset]
+            ips.update({a.address for a in a_records})
 
         for ip in ips:
             if is_public_ip(ip):

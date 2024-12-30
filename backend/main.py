@@ -34,11 +34,9 @@ app.add_middleware(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://appseccheat.codes",
-        "http://localhost:12300",
-        "https://*.appseccheat-dot-codes.pages.dev",
-    ],
+    allow_origins=["https://appseccheat.codes", "http://localhost:12300"],
+    # Carve out a wildcard SOP exception for my Cloudflare Pages dev sites
+    allow_origin_regex=r"https://.*\.appseccheat-dot-codes\.pages\.dev",
     allow_credentials=True,
     allow_methods=["POST", "GET"],
 )

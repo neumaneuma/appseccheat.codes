@@ -12,4 +12,5 @@ dependencies = [
     "types-requests==2.32.0.20241016",
     "types-peewee==3.17.7.20241017",
     "bcrypt==4.2.0",
+    "dnspython==2.7.0",
 ]
