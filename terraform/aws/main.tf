@@ -61,6 +61,7 @@ module "ecs" {
   backend_cloudwatch_log_group_name      = var.backend_cloudwatch_log_group_name
   internal_api_cloudwatch_log_group_name = var.internal_api_cloudwatch_log_group_name
   ec2_host_name                          = var.ec2_host_name
+  db_security_group_id                   = module.database.db_security_group_id
 }
 
 module "database" {

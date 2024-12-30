@@ -53,31 +53,41 @@ resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
   ip_protocol                  = "tcp"
 }
 
-
-resource "aws_vpc_security_group_egress_rule" "allow_ecs_outbound" {
-  description       = "Allow all outbound traffic from ECS"
-  security_group_id = aws_security_group.ecs_sg.id
-  ip_protocol       = "-1"        # Allow all protocols
-  cidr_ipv4         = "0.0.0.0/0" # Allow to all destinations
+resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_alb" {
+  description                  = "Allow ECS instances to respond to the ALB"
+  security_group_id            = aws_security_group.ecs_sg.id
+  referenced_security_group_id = aws_security_group.allow_tls.id
+  from_port                    = 12301
+  ip_protocol                  = "tcp"
+  to_port                      = 12301
 }
 
-# resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_alb" {
-#   description       = "Allow ECS instances to respond to the ALB"
-#   security_group_id = aws_security_group.ecs_sg.id
-#   referenced_security_group_id = aws_security_group.allow_tls.id
-#   from_port         = 12301
-#   ip_protocol       = "tcp"
-#   to_port           = 12301
-# }
+resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_https" {
+  description       = "Allow ECS instances to talk to external hosts for webhook"
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 443
+  ip_protocol       = "tcp"
+  to_port           = 443
+}
 
-# resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_external" {
-#   description       = "Allow ECS instances to talk to external hosts for webhook"
-#   security_group_id = aws_security_group.ecs_sg.id
-#   cidr_ipv4         = "0.0.0.0/0"
-#   from_port         = 443
-#   ip_protocol       = "tcp"
-#   to_port           = 443
-# }
+resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_dns_over_tls" {
+  description       = "Allow ECS instances to use dns over tls for ssrf challenges"
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 853
+  ip_protocol       = "tcp"
+  to_port           = 853
+}
+
+resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_rds" {
+  description                  = "Allow ECS instances to talk to RDS"
+  security_group_id            = aws_security_group.ecs_sg.id
+  referenced_security_group_id = var.db_security_group_id
+  from_port                    = 5432
+  ip_protocol                  = "tcp"
+  to_port                      = 5432
+}
 
 resource "aws_lb" "main" {
   name               = "app-load-balancer"

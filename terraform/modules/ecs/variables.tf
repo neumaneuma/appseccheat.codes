@@ -98,3 +98,8 @@ variable "ec2_host_name" {
   description = "EC2 host name"
   type        = string
 }
+
+variable "db_security_group_id" {
+  description = "Database security group ID"
+  type        = string
+}
