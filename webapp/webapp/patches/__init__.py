@@ -1,1 +1,0 @@
-PATCHES_PREFIX = "/patches"

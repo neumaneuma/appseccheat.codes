@@ -1,0 +1,21 @@
+target-version = "py313"
+
+[lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+
+ignore = [
+    "E501", # line too long
+]
+
+[lint.isort]
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[format]
+skip-magic-trailing-comma = true
