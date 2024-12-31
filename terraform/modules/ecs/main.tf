@@ -345,7 +345,7 @@ resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
   autoscaling_group_name = aws_autoscaling_group.ecs.name
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
   default_result         = "CONTINUE"
-  heartbeat_timeout      = 300 # 5 minutes
+  heartbeat_timeout      = 120 # 2 minutes
 }
 
 
