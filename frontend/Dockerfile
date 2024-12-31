@@ -1,10 +1,11 @@
-FROM node:15-alpine
+FROM node:22.12.0-slim
 
-WORKDIR /app
+WORKDIR /frontend
+
+EXPOSE 12300
 
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 RUN npm install
-COPY . .
 
-CMD ["npm", "run", "dev"]
+COPY . .

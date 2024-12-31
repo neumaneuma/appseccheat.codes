@@ -1,19 +1,32 @@
 {
-  "name": "frontend-mockup",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "appseccheat-codes-frontend",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "npm run build && wrangler pages dev",
+    "build-only": "rm -rf ./dist && vite build",
+    "type-check": "vue-tsc --build",
+    "deploy": "npm run build && wrangler pages deploy"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "prismjs": "^1.29.0",
+    "vue": "^3.5.12",
+    "vue-router": "^4.4.5"
+  },
   "devDependencies": {
-    "autoprefixer": "^10.3.1",
-    "postcss": "^8.3.6",
-    "tailwindcss": "^2.2.7",
-    "vite": "^2.9.13"
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.9.0",
+    "@types/prismjs": "^1.26.5",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "@vue/tsconfig": "^0.5.1",
+    "typescript": "~5.6.3",
+    "vue-tsc": "^2.1.10",
+    "vite": "^5.4.10",
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "npm-run-all2": "^7.0.1",
+    "wrangler": "^3.99.0"
   }
 }
