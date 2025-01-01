@@ -7,25 +7,26 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
-# resource "aws_vpc_security_group_ingress_rule" "allow_cloudflare_proxy_to_ecs" {
-#   for_each = toset(var.cloudflare_ipv4_addresses)
+resource "aws_vpc_security_group_ingress_rule" "allow_only_cloudflare_proxy_to_ecs" {
+  for_each = toset(var.cloudflare_ipv4_addresses)
 
-#   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
-#   security_group_id = aws_security_group.ecs_sg.id
-#   cidr_ipv4        = each.value
-#   from_port        = 443
-#   to_port          = 443
-#   ip_protocol      = "tcp"
-# }
-
-resource "aws_vpc_security_group_ingress_rule" "allow_cloudflare_proxy_to_ecs" {
   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
   security_group_id = aws_security_group.ecs_sg.id
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = each.value
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
 }
+
+# Use this ingress rule instead of allow_only_cloudflare_proxy_to_ecs when testing a newly created AWS account instance
+# resource "aws_vpc_security_group_ingress_rule" "allow_all_traffic_to_ecs" {
+#   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
+#   security_group_id = aws_security_group.ecs_sg.id
+#   cidr_ipv4         = "0.0.0.0/0"
+#   from_port         = 443
+#   to_port           = 443
+#   ip_protocol       = "tcp"
+# }
 
 resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_https" {
   description       = "Allow ECS instances to talk to external hosts for webhook over HTTPS"
