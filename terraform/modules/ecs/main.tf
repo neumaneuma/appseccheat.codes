@@ -1,40 +1,3 @@
-resource "aws_security_group" "allow_tls" {
-  name        = "allow_tls"
-  description = "Allow TLS inbound traffic and all outbound traffic"
-  vpc_id      = var.vpc_id
-
-  tags = {
-    Name = "allow_tls"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_traffic" {
-  description       = "Allow HTTPS public traffic to the ALB"
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 443
-  ip_protocol       = "tcp"
-  to_port           = 443
-}
-
-resource "aws_vpc_security_group_egress_rule" "egress_alb_to_ecs" {
-  description                  = "Allow ALB to communicate with the ECS instances"
-  security_group_id            = aws_security_group.allow_tls.id
-  referenced_security_group_id = aws_security_group.ecs_sg.id
-  from_port                    = 12301
-  ip_protocol                  = "tcp"
-  to_port                      = 12301
-}
-
-resource "aws_vpc_security_group_egress_rule" "egress_alb_to_external" {
-  description       = "Allow ALB to communicate with external hosts"
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 443
-  ip_protocol       = "tcp"
-  to_port           = 443
-}
-
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs_sg"
   vpc_id = var.vpc_id
@@ -62,24 +25,6 @@ resource "aws_vpc_security_group_ingress_rule" "allow_cloudflare_proxy_to_ecs" {
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
-  description                  = "Allow ECS instances to receive traffic from the ALB"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.allow_tls.id
-  from_port                    = 12301
-  to_port                      = 12301
-  ip_protocol                  = "tcp"
-}
-
-resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_alb" {
-  description                  = "Allow ECS instances to respond to the ALB"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.allow_tls.id
-  from_port                    = 12301
-  ip_protocol                  = "tcp"
-  to_port                      = 12301
 }
 
 resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_https" {
@@ -116,62 +61,6 @@ resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_rds" {
   from_port                    = 5432
   ip_protocol                  = "tcp"
   to_port                      = 5432
-}
-
-resource "aws_lb" "main" {
-  name               = "app-load-balancer"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = var.public_subnet_ids
-  security_groups    = [aws_security_group.allow_tls.id]
-}
-
-resource "aws_lb_listener" "main" {
-  load_balancer_arn = aws_lb.main.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.alb_certificate_arn
-
-  # this can be broken out into a `aws_lb_listener_rule` resource if it needs to be more complex
-  default_action {
-    type = "forward"
-    forward {
-      target_group {
-        arn    = aws_lb_target_group.blue.arn
-        weight = lookup(local.traffic_dist_map[var.traffic_distribution], "blue", 100)
-      }
-
-      # target_group {
-      #   arn    = aws_lb_target_group.green.arn
-      #   weight = lookup(local.traffic_dist_map[var.traffic_distribution], "green", 0)
-      # }
-
-      stickiness {
-        enabled  = false
-        duration = 1
-      }
-    }
-  }
-}
-
-resource "aws_lb_target_group" "blue" {
-  name     = "blue-target-group"
-  port     = 12301
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
-
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 15
-    matcher             = "200"
-    path                = "/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 3
-  }
 }
 
 resource "aws_s3_bucket" "ecs_logs" {
@@ -400,11 +289,6 @@ resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
 }
 
 
-resource "aws_autoscaling_attachment" "backend" {
-  autoscaling_group_name = aws_autoscaling_group.ecs.id
-  lb_target_group_arn    = aws_lb_target_group.blue.arn
-}
-
 data "aws_instance" "ecs_managed_ec2_host" {
   filter {
     name   = "tag:Name"
@@ -455,18 +339,6 @@ resource "aws_ecs_service" "multi_container_service" {
     weight            = 100
     base              = 1
   }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.blue.arn
-    container_name   = "backend"
-    container_port   = 12301
-  }
-
-  # don't need a load balancer block for the internal_api container since that's only used internally
-
-  depends_on = [
-    aws_lb_listener.main
-  ]
 
   deployment_circuit_breaker {
     enable   = true

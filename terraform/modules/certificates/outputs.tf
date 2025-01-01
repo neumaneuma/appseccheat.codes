@@ -1,8 +1,3 @@
-output "alb_certificate_arn" {
-  value       = aws_acm_certificate.alb.arn
-  description = "ARN of ALB certificate"
-}
-
 output "origin_certificate" {
   value       = cloudflare_origin_ca_certificate.cert.certificate
   description = "Cloudflare Origin Certificate"
