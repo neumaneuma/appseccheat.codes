@@ -1,3 +1,7 @@
+locals {
+  asg_instance_count = 1
+}
+
 resource "aws_security_group" "ecs_sg" {
   name   = "ecs_sg"
   vpc_id = var.vpc_id
@@ -18,7 +22,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_only_cloudflare_proxy_to_e
   ip_protocol       = "tcp"
 }
 
-# Use this ingress rule instead of allow_only_cloudflare_proxy_to_ecs when testing a newly created AWS account instance
+# Use this ingress rule instead of `allow_only_cloudflare_proxy_to_ecs` when testing a newly created AWS account instance
 # resource "aws_vpc_security_group_ingress_rule" "allow_all_traffic_to_ecs" {
 #   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
 #   security_group_id = aws_security_group.ecs_sg.id
@@ -203,7 +207,7 @@ resource "aws_launch_template" "ecs" {
 
   network_interfaces {
     security_groups             = [aws_security_group.ecs_sg.id]
-    associate_public_ip_address = false
+    associate_public_ip_address = false # Use an EIP instead of a dynamically assigned IP address
   }
 
   # cloudwatch monitoring https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-metrics.html
@@ -262,10 +266,6 @@ resource "aws_launch_template" "ecs" {
   }
 }
 
-locals {
-  asg_instance_count = 1
-}
-
 resource "aws_autoscaling_group" "ecs" {
   name_prefix           = "ecs-asg"
   desired_capacity      = local.asg_instance_count
@@ -286,9 +286,8 @@ resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
   autoscaling_group_name = aws_autoscaling_group.ecs.name
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
   default_result         = "CONTINUE"
-  heartbeat_timeout      = 90 # 90 seconds
+  heartbeat_timeout      = 90
 }
-
 
 data "aws_instance" "ecs_managed_ec2_host" {
   filter {

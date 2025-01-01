@@ -11,9 +11,6 @@ provider "aws" {
   region = var.region
 }
 
-
-
-
 resource "aws_iam_user" "deployer" {
   name = "deployer"
 }

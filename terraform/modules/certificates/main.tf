@@ -16,5 +16,5 @@ resource "cloudflare_origin_ca_certificate" "cert" {
   csr                = tls_cert_request.csr.cert_request_pem
   hostnames          = [var.api_domain_name]
   request_type       = "origin-ecc"
-  requested_validity = 90 # TODO change to 365
+  requested_validity = 365
 }
