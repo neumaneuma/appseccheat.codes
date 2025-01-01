@@ -12,18 +12,20 @@ provider "aws" {
   region = var.region
 }
 
-# Additional provider configuration for us-east-1 (required for ACM certificates)
-provider "aws" {
-  alias  = "us-east-1"
-  region = "us-east-1"
-}
-
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
 # S3 bucket names must be globally unique, so we use a random UUID to generate a unique name
 resource "random_uuid" "uuid" {}
+
+data "http" "cloudflare_ips" {
+  url = "https://api.cloudflare.com/client/v4/ips"
+}
+
+locals {
+  cloudflare_ipv4_addresses = jsondecode(data.http.cloudflare_ips.response_body).result.ipv4_cidrs
+}
 
 module "cloudtrail" {
   source      = "../modules/cloudtrail"
@@ -54,14 +56,15 @@ module "ecs" {
   private_subnet_ids                     = module.vpc.private_subnets[*].id
   public_subnet_cidr_blocks              = module.vpc.public_subnets[*].cidr_block
   private_subnet_cidr_blocks             = module.vpc.private_subnets[*].cidr_block
-  traffic_distribution                   = var.traffic_distribution
   docker_hub_repo                        = var.docker_hub_repo
   vpc_id                                 = module.vpc.vpc_id
-  alb_certificate_arn                    = module.certificates.alb_certificate_arn
   backend_cloudwatch_log_group_name      = var.backend_cloudwatch_log_group_name
   internal_api_cloudwatch_log_group_name = var.internal_api_cloudwatch_log_group_name
   ec2_host_name                          = var.ec2_host_name
   db_security_group_id                   = module.database.db_security_group_id
+  cloudflare_ipv4_addresses              = local.cloudflare_ipv4_addresses
+  origin_certificate                     = module.certificates.origin_certificate
+  private_key_pem                        = module.certificates.private_key_pem
 }
 
 module "database" {

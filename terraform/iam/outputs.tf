@@ -1,4 +1,3 @@
-
 output "deployer_access_key_id" {
   value = aws_iam_access_key.deployer.id
 }
