@@ -29,7 +29,7 @@ data "cloudflare_zones" "domain" {
 resource "cloudflare_record" "backend" {
   zone_id = data.cloudflare_zones.domain.zones[0].id
   name    = var.api_domain_name
-  content = data.terraform_remote_state.aws.outputs.alb_dns_name
+  content = data.terraform_remote_state.aws.outputs.ec2_public_dns
   type    = "CNAME"
   proxied = true
 }

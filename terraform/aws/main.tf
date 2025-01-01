@@ -41,9 +41,10 @@ module "cloudtrail" {
 }
 
 module "certificates" {
-  source      = "../modules/certificates"
-  domain_name = var.domain_name
-  region      = var.region
+  source          = "../modules/certificates"
+  domain_name     = var.domain_name
+  api_domain_name = var.api_domain_name
+  region          = var.region
 }
 
 module "vpc" {
