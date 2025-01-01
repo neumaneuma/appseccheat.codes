@@ -103,3 +103,20 @@ variable "db_security_group_id" {
   description = "Database security group ID"
   type        = string
 }
+
+variable "cloudflare_ipv4_addresses" {
+  description = "Cloudflare IPv4 addresses"
+  type        = list(string)
+}
+
+variable "origin_certificate" {
+  description = "Cloudflare Origin Certificate"
+  type        = string
+  sensitive   = true
+}
+
+variable "private_key_pem" {
+  description = "Private key for Cloudflare Origin Certificate"
+  type        = string
+  sensitive   = true
+}

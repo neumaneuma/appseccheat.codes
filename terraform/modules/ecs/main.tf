@@ -44,6 +44,26 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
+# resource "aws_vpc_security_group_ingress_rule" "allow_cloudflare_proxy_to_ecs" {
+#   for_each = toset(var.cloudflare_ipv4_addresses)
+
+#   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
+#   security_group_id = aws_security_group.ecs_sg.id
+#   cidr_ipv4        = each.value
+#   from_port        = 443
+#   to_port          = 443
+#   ip_protocol      = "tcp"
+# }
+
+resource "aws_vpc_security_group_ingress_rule" "allow_cloudflare_proxy_to_ecs" {
+  description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+}
+
 resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
   description                  = "Allow ECS instances to receive traffic from the ALB"
   security_group_id            = aws_security_group.ecs_sg.id
@@ -309,11 +329,42 @@ resource "aws_launch_template" "ecs" {
   }
 
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
-  # Fargate abstracts away this hackiness; EC2 instances require this.
+  # Fargate abstracts away the $ECS_CLUSTER hackiness; EC2 instances require this.
   user_data = base64encode(<<-EOF
-              #!/bin/bash
-              echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
-              EOF
+    #!/bin/bash
+    echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+
+    # https://www.stunnel.org/static/stunnel.html
+    yum install -y stunnel
+    mkdir -p /etc/stunnel/certs
+
+    # Write the Cloudflare Origin Certificate (ECC)
+    cat > /etc/stunnel/certs/cert.pem <<'EOL'
+    ${var.origin_certificate}
+    EOL
+
+    # Write the ECC private key
+    cat > /etc/stunnel/certs/key.pem <<'EOL'
+    ${var.private_key_pem}
+    EOL
+
+    # Create stunnel config with optimized SSL settings
+    cat > /etc/stunnel/stunnel.conf <<'EOL'
+    [https]
+    accept = 443
+    connect = 12301
+    cert = /etc/stunnel/certs/cert.pem
+    key = /etc/stunnel/certs/key.pem
+    # curves = P-256  # Supported by default according to docs
+    sslVersionMin = TLSv1.2
+    EOL
+
+    # Secure the key file
+    chmod 600 /etc/stunnel/certs/key.pem
+
+    # Start stunnel
+    systemctl start stunnel
+    EOF
   )
 
   iam_instance_profile {
@@ -345,13 +396,26 @@ resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
   autoscaling_group_name = aws_autoscaling_group.ecs.name
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
   default_result         = "CONTINUE"
-  heartbeat_timeout      = 120 # 2 minutes
+  heartbeat_timeout      = 90 # 90 seconds
 }
 
 
 resource "aws_autoscaling_attachment" "backend" {
   autoscaling_group_name = aws_autoscaling_group.ecs.id
   lb_target_group_arn    = aws_lb_target_group.blue.arn
+}
+
+data "aws_instance" "ecs_managed_ec2_host" {
+  filter {
+    name   = "tag:Name"
+    values = [var.ec2_host_name]
+  }
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
+
+  depends_on = [aws_autoscaling_group.ecs]
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
@@ -379,11 +443,12 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 }
 
 resource "aws_ecs_service" "multi_container_service" {
-  name            = "multi-container-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.multi_container_task.arn
-  desired_count   = 1
-
+  name                               = "multi-container-service"
+  cluster                            = aws_ecs_cluster.main.id
+  task_definition                    = aws_ecs_task_definition.multi_container_task.arn
+  desired_count                      = 1
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.main.name

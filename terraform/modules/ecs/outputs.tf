@@ -21,3 +21,8 @@ output "ecs_service_name" {
 output "ecs_cluster_name" {
   value = aws_ecs_cluster.main.name
 }
+
+output "ec2_public_dns" {
+  description = "Public DNS name of the ECS EC2 instance"
+  value       = data.aws_instance.ecs_managed_ec2_host.public_dns
+}

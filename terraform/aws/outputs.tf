@@ -37,3 +37,7 @@ output "region" {
 output "ec2_host_name" {
   value = var.ec2_host_name
 }
+
+output "ec2_public_dns" {
+  value = module.ecs.ec2_public_dns
+}

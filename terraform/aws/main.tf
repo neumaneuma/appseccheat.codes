@@ -25,6 +25,14 @@ provider "cloudflare" {
 # S3 bucket names must be globally unique, so we use a random UUID to generate a unique name
 resource "random_uuid" "uuid" {}
 
+data "http" "cloudflare_ips" {
+  url = "https://api.cloudflare.com/client/v4/ips"
+}
+
+locals {
+  cloudflare_ipv4_addresses = jsondecode(data.http.cloudflare_ips.response_body).result.ipv4_cidrs
+}
+
 module "cloudtrail" {
   source      = "../modules/cloudtrail"
   region      = var.region
@@ -62,6 +70,9 @@ module "ecs" {
   internal_api_cloudwatch_log_group_name = var.internal_api_cloudwatch_log_group_name
   ec2_host_name                          = var.ec2_host_name
   db_security_group_id                   = module.database.db_security_group_id
+  cloudflare_ipv4_addresses              = local.cloudflare_ipv4_addresses
+  origin_certificate                     = module.certificates.origin_certificate
+  private_key_pem                        = module.certificates.private_key_pem
 }
 
 module "database" {
