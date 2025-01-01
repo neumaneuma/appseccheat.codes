@@ -1,38 +1,5 @@
-resource "aws_security_group" "allow_tls" {
-  name        = "allow_tls"
-  description = "Allow TLS inbound traffic and all outbound traffic"
-  vpc_id      = var.vpc_id
-
-  tags = {
-    Name = "allow_tls"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_traffic" {
-  description       = "Allow HTTPS public traffic to the ALB"
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 443
-  ip_protocol       = "tcp"
-  to_port           = 443
-}
-
-resource "aws_vpc_security_group_egress_rule" "egress_alb_to_ecs" {
-  description                  = "Allow ALB to communicate with the ECS instances"
-  security_group_id            = aws_security_group.allow_tls.id
-  referenced_security_group_id = aws_security_group.ecs_sg.id
-  from_port                    = 12301
-  ip_protocol                  = "tcp"
-  to_port                      = 12301
-}
-
-resource "aws_vpc_security_group_egress_rule" "egress_alb_to_external" {
-  description       = "Allow ALB to communicate with external hosts"
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 443
-  ip_protocol       = "tcp"
-  to_port           = 443
+locals {
+  asg_instance_count = 1
 }
 
 resource "aws_security_group" "ecs_sg" {
@@ -44,23 +11,26 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_alb_to_ecs" {
-  description                  = "Allow ECS instances to receive traffic from the ALB"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.allow_tls.id
-  from_port                    = 12301
-  to_port                      = 12301
-  ip_protocol                  = "tcp"
+resource "aws_vpc_security_group_ingress_rule" "allow_only_cloudflare_proxy_to_ecs" {
+  for_each = toset(var.cloudflare_ipv4_addresses)
+
+  description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
+  security_group_id = aws_security_group.ecs_sg.id
+  cidr_ipv4         = each.value
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
 }
 
-resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_alb" {
-  description                  = "Allow ECS instances to respond to the ALB"
-  security_group_id            = aws_security_group.ecs_sg.id
-  referenced_security_group_id = aws_security_group.allow_tls.id
-  from_port                    = 12301
-  ip_protocol                  = "tcp"
-  to_port                      = 12301
-}
+# Use this ingress rule instead of `allow_only_cloudflare_proxy_to_ecs` when testing a newly created AWS account instance
+# resource "aws_vpc_security_group_ingress_rule" "allow_all_traffic_to_ecs" {
+#   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
+#   security_group_id = aws_security_group.ecs_sg.id
+#   cidr_ipv4         = "0.0.0.0/0"
+#   from_port         = 443
+#   to_port           = 443
+#   ip_protocol       = "tcp"
+# }
 
 resource "aws_vpc_security_group_egress_rule" "egress_ecs_for_https" {
   description       = "Allow ECS instances to talk to external hosts for webhook over HTTPS"
@@ -96,62 +66,6 @@ resource "aws_vpc_security_group_egress_rule" "egress_ecs_to_rds" {
   from_port                    = 5432
   ip_protocol                  = "tcp"
   to_port                      = 5432
-}
-
-resource "aws_lb" "main" {
-  name               = "app-load-balancer"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = var.public_subnet_ids
-  security_groups    = [aws_security_group.allow_tls.id]
-}
-
-resource "aws_lb_listener" "main" {
-  load_balancer_arn = aws_lb.main.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.alb_certificate_arn
-
-  # this can be broken out into a `aws_lb_listener_rule` resource if it needs to be more complex
-  default_action {
-    type = "forward"
-    forward {
-      target_group {
-        arn    = aws_lb_target_group.blue.arn
-        weight = lookup(local.traffic_dist_map[var.traffic_distribution], "blue", 100)
-      }
-
-      # target_group {
-      #   arn    = aws_lb_target_group.green.arn
-      #   weight = lookup(local.traffic_dist_map[var.traffic_distribution], "green", 0)
-      # }
-
-      stickiness {
-        enabled  = false
-        duration = 1
-      }
-    }
-  }
-}
-
-resource "aws_lb_target_group" "blue" {
-  name     = "blue-target-group"
-  port     = 12301
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
-
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 15
-    matcher             = "200"
-    path                = "/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 3
-  }
 }
 
 resource "aws_s3_bucket" "ecs_logs" {
@@ -293,7 +207,7 @@ resource "aws_launch_template" "ecs" {
 
   network_interfaces {
     security_groups             = [aws_security_group.ecs_sg.id]
-    associate_public_ip_address = true
+    associate_public_ip_address = false # Use an EIP instead of a dynamically assigned IP address
   }
 
   # cloudwatch monitoring https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-metrics.html
@@ -309,20 +223,47 @@ resource "aws_launch_template" "ecs" {
   }
 
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
-  # Fargate abstracts away this hackiness; EC2 instances require this.
+  # Fargate abstracts away the $ECS_CLUSTER hackiness; EC2 instances require this.
   user_data = base64encode(<<-EOF
-              #!/bin/bash
-              echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
-              EOF
+    #!/bin/bash
+    echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+
+    # https://www.stunnel.org/static/stunnel.html
+    yum install -y stunnel
+    mkdir -p /etc/stunnel/certs
+
+    # Write the Cloudflare Origin Certificate (ECC)
+    cat > /etc/stunnel/certs/cert.pem <<'EOL'
+    ${var.origin_certificate}
+    EOL
+
+    # Write the ECC private key
+    cat > /etc/stunnel/certs/key.pem <<'EOL'
+    ${var.private_key_pem}
+    EOL
+
+    # Create stunnel config with optimized SSL settings
+    cat > /etc/stunnel/stunnel.conf <<'EOL'
+    [https]
+    accept = 443
+    connect = 12301
+    cert = /etc/stunnel/certs/cert.pem
+    key = /etc/stunnel/certs/key.pem
+    # curves = P-256  # Supported by default according to docs
+    sslVersionMin = TLSv1.2
+    EOL
+
+    # Secure the key file
+    chmod 600 /etc/stunnel/certs/key.pem
+
+    # Start stunnel
+    systemctl start stunnel
+    EOF
   )
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_instance_profile.name
   }
-}
-
-locals {
-  asg_instance_count = 1
 }
 
 resource "aws_autoscaling_group" "ecs" {
@@ -345,14 +286,36 @@ resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
   autoscaling_group_name = aws_autoscaling_group.ecs.name
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
   default_result         = "CONTINUE"
-  heartbeat_timeout      = 120 # 2 minutes
+  heartbeat_timeout      = 90
 }
 
+data "aws_instance" "ecs_managed_ec2_host" {
+  filter {
+    name   = "tag:Name"
+    values = [var.ec2_host_name]
+  }
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
 
-resource "aws_autoscaling_attachment" "backend" {
-  autoscaling_group_name = aws_autoscaling_group.ecs.id
-  lb_target_group_arn    = aws_lb_target_group.blue.arn
+  depends_on = [aws_autoscaling_group.ecs]
 }
+
+resource "aws_eip" "ec2_host_eip" {
+  domain = "vpc"
+  tags = {
+    Name = "${var.ec2_host_name}-eip"
+  }
+}
+
+resource "aws_eip_association" "ecs_instance" {
+  instance_id   = data.aws_instance.ecs_managed_ec2_host.id
+  allocation_id = aws_eip.ec2_host_eip.id
+
+  depends_on = [aws_autoscaling_group.ecs]
+}
+
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name               = "ecs-task-execution-role"
@@ -379,29 +342,18 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 }
 
 resource "aws_ecs_service" "multi_container_service" {
-  name            = "multi-container-service"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.multi_container_task.arn
-  desired_count   = 1
-
+  name                               = "multi-container-service"
+  cluster                            = aws_ecs_cluster.main.id
+  task_definition                    = aws_ecs_task_definition.multi_container_task.arn
+  desired_count                      = 1
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.main.name
     weight            = 100
     base              = 1
   }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.blue.arn
-    container_name   = "backend"
-    container_port   = 12301
-  }
-
-  # don't need a load balancer block for the internal_api container since that's only used internally
-
-  depends_on = [
-    aws_lb_listener.main
-  ]
 
   deployment_circuit_breaker {
     enable   = true

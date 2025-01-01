@@ -14,10 +14,6 @@ output "db_host" {
   value = module.database.db_host
 }
 
-output "alb_dns_name" {
-  value = module.ecs.alb_dns_name
-}
-
 output "asg_name" {
   value = module.ecs.asg_name
 }
@@ -36,4 +32,8 @@ output "region" {
 
 output "ec2_host_name" {
   value = var.ec2_host_name
+}
+
+output "ec2_eip_address" {
+  value = module.ecs.ec2_eip_address
 }

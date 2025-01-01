@@ -23,12 +23,6 @@ variable "cloudflare_api_token" {
   sensitive   = true
 }
 
-variable "traffic_distribution" {
-  description = "Levels of traffic distribution"
-  type        = string
-  default     = "blue"
-}
-
 variable "docker_hub_repo" {
   description = "Docker Hub repository identifier"
   type        = string
