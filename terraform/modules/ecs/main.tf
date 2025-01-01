@@ -202,7 +202,7 @@ resource "aws_launch_template" "ecs" {
 
   network_interfaces {
     security_groups             = [aws_security_group.ecs_sg.id]
-    associate_public_ip_address = true
+    associate_public_ip_address = false
   }
 
   # cloudwatch monitoring https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-metrics.html
@@ -301,6 +301,21 @@ data "aws_instance" "ecs_managed_ec2_host" {
 
   depends_on = [aws_autoscaling_group.ecs]
 }
+
+resource "aws_eip" "ec2_host_eip" {
+  domain = "vpc"
+  tags = {
+    Name = "${var.ec2_host_name}-eip"
+  }
+}
+
+resource "aws_eip_association" "ecs_instance" {
+  instance_id   = data.aws_instance.ecs_managed_ec2_host.id
+  allocation_id = aws_eip.ec2_host_eip.id
+
+  depends_on = [aws_autoscaling_group.ecs]
+}
+
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name               = "ecs-task-execution-role"
