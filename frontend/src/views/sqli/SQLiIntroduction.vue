@@ -15,7 +15,7 @@
       add your son as a student in the school's database this is the SQL query that is run:
     </p>
 
-    <p class="code-example">
+    <p class="code-block">
       <span class="sql-code">INSERT INTO Students VALUES '</span>
       <span class="user-input">Robert</span>
       <span class="sql-code">'); DROP TABLE Students;</span>
@@ -39,7 +39,7 @@
       injection?
     </p>
 
-    <p class="code-example">
+    <p class="code-block">
       <span class="sql-code">INSERT INTO Students VALUES '</span>
       <span class="user-input">Robert'); DROP TABLE Students;--</span>
       <span class="sql-code">');</span>
@@ -65,16 +65,10 @@
   text-decoration: underline;
 }
 
-.code-block,
-.code-example {
+.code-block {
   background-color: rgb(229, 231, 235);
   padding: 0.25rem;
   font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
-}
-
-.code-example {
-  display: inline-block;
-  width: max-content;
 }
 
 .sql-code {
