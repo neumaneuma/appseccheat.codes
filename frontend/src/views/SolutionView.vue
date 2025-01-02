@@ -103,9 +103,10 @@ defineProps<Props>()
 .hint-header {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  height: 3rem;
+  min-height: 1rem;
   border-radius: 0.375rem;
   background-color: rgb(219, 234, 254); /* blue-100 */
+  padding: 0.5rem 0;
 }
 
 .hint-title {

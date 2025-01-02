@@ -109,7 +109,6 @@ import ChallengeCard from '@/components/ChallengeCard.vue'
   padding: 2rem 0;
 }
 
-/* Add responsive design */
 @media (max-width: 768px) {
   .main-title {
     font-size: 2rem;
@@ -124,6 +123,51 @@ import ChallengeCard from '@/components/ChallengeCard.vue'
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     padding: 1rem 0;
+  }
+}
+
+@media (max-width: 575px) {
+  .main-title {
+    font-size: 1.85rem;
+  }
+
+  .taglines {
+    font-size: 1.05rem;
+    line-height: 1.85rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.35rem;
+    padding: 0.85rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.75rem;
+  }
+
+  .taglines {
+    font-size: 1rem;
+    line-height: 1.75rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.25rem;
+    padding: 0.75rem 0;
+  }
+}
+
+@media (max-width: 320px) {
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .taglines {
+    font-size: 0.9rem;
+    line-height: 1.5rem;
   }
 }
 </style>

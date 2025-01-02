@@ -238,6 +238,9 @@ const submitUrl = async () => {
 .radio-label {
   font-size: 12px;
   font-weight: 800;
+  word-break: break-all;
+  white-space: normal;
+  max-width: 100%;
 }
 
 .form-label {
@@ -313,6 +316,17 @@ const submitUrl = async () => {
   .challenge-section {
     flex: 1;
     min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .radio-option {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .radio-label {
+    font-size: 11px;
   }
 }
 </style>

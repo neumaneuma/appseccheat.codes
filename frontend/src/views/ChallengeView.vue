@@ -338,9 +338,10 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 .hint-header {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  height: 3rem;
+  min-height: 1rem;
   cursor: pointer;
   border-radius: 0.375rem;
+  padding: 0.5rem 0;
 }
 
 .vulnerability-hint .hint-header {
@@ -418,12 +419,6 @@ const toggleExploitHint = () => toggleCollapsible(isExploitHintOpen, exploitHint
 
 .exploit-link:hover {
   text-decoration: underline;
-}
-
-@media (min-width: 640px) {
-  .hint-header {
-    height: 3rem;
-  }
 }
 
 .meta-hint .hint-header {

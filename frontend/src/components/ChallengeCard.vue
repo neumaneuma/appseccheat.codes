@@ -128,9 +128,77 @@ defineProps<{
   .card-content {
     padding: 1rem;
   }
+}
 
-  .card-image-container {
-    padding: 1rem;
+@media (max-width: 480px) {
+  .card-content {
+    padding: 0.75rem;
+  }
+
+  .card-header {
+    font-size: 1.05rem;
+  }
+
+  .card-description {
+    font-size: 0.8rem;
+  }
+
+  .card-arrow {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 425px) {
+  .card-content {
+    padding: 1.05rem;
+  }
+
+  .card-header {
+    font-size: 0.95rem;
+  }
+
+  .card-description {
+    font-size: 0.75rem;
+  }
+
+  .card-arrow {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .card-content {
+    padding: 0.95rem;
+  }
+
+  .card-header {
+    font-size: 0.9rem;
+  }
+
+  .card-description {
+    font-size: 0.7rem;
+  }
+
+  .card-arrow {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .card-content {
+    padding: 0.9rem;
+  }
+
+  .card-header {
+    font-size: 0.85rem;
+  }
+
+  .card-description {
+    font-size: 0.65rem;
+  }
+
+  .card-arrow {
+    font-size: 0.65rem;
   }
 }
 </style>

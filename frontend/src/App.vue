@@ -68,4 +68,49 @@ import { RouterLink, RouterView } from 'vue-router'
   background-color: #bfdbfe;
   color: #1d4ed8;
 }
+
+@media (max-width: 768px) {
+  .nav-container {
+    width: 90%;
+    padding: 0 10px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+    padding: 6px 10px;
+  }
+
+  .large-font {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-link {
+    font-size: 14px;
+    padding: 4px 8px;
+  }
+
+  .large-font {
+    font-size: 18px;
+  }
+
+  .right-nav {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .nav-container {
+    flex-direction: column;
+  }
+
+  .nav-link {
+    font-size: 12px;
+  }
+
+  .large-font {
+    font-size: 15px;
+  }
+}
 </style>
