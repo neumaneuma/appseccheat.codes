@@ -1,5 +1,17 @@
 data "aws_caller_identity" "current" {}
 
+# Uncomment when need to debug IAM permissions, but necessary otherwise (generates a lot of S3 traffic)
+# resource "aws_cloudtrail" "audit" {
+#   name                          = var.trail_name
+#   s3_bucket_name                = aws_s3_bucket.audit_logs.id
+#   include_global_service_events = true
+#   is_multi_region_trail         = false
+
+#   depends_on = [
+#     aws_s3_bucket_policy.audit_logs
+#   ]
+# }
+
 # https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create-s3-bucket-policy-for-cloudtrail.html
 data "aws_iam_policy_document" "audit_logs" {
   statement {
@@ -39,17 +51,6 @@ data "aws_iam_policy_document" "audit_logs" {
       values   = ["arn:aws:cloudtrail:${var.region}:${data.aws_caller_identity.current.account_id}:trail/${var.trail_name}"]
     }
   }
-}
-
-resource "aws_cloudtrail" "audit" {
-  name                          = var.trail_name
-  s3_bucket_name                = aws_s3_bucket.audit_logs.id
-  include_global_service_events = true
-  is_multi_region_trail         = false
-
-  depends_on = [
-    aws_s3_bucket_policy.audit_logs
-  ]
 }
 
 resource "aws_accessanalyzer_analyzer" "main" {
