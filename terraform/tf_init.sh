@@ -6,3 +6,4 @@ cd ../iam
 terraform init -upgrade
 cd ../state
 terraform init -upgrade
+cd ..
