@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
+
 data "aws_caller_identity" "current" {}
 
 # Uncomment when need to debug IAM permissions, but necessary otherwise (generates a lot of S3 traffic)
