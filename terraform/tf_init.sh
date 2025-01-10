@@ -1,8 +1,8 @@
 cd aws
-tfi -upgrade
+terraform init -upgrade
 cd ../cloudflare
-tfi -upgrade
+terraform init -upgrade
 cd ../iam
-tfi -upgrade
+terraform init -upgrade
 cd ../state
-tfi -upgrade
+terraform init -upgrade
