@@ -11,8 +11,25 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_iam_user" "deployer" {
+data "aws_iam_policy_document" "deployer" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "deployer" {
+  policy = data.aws_iam_policy_document.deployer.json
+}
+
+resource "aws_iam_role" "deployer" {
   name = "deployer"
+
+  assume_role_policy = data.aws_iam_policy_document.deployer.json
 }
 
 resource "aws_iam_access_key" "deployer" {
