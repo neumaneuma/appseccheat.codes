@@ -1,3 +1,17 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+    tls = {
+      source = "hashicorp/tls"
+    }
+  }
+}
+
 resource "tls_private_key" "private_key" {
   algorithm   = "ECDSA"
   ecdsa_curve = "P256"

@@ -38,8 +38,3 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
-
-variable "iam_user_name" {
-  description = "IAM user name"
-  type        = string
-}

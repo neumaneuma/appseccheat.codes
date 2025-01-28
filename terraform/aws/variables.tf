@@ -19,8 +19,8 @@ variable "api_domain_name" {
 variable "cloudflare_api_token" {
   description = "Cloudflare API token"
   type        = string
-  default     = null # force terraform to use $CLOUDFLARE_API_TOKEN environment variable
   sensitive   = true
+  default     = null # force terraform to use $CLOUDFLARE_API_TOKEN environment variable
 }
 
 variable "docker_hub_repo" {
@@ -42,15 +42,10 @@ variable "db_username" {
 }
 
 variable "db_password" {
-  description = "Database password"
+  description = "Database password - only required for initial setup (or to update the password), afterwards retrieved from SSM"
   type        = string
   sensitive   = true
-}
-
-variable "iam_user_name" {
-  description = "IAM user name"
-  type        = string
-  default     = "iam_user" # hardcoded to match the terraform/iam/main.tf file
+  default     = null # Comment out to make the variable required
 }
 
 variable "backend_cloudwatch_log_group_name" {
@@ -65,8 +60,14 @@ variable "internal_api_cloudwatch_log_group_name" {
   default     = "/ecs/internal_api"
 }
 
-variable "ec2_host_name" {
-  description = "EC2 host name"
+variable "ec2_hostname" {
+  description = "EC2 hostname"
   type        = string
   default     = "ecs-instance"
+}
+
+variable "db_password_ssm_name" {
+  description = "SSM parameter name for database password"
+  type        = string
+  default     = "/database/password"
 }

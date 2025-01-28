@@ -104,9 +104,9 @@ def check_response(
     url: str = "",
     appended_custom_msg: str = "",
 ) -> bool:
-    assert (
-        type(expected_response) is type(actual_response)
-    ), f"Expected and actual response types do not match. Expected: {type(expected_response)}, Actual: {type(actual_response)}.\n\t- Expected response: {expected_response}\n\t- Actual response: {actual_response}"
+    assert type(expected_response) is type(actual_response), (
+        f"Expected and actual response types do not match. Expected: {type(expected_response)}, Actual: {type(actual_response)}.\n\t- Expected response: {expected_response}\n\t- Actual response: {actual_response}"
+    )
     success = (
         expected_status_code == actual_status_code
         and expected_response == actual_response
@@ -495,6 +495,6 @@ if __name__ == "__main__":
         f"\n\nFinished running {len(results)} functional tests. Run time: {run_time} seconds"
     )
 
-    assert all(
-        results
-    ), f"There were {len([r for r in results if not r])} failed tests 😭"
+    assert all(results), (
+        f"There were {len([r for r in results if not r])} failed tests 😭"
+    )
