@@ -13,4 +13,5 @@ dependencies = [
     "types-peewee==3.17.8.20241229",
     "bcrypt==4.2.1",
     "dnspython==2.7.0",
+    "boto3==1.36.7",
 ]

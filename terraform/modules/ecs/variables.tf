@@ -60,8 +60,8 @@ variable "internal_api_cloudwatch_log_group_name" {
   type        = string
 }
 
-variable "ec2_host_name" {
-  description = "EC2 host name"
+variable "ec2_hostname" {
+  description = "EC2 hostname"
   type        = string
 }
 

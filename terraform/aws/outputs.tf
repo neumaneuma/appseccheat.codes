@@ -30,10 +30,14 @@ output "region" {
   value = var.region
 }
 
-output "ec2_host_name" {
-  value = var.ec2_host_name
+output "ec2_hostname" {
+  value = var.ec2_hostname
 }
 
-output "ec2_eip_address" {
-  value = module.ecs.ec2_eip_address
+output "ec2_public_dns_hostname" {
+  value = module.ecs.ec2_public_dns_hostname
+}
+
+output "ec2_public_ip_address" {
+  value = module.ecs.ec2_public_ip_address
 }

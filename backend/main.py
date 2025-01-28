@@ -79,7 +79,7 @@ async def validation_exception_handler(
 ) -> JSONResponse:
     if request.client is None:
         logger.info(
-            f'"{request.method} {request.url.path} HTTP/1.1" ' f"422 - {exc.errors()}"
+            f'"{request.method} {request.url.path} HTTP/1.1" 422 - {exc.errors()}'
         )
     else:
         logger.info(

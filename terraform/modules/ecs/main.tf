@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
+
 locals {
   asg_instance_count = 1
 }
@@ -22,7 +30,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_only_cloudflare_proxy_to_e
   ip_protocol       = "tcp"
 }
 
-# Use this ingress rule instead of `allow_only_cloudflare_proxy_to_ecs` when testing a newly created AWS account instance
+# # Use this ingress rule instead of `allow_only_cloudflare_proxy_to_ecs` when testing a newly created AWS account instance
 # resource "aws_vpc_security_group_ingress_rule" "allow_all_traffic_to_ecs" {
 #   description       = "Allow ECS instances to receive HTTPS traffic from Cloudflare proxy"
 #   security_group_id = aws_security_group.ecs_sg.id
@@ -218,7 +226,7 @@ resource "aws_launch_template" "ecs" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = var.ec2_host_name
+      Name = var.ec2_hostname
     }
   }
 
@@ -292,7 +300,7 @@ resource "aws_autoscaling_lifecycle_hook" "ecs_termination_hook" {
 data "aws_instance" "ecs_managed_ec2_host" {
   filter {
     name   = "tag:Name"
-    values = [var.ec2_host_name]
+    values = [var.ec2_hostname]
   }
   filter {
     name   = "instance-state-name"
@@ -305,7 +313,7 @@ data "aws_instance" "ecs_managed_ec2_host" {
 resource "aws_eip" "ec2_host_eip" {
   domain = "vpc"
   tags = {
-    Name = "${var.ec2_host_name}-eip"
+    Name = "${var.ec2_hostname}-eip"
   }
 }
 
@@ -344,7 +352,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 resource "aws_ecs_service" "multi_container_service" {
   name                               = "multi-container-service"
   cluster                            = aws_ecs_cluster.main.id
-  task_definition                    = aws_ecs_task_definition.multi_container_task.arn
+  task_definition                    = aws_ecs_task_definition.multi_container_task.family
   desired_count                      = 1
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
