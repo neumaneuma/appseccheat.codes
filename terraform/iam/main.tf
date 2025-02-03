@@ -63,6 +63,7 @@ data "aws_iam_policy_document" "permissions_policy" {
       "ec2:AuthorizeSecurityGroupIngress",
       "ec2:CreateInternetGateway",
       "ec2:CreateLaunchTemplate",
+      "ec2:CreateLaunchTemplateVersion",
       "ec2:CreateRoute",
       "ec2:CreateRouteTable",
       "ec2:CreateSecurityGroup",
